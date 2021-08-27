@@ -1,0 +1,19 @@
+query Classes {
+    classes {
+        edges {
+            cursor
+            node {
+                id
+                name
+                active
+                createdAt
+                updatedAt
+            }
+        }
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+        }
+        totalCount
+    }
+}
