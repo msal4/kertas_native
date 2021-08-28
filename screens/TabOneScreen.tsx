@@ -9,14 +9,25 @@ import { Button } from "react-native-ui-lib";
 import { getAccessToken } from "../util/auth";
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<"TabOne">) {
-  const [res, refresh] = useClassesQuery();
+  const [res, refetch] = useClassesQuery();
 
   if (res.fetching) {
     return <Text>Loading...</Text>;
   }
 
-  if (res.error) {
-    return <Text>{res.error.toString()}</Text>;
+  if (res.error?.graphQLErrors) {
+    return (
+      <>
+        <Text>{res.error.graphQLErrors.toString()}</Text>
+        <Button
+          label={"get classes"}
+          onPress={async () => {
+            console.log("i am refetching");
+            refetch();
+          }}
+        />
+      </>
+    );
   }
 
   return (
@@ -26,9 +37,9 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<"TabOne"
       <Button
         label={"get classes"}
         onPress={async () => {
-          console.log("i am refreshed");
+          console.log("i am refetching");
           const token = await getAccessToken();
-          refresh({ fetchOptions: token ? { headers: { Authorization: token } } : undefined, requestPolicy: "network-only" });
+          refetch({ fetchOptions: token ? { headers: { Authorization: token } } : undefined, requestPolicy: "network-only" });
         }}
       />
       <EditScreenInfo path="/screens/TabOneScreen.tsx" />
