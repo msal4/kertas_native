@@ -5,19 +5,28 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation, { replace } from "./navigation";
-import {
-  cacheExchange,
-  createClient,
-  dedupExchange,
-  errorExchange,
-  fetchExchange,
-  makeOperation,
-  Operation,
-  Provider as GraphQLProvider,
-} from "urql";
+import { cacheExchange, createClient, dedupExchange, fetchExchange, makeOperation, Operation, Provider as GraphQLProvider } from "urql";
 import { clearTokens, getAccessToken, getAccessTokenExp, getRefreshToken, getTokenExp, isTokenExpired, setTokens } from "./util/auth";
 import { authExchange } from "@urql/exchange-auth";
 import { RefreshTokensDocument, RefreshTokensMutation, RefreshTokensMutationVariables } from "./generated/graphql";
+import { retryExchange } from "@urql/exchange-retry";
+
+const isOperationLoginOrRefresh = (operation: Operation) => {
+  return (
+    operation.kind === "mutation" &&
+    operation.query.definitions.some((definition) => {
+      return (
+        definition.kind === "OperationDefinition" &&
+        definition.selectionSet.selections.some((node) => {
+          return (
+            node.kind === "Field" &&
+            (node.name.value === "loginUser" || node.name.value == "loginAdmin" || node.name.value == "refreshTokens")
+          );
+        })
+      );
+    })
+  );
+};
 
 const client = createClient({
   url: "http://localhost:3000/graphql",
@@ -26,20 +35,26 @@ const client = createClient({
   exchanges: [
     dedupExchange,
     cacheExchange,
-    errorExchange({
-      onError: async (error) => {
-        console.log("on error is called:", error.response.status);
-        if (error.response.status === 401) {
-          await clearTokens();
-          replace("Login");
-        }
-      },
+    retryExchange({
+      maxNumberAttempts: 3,
     }),
+    //errorExchange({
+    //  onError: async (error) => {
+    //    //console.log("on error is called:", error.response.status);
+    //    //if (error.response.status === 401) {
+    //    //  await clearTokens();
+    //    //  replace("Login");
+    //    //}
+    //  },
+    //}),
     authExchange<{ accessToken: string; refreshToken: string; accessTokenExp: string }>({
       addAuthToOperation({ authState, operation }): Operation {
-        if (!authState || !authState.accessToken) {
+        console.log("-> addAuthToOperation_authState:", authState);
+
+        if (!authState || !authState.accessToken || isOperationLoginOrRefresh(operation)) {
           return operation;
         }
+
         const fetchOptions =
           typeof operation.context.fetchOptions === "function" ? operation.context.fetchOptions() : operation.context.fetchOptions ?? {};
 
@@ -55,54 +70,56 @@ const client = createClient({
         });
       },
       didAuthError({ error }): boolean {
-        console.log("didAuthError_status:", error.response.status);
+        console.log("-> didAuthError_status:", error.response.status);
         return error.response.status === 401;
       },
       willAuthError({ authState, operation }): boolean {
+        console.log("-> willAuthErr_authState:", authState);
         if (!authState) {
           // let login operations through
-          return !(
-            operation.kind === "mutation" &&
-            operation.query.definitions.some((definition) => {
-              return (
-                definition.kind === "OperationDefinition" &&
-                definition.selectionSet.selections.some((node) => {
-                  return node.kind === "Field" && (node.name.value === "loginUser" || node.name.value == "loginAdmin");
-                })
-              );
-            })
-          );
+          return !isOperationLoginOrRefresh(operation);
         }
 
         return isTokenExpired(authState.accessTokenExp);
       },
       async getAuth({ authState, mutate }) {
-        if (authState) {
+        console.log("-> getAuth_authState:", authState);
+        let data = Object.assign({}, authState);
+
+        if (!authState) {
+          data.accessToken = (await getAccessToken()) ?? "";
+          data.refreshToken = (await getRefreshToken()) ?? "";
+          data.accessTokenExp = (await getAccessTokenExp()) ?? "";
+        }
+
+        if (data.refreshToken && data.accessToken && !isTokenExpired(data.accessTokenExp ?? "")) {
+          console.log("-> tokens are valid");
+          return data;
+        }
+
+        if (!data.refreshToken) {
+          console.log("-> refresh token does not exist -> logging out");
+          await clearTokens();
+          replace("Login");
           return null;
         }
-        const accessToken = await getAccessToken();
-        const refreshToken = await getRefreshToken();
-        const accessTokenExp = await getAccessTokenExp();
-        if (refreshToken && accessToken && !isTokenExpired(accessTokenExp ?? "")) {
-          console.log("got tokens from storage");
-          return { accessToken, refreshToken, accessTokenExp: accessTokenExp ?? "" };
-        }
 
-        if (!refreshToken) return null;
+        console.log("-> refreshing tokens");
+        // THE REFRESH TOKEN IS OBVOIUSLY NOT VALID OR NOT EVEN A TOKEN. CHECK THAT THE REFRESH TOKEN IS VALID.
 
-        console.log("failed to get tokens from storage... refreshing tokens");
-        const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, { refreshToken });
+        const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, data);
+        console.log("-> refreshTokens_mutate_error:", res.error?.response?.status);
+
         // TODO: check error
         if (!res.data?.refreshTokens) {
-          console.log("failed to refresh tokens and there is nothing to do here but to logout the user :(");
+          console.log("-> res.data.refreshTokens is nil -> logging out");
 
-          // TODO: logout
           await clearTokens();
           replace("Login");
           return null;
         }
         await setTokens(res.data.refreshTokens);
-        console.log("tokens refreshed successfully");
+        console.log("-> refreshed tokens");
 
         return { ...res.data.refreshTokens, accessTokenExp: getTokenExp(res.data.refreshTokens.accessToken) };
       },
