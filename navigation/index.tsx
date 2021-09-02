@@ -57,9 +57,9 @@ function RootNavigator(props) {
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" options={{ headerShown: false }}>
-          {props1 => <Home {...props1} screenProps={props.screenProps} />}
-        </Stack.Screen>
+      <Stack.Screen name="Home" options={{ headerShown: false }}>
+        {props1 => <Home {...props1} screenProps={props.screenProps} />}
+      </Stack.Screen>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>

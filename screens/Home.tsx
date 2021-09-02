@@ -20,7 +20,7 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
   const t = screenProps.t;
 
   const getCurDate = () => {
-    const weekDays = ['الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعة'];
+    const weekDays = ['الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعة', 'السبت'];
     const months = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آيار', 'حزيران', 'تموز', 'آب', 'آيلول', 'تشرين الاول', 'تشرين الثاني', 'كانون الأول'];
     const d = new Date();
     return {
