@@ -17,6 +17,7 @@ import NotFoundScreen from "../screens/NotFoundScreen";
 import LoginScreen from "../screens/LoginScreen";
 import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
+import Home from "../screens/Home";
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 
@@ -38,10 +39,10 @@ export function replace<RouteName extends keyof RootStackParamList>(name: RouteN
   }
 }
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+export default function Navigation({ colorScheme, screenProps }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer ref={navigationRef} linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <RootNavigator />
+      <RootNavigator screenProps={screenProps} />
     </NavigationContainer>
   );
 }
@@ -52,10 +53,13 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function RootNavigator() {
+function RootNavigator(props) {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Home" options={{ headerShown: false }}>
+          {props1 => <Home {...props1} screenProps={props.screenProps} />}
+        </Stack.Screen>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
