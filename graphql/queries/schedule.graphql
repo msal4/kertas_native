@@ -1,0 +1,8 @@
+query Schedule ($weekday: Weekday, $stageID: ID) {
+    schedule (weekday: $weekday, stageID: $stageID) {
+        id
+        duration
+        weekday
+        startsAt
+    }
+}

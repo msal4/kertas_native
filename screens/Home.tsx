@@ -10,28 +10,47 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { RootStackScreenProps } from "../types";
 import { Button, TextField, Toast } from "react-native-ui-lib";
-import { useLoginMutation } from "../generated/graphql";
+import { useScheduleQuery } from "../generated/graphql";
 import { setTokens } from "../util/auth";
 
 const windowHeight = Dimensions.get('screen').height;
 
+
+const getCurDate = () => {
+  const weekDays = ['الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعة', 'السبت'];
+  const months = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آيار', 'حزيران', 'تموز', 'آب', 'آيلول', 'تشرين الاول', 'تشرين الثاني', 'كانون الأول'];
+  const d = new Date();
+  return {
+    dayName: weekDays[d.getDay()],
+    day: d.getDate(),
+    monthName: months[d.getMonth()],
+    month: d.getMonth()+1,
+    year: d.getFullYear()
+  };
+}
+
 export default function Home({ navigation, screenProps }: RootStackScreenProps<"Home">) {
+  const [res, refetch] = useScheduleQuery({
+    variables: {
+      weekday: getCurDate().day
+    }
+  });
 
   const t = screenProps.t;
 
-  const getCurDate = () => {
-    const weekDays = ['الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعة', 'السبت'];
-    const months = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آيار', 'حزيران', 'تموز', 'آب', 'آيلول', 'تشرين الاول', 'تشرين الثاني', 'كانون الأول'];
-    const d = new Date();
-    return {
-      dayName: weekDays[d.getDay()],
-      day: d.getDate(),
-      monthName: months[d.getMonth()],
-      month: d.getMonth()+1,
-      year: d.getFullYear()
-    };
-  }
 
+  if(res.error) {
+    return (
+      <View>
+        <Text>error</Text>
+      </View>
+    )
+  }
+  if(res.fetching) {
+    <View>
+      <Text>loading..</Text>
+    </View>
+  }
   return (
     <SafeAreaView style={{backgroundColor: '#919191', flex: 1}}>
 
@@ -46,7 +65,7 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
       </View>
 
       <FlatList
-        data={[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}
+        data={res.data?.schedule}
         keyExtractor={(item, index) => index+'a'}
         contentContainerStyle={{paddingHorizontal: 20, paddingTop: 140, paddingBottom: 250}}
         showsVerticalScrollIndicator={false}
@@ -62,7 +81,7 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
                 <Text style={{fontFamily: 'Dubai-Bold', color: '#919191'}}>رياضيات</Text>
                 <View style={{width: 1, backgroundColor: '#9a9a9a', marginHorizontal: 10}}></View>
                 <Text style={{fontFamily: 'Dubai-Regular', color: '#9a9a9a', flex: 1, textAlign: 'left'}}>أ. اياد</Text>
-                <Text style={{fontFamily: 'Dubai-Regular', color: '#919191'}}>09:00 - 08:00</Text>
+                <Text style={{fontFamily: 'Dubai-Regular', color: '#919191'}}>{new Date(item?.startsAt).getDate()}</Text>
               </View>
             </Touchable>
           </View>

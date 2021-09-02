@@ -1,1448 +1,1564 @@
 # This file was generated based on ".graphqlconfig". Do not edit manually.
 
-schema {
-    query: Query
-    mutation: Mutation
-    subscription: Subscription
-}
-
-interface Node {
-    id: ID!
-}
-
-type Assignment {
-    createdAt: Time!
-    description: String
-    dueDate: Time!
-    duration: Duration
-    file: String
-    id: ID!
-    isExam: Boolean!
-    name: String!
-    updatedAt: Time!
-}
-
-type AssignmentConnection {
-    edges: [AssignmentEdge]
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type AssignmentEdge {
-    cursor: Cursor!
-    node: Assignment
-}
-
-type AuthData {
-    accessToken: String!
-    refreshToken: String!
-}
-
-type Class {
-    active: Boolean!
-    createdAt: Time!
-    id: ID!
-    name: String!
-    updatedAt: Time!
-}
-
-type ClassConnection {
-    edges: [ClassEdge]
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type ClassEdge {
-    cursor: Cursor!
-    node: Class
-}
-
-type Group {
-    active: Boolean!
-    createdAt: Time!
-    groupType: GroupType!
-    id: ID!
-    name: String!
-    updatedAt: Time!
-}
-
-type GroupConnection {
-    edges: [GroupEdge]
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type GroupEdge {
-    cursor: Cursor!
-    node: Group
-}
-
-type Message {
-    attachment: String!
-    content: String!
-    createdAt: Time!
-    id: ID!
-    updatedAt: Time!
-}
-
-type MessageConnection {
-    edges: [MessageEdge]
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type MessageEdge {
-    cursor: Cursor!
-    node: Message
-}
-
-type Mutation {
-    addAssignment(input: AddAssignmentInput!): Assignment
-    addClass(input: AddClassInput!): Class
-    addGroup(input: AddGroupInput!): Group
-    addSchool(input: AddSchoolInput!): School
-    addStage(input: AddStageInput!): Stage
-    addUser(input: AddUserInput!): User
-    deleteAssignment(id: ID!): Boolean!
-    deleteClass(id: ID!): Boolean!
-    deleteGroup(id: ID!): Boolean!
-    deleteSchool(id: ID!): Boolean!
-    deleteSchoolPermanently(id: ID!): Boolean!
-    deleteStage(id: ID!): Boolean!
-    deleteStagePermanently(id: ID!): Boolean!
-    deleteUser(id: ID!): Boolean!
-    deleteUserPermanently(id: ID!): Boolean!
-    loginAdmin(input: LoginInput!): AuthData
-    loginUser(input: LoginInput!): AuthData
-    postMessage(input: PostMessageInput!): Message
-    refreshTokens(token: String!): AuthData
-    updateAssignment(id: ID!, input: UpdateAssignmentInput!): Assignment
-    updateClass(id: ID!, input: UpdateClassInput!): Class
-    updateGroup(id: ID!, input: UpdateGroupInput!): Group
-    updateSchool(id: ID!, input: UpdateSchoolInput!): School
-    updateStage(id: ID!, input: UpdateStageInput!): Stage
-    updateUser(id: ID!, input: UpdateUserInput!): User
-}
-
-type PageInfo {
-    endCursor: Cursor
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: Cursor
-}
-
-type Query {
-    assignment(id: ID!): Assignment
-    assignments(after: Cursor, before: Cursor, first: Int, last: Int, orderBy: AssignmentOrder, schoolID: ID, stageID: ID, userID: ID, where: AssignmentWhereInput): AssignmentConnection
-    class(id: ID!): Class
-    classes(after: Cursor, before: Cursor, first: Int, last: Int, orderBy: ClassOrder, schoolID: ID, stageID: ID, userID: ID, where: ClassWhereInput): ClassConnection
-    group(id: ID!): Group
-    groups(after: Cursor, before: Cursor, first: Int, last: Int, orderBy: GroupOrder, userID: ID, where: GroupWhereInput): GroupConnection
-    messages(after: Cursor, before: Cursor, first: Int, groupID: ID!, last: Int, orderBy: MessageOrder, where: MessageWhereInput): MessageConnection
-    school(id: ID!): School
-    schools(after: Cursor, before: Cursor, first: Int, last: Int, orderBy: SchoolOrder, where: SchoolWhereInput): SchoolConnection
-    stage(id: ID!): Stage
-    stages(after: Cursor, before: Cursor, first: Int, last: Int, orderBy: StageOrder, where: StageWhereInput): StageConnection
-    user(id: ID!): User
-    users(after: Cursor, before: Cursor, first: Int, last: Int, orderBy: UserOrder, where: UserWhereInput): UserConnection
-}
-
-type School implements Node {
-    active: Boolean!
-    createdAt: Time!
-    id: ID!
-    image: String
-    name: String!
-    updatedAt: Time!
-}
-
-type SchoolConnection {
-    edges: [SchoolEdge]
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type SchoolEdge {
-    cursor: Cursor!
-    node: School
-}
-
-type Stage implements Node {
-    active: Boolean!
-    createdAt: Time!
-    id: ID!
-    name: String!
-    school: School!
-    tuitionAmount: Int!
-    updatedAt: Time!
-}
-
-type StageConnection {
-    edges: [StageEdge]
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type StageEdge {
-    cursor: Cursor!
-    node: Stage
-}
-
-type Subscription {
-    messagePosted(groupID: ID!): Message!
-}
-
-type User implements Node {
-    active: Boolean!
-    createdAt: Time!
-    id: ID!
-    image: String!
-    name: String!
-    phone: String!
-    role: Role!
-    school: School
-    stage: Stage
-    updatedAt: Time!
-    username: String!
-}
-
-type UserConnection {
-    edges: [UserEdge]
-    pageInfo: PageInfo!
-    totalCount: Int!
-}
-
-type UserEdge {
-    cursor: Cursor!
-    node: User
-}
-
-enum AssignmentOrderField {
-    CREATED_AT
-    DESCRIPTION
-    DUE_DATE
-    DURATION
-    NAME
-    UPDATED_AT
-}
-
-enum ClassOrderField {
-    CREATED_AT
-    NAME
-    UPDATED_AT
-}
-
-enum GroupOrderField {
-    CREATED_AT
-    NAME
-    UPDATED_AT
-}
-
-enum GroupType {
-    PRIVATE
-    SHARED
-}
-
-enum MessageOrderField {
-    CREATED_AT
-    UPDATED_AT
-}
-
-enum OrderDirection {
-    ASC
-    DESC
-}
-
-enum Role {
-    SCHOOL_ADMIN
-    STUDENT
-    SUPER_ADMIN
-    TEACHER
-}
-
-enum SchoolOrderField {
-    CREATED_AT
-    NAME
-    UPDATED_AT
-}
-
-enum StageOrderField {
-    CREATED_AT
-    NAME
-    UPDATED_AT
-}
-
-enum State {
-    ABSENT
-    EXCUSED_ABSENT
-    PRESENT
-    SICK
-}
-
-enum UserOrderField {
-    CREATED_AT
-    NAME
-    PHONE
-    ROLE
-    UPDATED_AT
-    USERNAME
-}
-
 input AddAssignmentInput {
-    classID: ID!
-    description: String
-    dueDate: Time!
-    duration: Duration
-    file: Upload
-    isExam: Boolean! = false
-    name: String!
+  name: String!
+  description: String
+  file: Upload
+  classID: ID!
+  dueDate: Time!
+  isExam: Boolean! = false
+  duration: Duration
+}
+
+input AddAssignmentSubmissionInput {
+  assignmentID: ID!
+  files: [Upload!]!
+  submittedAt: Time
 }
 
 input AddClassInput {
-    active: Boolean! = true
-    name: String!
-    stageID: ID!
-    teacherID: ID!
+  name: String!
+  active: Boolean! = true
+  teacherID: ID!
+  stageID: ID!
+}
+
+input AddCourseGradeInput {
+  studentID: ID!
+  stageID: ID!
+  classID: ID!
+  activityFirst: Int
+  activitySecond: Int
+  writtenFirst: Int
+  writtenSecond: Int
+  courseFinal: Int
 }
 
 input AddGroupInput {
-    active: Boolean! = true
-    name: String!
-    userID: ID!
+  name: String!
+  active: Boolean! = true
+  userID: ID!
+}
+
+input AddScheduleInput {
+  weekday: Weekday!
+  duration: Duration!
+  startsAt: Time!
+  classID: ID!
 }
 
 input AddSchoolInput {
-    active: Boolean! = true
-    image: Upload!
-    name: String!
+  name: String!
+  image: Upload!
+  active: Boolean! = true
 }
 
 input AddStageInput {
-    active: Boolean! = true
-    name: String!
-    schoolID: ID!
-    tuitionAmount: Int!
+  name: String!
+  active: Boolean! = true
+  tuitionAmount: Int!
+  schoolID: ID!
 }
 
 input AddUserInput {
-    active: Boolean! = true
-    image: Upload
-    name: String!
-    password: String!
-    phone: String!
-    role: Role! = STUDENT
-    schoolID: ID
-    stageID: ID
-    username: String!
+  name: String!
+  username: String!
+  password: String!
+  phone: String!
+  image: Upload
+  role: Role! = STUDENT
+  active: Boolean! = true
+  schoolID: ID
+  stageID: ID
+}
+
+type Assignment {
+  id: ID!
+  name: String!
+  description: String
+  dueDate: Time!
+  duration: Duration
+  isExam: Boolean!
+  file: String
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type AssignmentConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [AssignmentEdge]
+}
+
+type AssignmentEdge {
+  node: Assignment
+  cursor: Cursor!
 }
 
 input AssignmentOrder {
-    direction: OrderDirection!
-    field: AssignmentOrderField
+  field: AssignmentOrderField
+  direction: OrderDirection!
 }
 
-"""
+enum AssignmentOrderField {
+  NAME
+  DESCRIPTION
+  DUE_DATE
+  DURATION
+  CREATED_AT
+  UPDATED_AT
+}
 
-AssignmentSubmissionWhereInput is used for filtering AssignmentSubmission objects.
-Input was generated by ent.
-"""
+type AssignmentSubmission {
+  id: ID!
+  files: [String!]!
+  submittedAt: Time
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type AssignmentSubmissionConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [AssignmentSubmissionEdge]
+}
+
+type AssignmentSubmissionEdge {
+  node: AssignmentSubmission
+  cursor: Cursor!
+}
+
+input AssignmentSubmissionOrder {
+  field: AssignmentSubmissionOrderField
+  direction: OrderDirection!
+}
+
+enum AssignmentSubmissionOrderField {
+  SUBMITTED_AT
+  CREATED_AT
+  UPDATED_AT
+}
+
 input AssignmentSubmissionWhereInput {
-    and: [AssignmentSubmissionWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "assignment edge predicates"
-    hasAssignment: Boolean
-    hasAssignmentWith: [AssignmentWhereInput!]
-    "student edge predicates"
-    hasStudent: Boolean
-    hasStudentWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    not: AssignmentSubmissionWhereInput
-    or: [AssignmentSubmissionWhereInput!]
-    "submitted_at field predicates"
-    submittedAt: Time
-    submittedAtGT: Time
-    submittedAtGTE: Time
-    submittedAtIn: [Time!]
-    submittedAtIsNil: Boolean
-    submittedAtLT: Time
-    submittedAtLTE: Time
-    submittedAtNEQ: Time
-    submittedAtNotIn: [Time!]
-    submittedAtNotNil: Boolean
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
+  not: AssignmentSubmissionWhereInput
+  and: [AssignmentSubmissionWhereInput!]
+  or: [AssignmentSubmissionWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  submittedAt: Time
+  submittedAtNEQ: Time
+  submittedAtIn: [Time!]
+  submittedAtNotIn: [Time!]
+  submittedAtGT: Time
+  submittedAtGTE: Time
+  submittedAtLT: Time
+  submittedAtLTE: Time
+  submittedAtIsNil: Boolean
+  submittedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasStudent: Boolean
+  hasStudentWith: [UserWhereInput!]
+  hasAssignment: Boolean
+  hasAssignmentWith: [AssignmentWhereInput!]
 }
 
-"""
-
-AssignmentWhereInput is used for filtering Assignment objects.
-Input was generated by ent.
-"""
 input AssignmentWhereInput {
-    and: [AssignmentWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "deleted_at field predicates"
-    deletedAt: Time
-    deletedAtGT: Time
-    deletedAtGTE: Time
-    deletedAtIn: [Time!]
-    deletedAtIsNil: Boolean
-    deletedAtLT: Time
-    deletedAtLTE: Time
-    deletedAtNEQ: Time
-    deletedAtNotIn: [Time!]
-    deletedAtNotNil: Boolean
-    "description field predicates"
-    description: String
-    descriptionContains: String
-    descriptionContainsFold: String
-    descriptionEqualFold: String
-    descriptionGT: String
-    descriptionGTE: String
-    descriptionHasPrefix: String
-    descriptionHasSuffix: String
-    descriptionIn: [String!]
-    descriptionIsNil: Boolean
-    descriptionLT: String
-    descriptionLTE: String
-    descriptionNEQ: String
-    descriptionNotIn: [String!]
-    descriptionNotNil: Boolean
-    "due_date field predicates"
-    dueDate: Time
-    dueDateGT: Time
-    dueDateGTE: Time
-    dueDateIn: [Time!]
-    dueDateLT: Time
-    dueDateLTE: Time
-    dueDateNEQ: Time
-    dueDateNotIn: [Time!]
-    "duration field predicates"
-    duration: Duration
-    durationGT: Duration
-    durationGTE: Duration
-    durationIn: [Duration!]
-    durationIsNil: Boolean
-    durationLT: Duration
-    durationLTE: Duration
-    durationNEQ: Duration
-    durationNotIn: [Duration!]
-    durationNotNil: Boolean
-    "file field predicates"
-    file: String
-    fileContains: String
-    fileContainsFold: String
-    fileEqualFold: String
-    fileGT: String
-    fileGTE: String
-    fileHasPrefix: String
-    fileHasSuffix: String
-    fileIn: [String!]
-    fileIsNil: Boolean
-    fileLT: String
-    fileLTE: String
-    fileNEQ: String
-    fileNotIn: [String!]
-    fileNotNil: Boolean
-    "class edge predicates"
-    hasClass: Boolean
-    hasClassWith: [ClassWhereInput!]
-    "grades edge predicates"
-    hasGrades: Boolean
-    hasGradesWith: [GradeWhereInput!]
-    "submissions edge predicates"
-    hasSubmissions: Boolean
-    hasSubmissionsWith: [AssignmentSubmissionWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    "is_exam field predicates"
-    isExam: Boolean
-    isExamNEQ: Boolean
-    "name field predicates"
-    name: String
-    nameContains: String
-    nameContainsFold: String
-    nameEqualFold: String
-    nameGT: String
-    nameGTE: String
-    nameHasPrefix: String
-    nameHasSuffix: String
-    nameIn: [String!]
-    nameLT: String
-    nameLTE: String
-    nameNEQ: String
-    nameNotIn: [String!]
-    not: AssignmentWhereInput
-    or: [AssignmentWhereInput!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
+  not: AssignmentWhereInput
+  and: [AssignmentWhereInput!]
+  or: [AssignmentWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  description: String
+  descriptionNEQ: String
+  descriptionIn: [String!]
+  descriptionNotIn: [String!]
+  descriptionGT: String
+  descriptionGTE: String
+  descriptionLT: String
+  descriptionLTE: String
+  descriptionContains: String
+  descriptionHasPrefix: String
+  descriptionHasSuffix: String
+  descriptionIsNil: Boolean
+  descriptionNotNil: Boolean
+  descriptionEqualFold: String
+  descriptionContainsFold: String
+  file: String
+  fileNEQ: String
+  fileIn: [String!]
+  fileNotIn: [String!]
+  fileGT: String
+  fileGTE: String
+  fileLT: String
+  fileLTE: String
+  fileContains: String
+  fileHasPrefix: String
+  fileHasSuffix: String
+  fileIsNil: Boolean
+  fileNotNil: Boolean
+  fileEqualFold: String
+  fileContainsFold: String
+  isExam: Boolean
+  isExamNEQ: Boolean
+  dueDate: Time
+  dueDateNEQ: Time
+  dueDateIn: [Time!]
+  dueDateNotIn: [Time!]
+  dueDateGT: Time
+  dueDateGTE: Time
+  dueDateLT: Time
+  dueDateLTE: Time
+  duration: Duration
+  durationNEQ: Duration
+  durationIn: [Duration!]
+  durationNotIn: [Duration!]
+  durationGT: Duration
+  durationGTE: Duration
+  durationLT: Duration
+  durationLTE: Duration
+  durationIsNil: Boolean
+  durationNotNil: Boolean
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasClass: Boolean
+  hasClassWith: [ClassWhereInput!]
+  hasSubmissions: Boolean
+  hasSubmissionsWith: [AssignmentSubmissionWhereInput!]
+  hasGrades: Boolean
+  hasGradesWith: [GradeWhereInput!]
 }
 
-"""
-
-AttendanceWhereInput is used for filtering Attendance objects.
-Input was generated by ent.
-"""
 input AttendanceWhereInput {
-    and: [AttendanceWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "date field predicates"
-    date: Time
-    dateGT: Time
-    dateGTE: Time
-    dateIn: [Time!]
-    dateLT: Time
-    dateLTE: Time
-    dateNEQ: Time
-    dateNotIn: [Time!]
-    "class edge predicates"
-    hasClass: Boolean
-    hasClassWith: [ClassWhereInput!]
-    "student edge predicates"
-    hasStudent: Boolean
-    hasStudentWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    not: AttendanceWhereInput
-    or: [AttendanceWhereInput!]
-    "state field predicates"
-    state: State
-    stateIn: [State!]
-    stateNEQ: State
-    stateNotIn: [State!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
+  not: AttendanceWhereInput
+  and: [AttendanceWhereInput!]
+  or: [AttendanceWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  date: Time
+  dateNEQ: Time
+  dateIn: [Time!]
+  dateNotIn: [Time!]
+  dateGT: Time
+  dateGTE: Time
+  dateLT: Time
+  dateLTE: Time
+  state: State
+  stateNEQ: State
+  stateIn: [State!]
+  stateNotIn: [State!]
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasClass: Boolean
+  hasClassWith: [ClassWhereInput!]
+  hasStudent: Boolean
+  hasStudentWith: [UserWhereInput!]
+}
+
+type AuthData {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Class {
+  id: ID!
+  name: String!
+  active: Boolean!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type ClassConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [ClassEdge]
+}
+
+type ClassEdge {
+  node: Class
+  cursor: Cursor!
 }
 
 input ClassOrder {
-    direction: OrderDirection!
-    field: ClassOrderField
+  field: ClassOrderField
+  direction: OrderDirection!
 }
 
-"""
+enum ClassOrderField {
+  NAME
+  CREATED_AT
+  UPDATED_AT
+}
 
-ClassWhereInput is used for filtering Class objects.
-Input was generated by ent.
-"""
 input ClassWhereInput {
-    "active field predicates"
-    active: Boolean
-    activeNEQ: Boolean
-    and: [ClassWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "deleted_at field predicates"
-    deletedAt: Time
-    deletedAtGT: Time
-    deletedAtGTE: Time
-    deletedAtIn: [Time!]
-    deletedAtIsNil: Boolean
-    deletedAtLT: Time
-    deletedAtLTE: Time
-    deletedAtNEQ: Time
-    deletedAtNotIn: [Time!]
-    deletedAtNotNil: Boolean
-    "assignments edge predicates"
-    hasAssignments: Boolean
-    hasAssignmentsWith: [AssignmentWhereInput!]
-    "attendances edge predicates"
-    hasAttendances: Boolean
-    hasAttendancesWith: [AttendanceWhereInput!]
-    "group edge predicates"
-    hasGroup: Boolean
-    hasGroupWith: [GroupWhereInput!]
-    "schedules edge predicates"
-    hasSchedules: Boolean
-    hasSchedulesWith: [ScheduleWhereInput!]
-    "stage edge predicates"
-    hasStage: Boolean
-    hasStageWith: [StageWhereInput!]
-    "teacher edge predicates"
-    hasTeacher: Boolean
-    hasTeacherWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    "name field predicates"
-    name: String
-    nameContains: String
-    nameContainsFold: String
-    nameEqualFold: String
-    nameGT: String
-    nameGTE: String
-    nameHasPrefix: String
-    nameHasSuffix: String
-    nameIn: [String!]
-    nameLT: String
-    nameLTE: String
-    nameNEQ: String
-    nameNotIn: [String!]
-    not: ClassWhereInput
-    or: [ClassWhereInput!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
+  not: ClassWhereInput
+  and: [ClassWhereInput!]
+  or: [ClassWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  active: Boolean
+  activeNEQ: Boolean
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasStage: Boolean
+  hasStageWith: [StageWhereInput!]
+  hasTeacher: Boolean
+  hasTeacherWith: [UserWhereInput!]
+  hasGroup: Boolean
+  hasGroupWith: [GroupWhereInput!]
+  hasAssignments: Boolean
+  hasAssignmentsWith: [AssignmentWhereInput!]
+  hasAttendances: Boolean
+  hasAttendancesWith: [AttendanceWhereInput!]
+  hasSchedules: Boolean
+  hasSchedulesWith: [ScheduleWhereInput!]
+  hasCourseGrades: Boolean
+  hasCourseGradesWith: [CourseGradeWhereInput!]
 }
 
-"""
-
-GradeWhereInput is used for filtering Grade objects.
-Input was generated by ent.
-"""
-input GradeWhereInput {
-    and: [GradeWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "exam_grade field predicates"
-    examGrade: Int
-    examGradeGT: Int
-    examGradeGTE: Int
-    examGradeIn: [Int!]
-    examGradeLT: Int
-    examGradeLTE: Int
-    examGradeNEQ: Int
-    examGradeNotIn: [Int!]
-    "exam edge predicates"
-    hasExam: Boolean
-    hasExamWith: [AssignmentWhereInput!]
-    "student edge predicates"
-    hasStudent: Boolean
-    hasStudentWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    not: GradeWhereInput
-    or: [GradeWhereInput!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
+type CourseGrade {
+  id: ID!
+  activityFirst: Int!
+  activitySecond: Int!
+  writtenFirst: Int!
+  writtenSecond: Int!
+  courseFinal: Int!
+  createdAt: Time!
+  updatedAt: Time!
 }
 
-input GroupOrder {
-    direction: OrderDirection!
-    field: GroupOrderField
+type CourseGradeConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [CourseGradeEdge]
 }
 
-"""
-
-GroupWhereInput is used for filtering Group objects.
-Input was generated by ent.
-"""
-input GroupWhereInput {
-    "active field predicates"
-    active: Boolean
-    activeNEQ: Boolean
-    and: [GroupWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "deleted_at field predicates"
-    deletedAt: Time
-    deletedAtGT: Time
-    deletedAtGTE: Time
-    deletedAtIn: [Time!]
-    deletedAtIsNil: Boolean
-    deletedAtLT: Time
-    deletedAtLTE: Time
-    deletedAtNEQ: Time
-    deletedAtNotIn: [Time!]
-    deletedAtNotNil: Boolean
-    "group_type field predicates"
-    groupType: GroupType
-    groupTypeIn: [GroupType!]
-    groupTypeNEQ: GroupType
-    groupTypeNotIn: [GroupType!]
-    "class edge predicates"
-    hasClass: Boolean
-    hasClassWith: [ClassWhereInput!]
-    "messages edge predicates"
-    hasMessages: Boolean
-    hasMessagesWith: [MessageWhereInput!]
-    "users edge predicates"
-    hasUsers: Boolean
-    hasUsersWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    "name field predicates"
-    name: String
-    nameContains: String
-    nameContainsFold: String
-    nameEqualFold: String
-    nameGT: String
-    nameGTE: String
-    nameHasPrefix: String
-    nameHasSuffix: String
-    nameIn: [String!]
-    nameIsNil: Boolean
-    nameLT: String
-    nameLTE: String
-    nameNEQ: String
-    nameNotIn: [String!]
-    nameNotNil: Boolean
-    not: GroupWhereInput
-    or: [GroupWhereInput!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
+type CourseGradeEdge {
+  node: CourseGrade
+  cursor: Cursor!
 }
 
-input LoginInput {
-    password: String!
-    username: String!
+input CourseGradeOrder {
+  field: CourseGradeOrderField
+  direction: OrderDirection!
 }
 
-input MessageOrder {
-    direction: OrderDirection!
-    field: MessageOrderField
+enum CourseGradeOrderField {
+  ACTIVITY_FIRST
+  ACTIVITY_SECOND
+  WRITTEN_FIRST
+  WRITTEN_SECOND
+  COURSE_FINAL
+  CREATED_AT
+  UPDATED_AT
 }
 
-"""
-
-MessageWhereInput is used for filtering Message objects.
-Input was generated by ent.
-"""
-input MessageWhereInput {
-    and: [MessageWhereInput!]
-    "attachment field predicates"
-    attachment: String
-    attachmentContains: String
-    attachmentContainsFold: String
-    attachmentEqualFold: String
-    attachmentGT: String
-    attachmentGTE: String
-    attachmentHasPrefix: String
-    attachmentHasSuffix: String
-    attachmentIn: [String!]
-    attachmentIsNil: Boolean
-    attachmentLT: String
-    attachmentLTE: String
-    attachmentNEQ: String
-    attachmentNotIn: [String!]
-    attachmentNotNil: Boolean
-    "content field predicates"
-    content: String
-    contentContains: String
-    contentContainsFold: String
-    contentEqualFold: String
-    contentGT: String
-    contentGTE: String
-    contentHasPrefix: String
-    contentHasSuffix: String
-    contentIn: [String!]
-    contentIsNil: Boolean
-    contentLT: String
-    contentLTE: String
-    contentNEQ: String
-    contentNotIn: [String!]
-    contentNotNil: Boolean
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "deleted_at field predicates"
-    deletedAt: Time
-    deletedAtGT: Time
-    deletedAtGTE: Time
-    deletedAtIn: [Time!]
-    deletedAtIsNil: Boolean
-    deletedAtLT: Time
-    deletedAtLTE: Time
-    deletedAtNEQ: Time
-    deletedAtNotIn: [Time!]
-    deletedAtNotNil: Boolean
-    "group edge predicates"
-    hasGroup: Boolean
-    hasGroupWith: [GroupWhereInput!]
-    "owner edge predicates"
-    hasOwner: Boolean
-    hasOwnerWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    not: MessageWhereInput
-    or: [MessageWhereInput!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
+input CourseGradeWhereInput {
+  not: CourseGradeWhereInput
+  and: [CourseGradeWhereInput!]
+  or: [CourseGradeWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  activityFirst: Int
+  activityFirstNEQ: Int
+  activityFirstIn: [Int!]
+  activityFirstNotIn: [Int!]
+  activityFirstGT: Int
+  activityFirstGTE: Int
+  activityFirstLT: Int
+  activityFirstLTE: Int
+  activityFirstIsNil: Boolean
+  activityFirstNotNil: Boolean
+  activitySecond: Int
+  activitySecondNEQ: Int
+  activitySecondIn: [Int!]
+  activitySecondNotIn: [Int!]
+  activitySecondGT: Int
+  activitySecondGTE: Int
+  activitySecondLT: Int
+  activitySecondLTE: Int
+  activitySecondIsNil: Boolean
+  activitySecondNotNil: Boolean
+  writtenFirst: Int
+  writtenFirstNEQ: Int
+  writtenFirstIn: [Int!]
+  writtenFirstNotIn: [Int!]
+  writtenFirstGT: Int
+  writtenFirstGTE: Int
+  writtenFirstLT: Int
+  writtenFirstLTE: Int
+  writtenSecond: Int
+  writtenSecondNEQ: Int
+  writtenSecondIn: [Int!]
+  writtenSecondNotIn: [Int!]
+  writtenSecondGT: Int
+  writtenSecondGTE: Int
+  writtenSecondLT: Int
+  writtenSecondLTE: Int
+  courseFinal: Int
+  courseFinalNEQ: Int
+  courseFinalIn: [Int!]
+  courseFinalNotIn: [Int!]
+  courseFinalGT: Int
+  courseFinalGTE: Int
+  courseFinalLT: Int
+  courseFinalLTE: Int
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasStudent: Boolean
+  hasStudentWith: [UserWhereInput!]
+  hasClass: Boolean
+  hasClassWith: [ClassWhereInput!]
+  hasStage: Boolean
+  hasStageWith: [StageWhereInput!]
 }
 
-input PostMessageInput {
-    attachment: Upload
-    content: String!
-    groupID: ID!
-}
-
-"""
-
-ScheduleWhereInput is used for filtering Schedule objects.
-Input was generated by ent.
-"""
-input ScheduleWhereInput {
-    and: [ScheduleWhereInput!]
-    "duration field predicates"
-    duration: Int
-    durationGT: Int
-    durationGTE: Int
-    durationIn: [Int!]
-    durationLT: Int
-    durationLTE: Int
-    durationNEQ: Int
-    durationNotIn: [Int!]
-    "class edge predicates"
-    hasClass: Boolean
-    hasClassWith: [ClassWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    not: ScheduleWhereInput
-    or: [ScheduleWhereInput!]
-    "starts_at field predicates"
-    startsAt: Time
-    startsAtGT: Time
-    startsAtGTE: Time
-    startsAtIn: [Time!]
-    startsAtLT: Time
-    startsAtLTE: Time
-    startsAtNEQ: Time
-    startsAtNotIn: [Time!]
-    "weekday field predicates"
-    weekday: Int
-    weekdayGT: Int
-    weekdayGTE: Int
-    weekdayIn: [Int!]
-    weekdayLT: Int
-    weekdayLTE: Int
-    weekdayNEQ: Int
-    weekdayNotIn: [Int!]
-}
-
-input SchoolOrder {
-    direction: OrderDirection!
-    field: SchoolOrderField
-}
-
-"""
-
-SchoolWhereInput is used for filtering School objects.
-Input was generated by ent.
-"""
-input SchoolWhereInput {
-    "active field predicates"
-    active: Boolean
-    activeNEQ: Boolean
-    and: [SchoolWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "deleted_at field predicates"
-    deletedAt: Time
-    deletedAtGT: Time
-    deletedAtGTE: Time
-    deletedAtIn: [Time!]
-    deletedAtIsNil: Boolean
-    deletedAtLT: Time
-    deletedAtLTE: Time
-    deletedAtNEQ: Time
-    deletedAtNotIn: [Time!]
-    deletedAtNotNil: Boolean
-    "directory field predicates"
-    directory: String
-    directoryContains: String
-    directoryContainsFold: String
-    directoryEqualFold: String
-    directoryGT: String
-    directoryGTE: String
-    directoryHasPrefix: String
-    directoryHasSuffix: String
-    directoryIn: [String!]
-    directoryLT: String
-    directoryLTE: String
-    directoryNEQ: String
-    directoryNotIn: [String!]
-    "stages edge predicates"
-    hasStages: Boolean
-    hasStagesWith: [StageWhereInput!]
-    "users edge predicates"
-    hasUsers: Boolean
-    hasUsersWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    "image field predicates"
-    image: String
-    imageContains: String
-    imageContainsFold: String
-    imageEqualFold: String
-    imageGT: String
-    imageGTE: String
-    imageHasPrefix: String
-    imageHasSuffix: String
-    imageIn: [String!]
-    imageLT: String
-    imageLTE: String
-    imageNEQ: String
-    imageNotIn: [String!]
-    "name field predicates"
-    name: String
-    nameContains: String
-    nameContainsFold: String
-    nameEqualFold: String
-    nameGT: String
-    nameGTE: String
-    nameHasPrefix: String
-    nameHasSuffix: String
-    nameIn: [String!]
-    nameLT: String
-    nameLTE: String
-    nameNEQ: String
-    nameNotIn: [String!]
-    not: SchoolWhereInput
-    or: [SchoolWhereInput!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
-}
-
-input StageOrder {
-    direction: OrderDirection!
-    field: StageOrderField
-}
-
-"""
-
-StageWhereInput is used for filtering Stage objects.
-Input was generated by ent.
-"""
-input StageWhereInput {
-    "active field predicates"
-    active: Boolean
-    activeNEQ: Boolean
-    and: [StageWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "deleted_at field predicates"
-    deletedAt: Time
-    deletedAtGT: Time
-    deletedAtGTE: Time
-    deletedAtIn: [Time!]
-    deletedAtIsNil: Boolean
-    deletedAtLT: Time
-    deletedAtLTE: Time
-    deletedAtNEQ: Time
-    deletedAtNotIn: [Time!]
-    deletedAtNotNil: Boolean
-    "directory field predicates"
-    directory: String
-    directoryContains: String
-    directoryContainsFold: String
-    directoryEqualFold: String
-    directoryGT: String
-    directoryGTE: String
-    directoryHasPrefix: String
-    directoryHasSuffix: String
-    directoryIn: [String!]
-    directoryLT: String
-    directoryLTE: String
-    directoryNEQ: String
-    directoryNotIn: [String!]
-    "classes edge predicates"
-    hasClasses: Boolean
-    hasClassesWith: [ClassWhereInput!]
-    "payments edge predicates"
-    hasPayments: Boolean
-    hasPaymentsWith: [TuitionPaymentWhereInput!]
-    "school edge predicates"
-    hasSchool: Boolean
-    hasSchoolWith: [SchoolWhereInput!]
-    "students edge predicates"
-    hasStudents: Boolean
-    hasStudentsWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    "name field predicates"
-    name: String
-    nameContains: String
-    nameContainsFold: String
-    nameEqualFold: String
-    nameGT: String
-    nameGTE: String
-    nameHasPrefix: String
-    nameHasSuffix: String
-    nameIn: [String!]
-    nameLT: String
-    nameLTE: String
-    nameNEQ: String
-    nameNotIn: [String!]
-    not: StageWhereInput
-    or: [StageWhereInput!]
-    "tuition_amount field predicates"
-    tuitionAmount: Int
-    tuitionAmountGT: Int
-    tuitionAmountGTE: Int
-    tuitionAmountIn: [Int!]
-    tuitionAmountLT: Int
-    tuitionAmountLTE: Int
-    tuitionAmountNEQ: Int
-    tuitionAmountNotIn: [Int!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
-}
-
-"""
-
-TuitionPaymentWhereInput is used for filtering TuitionPayment objects.
-Input was generated by ent.
-"""
-input TuitionPaymentWhereInput {
-    and: [TuitionPaymentWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "stage edge predicates"
-    hasStage: Boolean
-    hasStageWith: [StageWhereInput!]
-    "student edge predicates"
-    hasStudent: Boolean
-    hasStudentWith: [UserWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    not: TuitionPaymentWhereInput
-    or: [TuitionPaymentWhereInput!]
-    "paid_amount field predicates"
-    paidAmount: Int
-    paidAmountGT: Int
-    paidAmountGTE: Int
-    paidAmountIn: [Int!]
-    paidAmountLT: Int
-    paidAmountLTE: Int
-    paidAmountNEQ: Int
-    paidAmountNotIn: [Int!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
-}
-
-input UpdateAssignmentInput {
-    description: String
-    dueDate: Time
-    duration: Duration
-    file: Upload
-    name: String
-}
-
-input UpdateClassInput {
-    active: Boolean
-    name: String
-    teacherID: ID
-}
-
-input UpdateGroupInput {
-    active: Boolean
-    name: String
-}
-
-input UpdateSchoolInput {
-    active: Boolean
-    image: Upload
-    name: String
-}
-
-input UpdateStageInput {
-    active: Boolean
-    name: String
-    tuitionAmount: Int
-}
-
-input UpdateUserInput {
-    active: Boolean
-    image: Upload
-    name: String
-    password: String
-    phone: String
-    stageID: ID
-    username: String
-}
-
-input UserOrder {
-    direction: OrderDirection!
-    field: UserOrderField
-}
-
-"""
-
-UserWhereInput is used for filtering User objects.
-Input was generated by ent.
-"""
-input UserWhereInput {
-    "active field predicates"
-    active: Boolean
-    activeNEQ: Boolean
-    and: [UserWhereInput!]
-    "created_at field predicates"
-    createdAt: Time
-    createdAtGT: Time
-    createdAtGTE: Time
-    createdAtIn: [Time!]
-    createdAtLT: Time
-    createdAtLTE: Time
-    createdAtNEQ: Time
-    createdAtNotIn: [Time!]
-    "deleted_at field predicates"
-    deletedAt: Time
-    deletedAtGT: Time
-    deletedAtGTE: Time
-    deletedAtIn: [Time!]
-    deletedAtIsNil: Boolean
-    deletedAtLT: Time
-    deletedAtLTE: Time
-    deletedAtNEQ: Time
-    deletedAtNotIn: [Time!]
-    deletedAtNotNil: Boolean
-    "directory field predicates"
-    directory: String
-    directoryContains: String
-    directoryContainsFold: String
-    directoryEqualFold: String
-    directoryGT: String
-    directoryGTE: String
-    directoryHasPrefix: String
-    directoryHasSuffix: String
-    directoryIn: [String!]
-    directoryLT: String
-    directoryLTE: String
-    directoryNEQ: String
-    directoryNotIn: [String!]
-    "attendances edge predicates"
-    hasAttendances: Boolean
-    hasAttendancesWith: [AttendanceWhereInput!]
-    "classes edge predicates"
-    hasClasses: Boolean
-    hasClassesWith: [ClassWhereInput!]
-    "grades edge predicates"
-    hasGrades: Boolean
-    hasGradesWith: [GradeWhereInput!]
-    "groups edge predicates"
-    hasGroups: Boolean
-    hasGroupsWith: [GroupWhereInput!]
-    "messages edge predicates"
-    hasMessages: Boolean
-    hasMessagesWith: [MessageWhereInput!]
-    "payments edge predicates"
-    hasPayments: Boolean
-    hasPaymentsWith: [TuitionPaymentWhereInput!]
-    "school edge predicates"
-    hasSchool: Boolean
-    hasSchoolWith: [SchoolWhereInput!]
-    "stage edge predicates"
-    hasStage: Boolean
-    hasStageWith: [StageWhereInput!]
-    "submissions edge predicates"
-    hasSubmissions: Boolean
-    hasSubmissionsWith: [AssignmentSubmissionWhereInput!]
-    "id field predicates"
-    id: ID
-    idGT: ID
-    idGTE: ID
-    idIn: [ID!]
-    idLT: ID
-    idLTE: ID
-    idNEQ: ID
-    idNotIn: [ID!]
-    "image field predicates"
-    image: String
-    imageContains: String
-    imageContainsFold: String
-    imageEqualFold: String
-    imageGT: String
-    imageGTE: String
-    imageHasPrefix: String
-    imageHasSuffix: String
-    imageIn: [String!]
-    imageIsNil: Boolean
-    imageLT: String
-    imageLTE: String
-    imageNEQ: String
-    imageNotIn: [String!]
-    imageNotNil: Boolean
-    "name field predicates"
-    name: String
-    nameContains: String
-    nameContainsFold: String
-    nameEqualFold: String
-    nameGT: String
-    nameGTE: String
-    nameHasPrefix: String
-    nameHasSuffix: String
-    nameIn: [String!]
-    nameLT: String
-    nameLTE: String
-    nameNEQ: String
-    nameNotIn: [String!]
-    not: UserWhereInput
-    or: [UserWhereInput!]
-    "phone field predicates"
-    phone: String
-    phoneContains: String
-    phoneContainsFold: String
-    phoneEqualFold: String
-    phoneGT: String
-    phoneGTE: String
-    phoneHasPrefix: String
-    phoneHasSuffix: String
-    phoneIn: [String!]
-    phoneLT: String
-    phoneLTE: String
-    phoneNEQ: String
-    phoneNotIn: [String!]
-    "role field predicates"
-    role: Role
-    roleIn: [Role!]
-    roleNEQ: Role
-    roleNotIn: [Role!]
-    "token_version field predicates"
-    tokenVersion: Int
-    tokenVersionGT: Int
-    tokenVersionGTE: Int
-    tokenVersionIn: [Int!]
-    tokenVersionLT: Int
-    tokenVersionLTE: Int
-    tokenVersionNEQ: Int
-    tokenVersionNotIn: [Int!]
-    "updated_at field predicates"
-    updatedAt: Time
-    updatedAtGT: Time
-    updatedAtGTE: Time
-    updatedAtIn: [Time!]
-    updatedAtLT: Time
-    updatedAtLTE: Time
-    updatedAtNEQ: Time
-    updatedAtNotIn: [Time!]
-    "username field predicates"
-    username: String
-    usernameContains: String
-    usernameContainsFold: String
-    usernameEqualFold: String
-    usernameGT: String
-    usernameGTE: String
-    usernameHasPrefix: String
-    usernameHasSuffix: String
-    usernameIn: [String!]
-    usernameLT: String
-    usernameLTE: String
-    usernameNEQ: String
-    usernameNotIn: [String!]
-}
-
+scalar Cursor
 
 scalar Duration
 
-scalar Upload
+input GradeWhereInput {
+  not: GradeWhereInput
+  and: [GradeWhereInput!]
+  or: [GradeWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  examGrade: Int
+  examGradeNEQ: Int
+  examGradeIn: [Int!]
+  examGradeNotIn: [Int!]
+  examGradeGT: Int
+  examGradeGTE: Int
+  examGradeLT: Int
+  examGradeLTE: Int
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasStudent: Boolean
+  hasStudentWith: [UserWhereInput!]
+  hasExam: Boolean
+  hasExamWith: [AssignmentWhereInput!]
+}
+
+type Group {
+  id: ID!
+  name: String!
+  groupType: GroupType!
+  active: Boolean!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type GroupConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [GroupEdge]
+}
+
+type GroupEdge {
+  node: Group
+  cursor: Cursor!
+}
+
+input GroupOrder {
+  field: GroupOrderField
+  direction: OrderDirection!
+}
+
+enum GroupOrderField {
+  NAME
+  CREATED_AT
+  UPDATED_AT
+}
+
+enum GroupType {
+  PRIVATE
+  SHARED
+}
+
+input GroupWhereInput {
+  not: GroupWhereInput
+  and: [GroupWhereInput!]
+  or: [GroupWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameIsNil: Boolean
+  nameNotNil: Boolean
+  nameEqualFold: String
+  nameContainsFold: String
+  groupType: GroupType
+  groupTypeNEQ: GroupType
+  groupTypeIn: [GroupType!]
+  groupTypeNotIn: [GroupType!]
+  active: Boolean
+  activeNEQ: Boolean
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasClass: Boolean
+  hasClassWith: [ClassWhereInput!]
+  hasUsers: Boolean
+  hasUsersWith: [UserWhereInput!]
+  hasMessages: Boolean
+  hasMessagesWith: [MessageWhereInput!]
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+type Message {
+  id: ID!
+  content: String!
+  attachment: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type MessageConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [MessageEdge]
+}
+
+type MessageEdge {
+  node: Message
+  cursor: Cursor!
+}
+
+input MessageOrder {
+  field: MessageOrderField
+  direction: OrderDirection!
+}
+
+enum MessageOrderField {
+  CREATED_AT
+  UPDATED_AT
+}
+
+input MessageWhereInput {
+  not: MessageWhereInput
+  and: [MessageWhereInput!]
+  or: [MessageWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  content: String
+  contentNEQ: String
+  contentIn: [String!]
+  contentNotIn: [String!]
+  contentGT: String
+  contentGTE: String
+  contentLT: String
+  contentLTE: String
+  contentContains: String
+  contentHasPrefix: String
+  contentHasSuffix: String
+  contentIsNil: Boolean
+  contentNotNil: Boolean
+  contentEqualFold: String
+  contentContainsFold: String
+  attachment: String
+  attachmentNEQ: String
+  attachmentIn: [String!]
+  attachmentNotIn: [String!]
+  attachmentGT: String
+  attachmentGTE: String
+  attachmentLT: String
+  attachmentLTE: String
+  attachmentContains: String
+  attachmentHasPrefix: String
+  attachmentHasSuffix: String
+  attachmentIsNil: Boolean
+  attachmentNotNil: Boolean
+  attachmentEqualFold: String
+  attachmentContainsFold: String
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasGroup: Boolean
+  hasGroupWith: [GroupWhereInput!]
+  hasOwner: Boolean
+  hasOwnerWith: [UserWhereInput!]
+}
+
+type Mutation {
+  addSchool(input: AddSchoolInput!): School
+  updateSchool(id: ID!, input: UpdateSchoolInput!): School
+  deleteSchool(id: ID!): Boolean!
+  deleteSchoolPermanently(id: ID!): Boolean!
+  addUser(input: AddUserInput!): User
+  updateUser(id: ID!, input: UpdateUserInput!): User
+  deleteUser(id: ID!): Boolean!
+  deleteUserPermanently(id: ID!): Boolean!
+  addStage(input: AddStageInput!): Stage
+  updateStage(id: ID!, input: UpdateStageInput!): Stage
+  deleteStage(id: ID!): Boolean!
+  deleteStagePermanently(id: ID!): Boolean!
+  loginAdmin(input: LoginInput!): AuthData
+  loginUser(input: LoginInput!): AuthData
+  refreshTokens(token: String!): AuthData
+  postMessage(input: PostMessageInput!): Message
+  addGroup(input: AddGroupInput!): Group
+  updateGroup(id: ID!, input: UpdateGroupInput!): Group
+  deleteGroup(id: ID!): Boolean!
+  addClass(input: AddClassInput!): Class
+  updateClass(id: ID!, input: UpdateClassInput!): Class
+  deleteClass(id: ID!): Boolean!
+  addAssignment(input: AddAssignmentInput!): Assignment
+  updateAssignment(id: ID!, input: UpdateAssignmentInput!): Assignment
+  deleteAssignment(id: ID!): Boolean!
+  addAssignmentSubmission(
+    input: AddAssignmentSubmissionInput!
+  ): AssignmentSubmission
+  updateAssignmentSubmission(
+    id: ID!
+    input: UpdateAssignmentSubmissionInput!
+  ): AssignmentSubmission
+  deleteAssignmentSubmissionFile(id: ID!, index: Int!): AssignmentSubmission
+  deleteAssignmentSubmission(id: ID!): Boolean!
+  addSchedule(input: AddScheduleInput!): Schedule
+  updateSchedule(id: ID!, input: UpdateScheduleInput!): Schedule
+  deleteSchedule(id: ID!): Boolean!
+  addCourseGrade(input: AddCourseGradeInput!): CourseGrade
+  updateCourseGrade(id: ID!, input: UpdateCourseGradeInput!): CourseGrade
+  deleteCourseGrade(id: ID!): Boolean!
+}
+
+interface Node {
+  id: ID!
+}
+
+enum OrderDirection {
+  ASC
+  DESC
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: Cursor
+  endCursor: Cursor
+}
+
+input PostMessageInput {
+  groupID: ID!
+  content: String!
+  attachment: Upload
+}
+
+type Query {
+  school(id: ID!): School
+  schools(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: SchoolOrder
+    where: SchoolWhereInput
+  ): SchoolConnection
+  user(id: ID!): User
+  users(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: UserOrder
+    where: UserWhereInput
+  ): UserConnection
+  stage(id: ID!): Stage
+  stages(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: StageOrder
+    where: StageWhereInput
+  ): StageConnection
+  messages(
+    groupID: ID!
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: MessageOrder
+    where: MessageWhereInput
+  ): MessageConnection
+  group(id: ID!): Group
+  groups(
+    userID: ID
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: GroupOrder
+    where: GroupWhereInput
+  ): GroupConnection
+  class(id: ID!): Class
+  classes(
+    userID: ID
+    stageID: ID
+    schoolID: ID
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: ClassOrder
+    where: ClassWhereInput
+  ): ClassConnection
+  assignment(id: ID!): Assignment
+  assignments(
+    userID: ID
+    stageID: ID
+    schoolID: ID
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: AssignmentOrder
+    where: AssignmentWhereInput
+  ): AssignmentConnection
+  assignmentSubmissions(
+    assignmentID: ID
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: AssignmentSubmissionOrder
+    where: AssignmentSubmissionWhereInput
+  ): AssignmentSubmissionConnection
+  schedule(stageID: ID, weekday: Weekday): [Schedule]
+  courseGrades(
+    studentID: ID
+    stageID: ID
+    classID: ID
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: CourseGradeOrder
+    where: CourseGradeWhereInput
+  ): CourseGradeConnection
+}
+
+enum Role {
+  SUPER_ADMIN
+  SCHOOL_ADMIN
+  TEACHER
+  STUDENT
+}
+
+type Schedule {
+  id: ID!
+  weekday: Weekday!
+  duration: Duration!
+  startsAt: Time!
+}
+
+input ScheduleWhereInput {
+  not: ScheduleWhereInput
+  and: [ScheduleWhereInput!]
+  or: [ScheduleWhereInput!]
+  weekday: Weekday
+  weekdayNEQ: Weekday
+  weekdayIn: [Weekday!]
+  weekdayNotIn: [Weekday!]
+  weekdayGT: Weekday
+  weekdayGTE: Weekday
+  weekdayLT: Weekday
+  weekdayLTE: Weekday
+  startsAt: Time
+  startsAtNEQ: Time
+  startsAtIn: [Time!]
+  startsAtNotIn: [Time!]
+  startsAtGT: Time
+  startsAtGTE: Time
+  startsAtLT: Time
+  startsAtLTE: Time
+  duration: Duration
+  durationNEQ: Duration
+  durationIn: [Duration!]
+  durationNotIn: [Duration!]
+  durationGT: Duration
+  durationGTE: Duration
+  durationLT: Duration
+  durationLTE: Duration
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasClass: Boolean
+  hasClassWith: [ClassWhereInput!]
+}
+
+type School implements Node {
+  id: ID!
+  active: Boolean!
+  name: String!
+  image: String
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type SchoolConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [SchoolEdge]
+}
+
+type SchoolEdge {
+  node: School
+  cursor: Cursor!
+}
+
+input SchoolOrder {
+  field: SchoolOrderField
+  direction: OrderDirection!
+}
+
+enum SchoolOrderField {
+  NAME
+  CREATED_AT
+  UPDATED_AT
+}
+
+input SchoolWhereInput {
+  not: SchoolWhereInput
+  and: [SchoolWhereInput!]
+  or: [SchoolWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  image: String
+  imageNEQ: String
+  imageIn: [String!]
+  imageNotIn: [String!]
+  imageGT: String
+  imageGTE: String
+  imageLT: String
+  imageLTE: String
+  imageContains: String
+  imageHasPrefix: String
+  imageHasSuffix: String
+  imageEqualFold: String
+  imageContainsFold: String
+  directory: String
+  directoryNEQ: String
+  directoryIn: [String!]
+  directoryNotIn: [String!]
+  directoryGT: String
+  directoryGTE: String
+  directoryLT: String
+  directoryLTE: String
+  directoryContains: String
+  directoryHasPrefix: String
+  directoryHasSuffix: String
+  directoryEqualFold: String
+  directoryContainsFold: String
+  active: Boolean
+  activeNEQ: Boolean
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasUsers: Boolean
+  hasUsersWith: [UserWhereInput!]
+  hasStages: Boolean
+  hasStagesWith: [StageWhereInput!]
+}
+
+type Stage implements Node {
+  id: ID!
+  name: String!
+  tuitionAmount: Int!
+  active: Boolean!
+  school: School!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type StageConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [StageEdge]
+}
+
+type StageEdge {
+  node: Stage
+  cursor: Cursor!
+}
+
+input StageOrder {
+  field: StageOrderField
+  direction: OrderDirection!
+}
+
+enum StageOrderField {
+  NAME
+  CREATED_AT
+  UPDATED_AT
+}
+
+input StageWhereInput {
+  not: StageWhereInput
+  and: [StageWhereInput!]
+  or: [StageWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  tuitionAmount: Int
+  tuitionAmountNEQ: Int
+  tuitionAmountIn: [Int!]
+  tuitionAmountNotIn: [Int!]
+  tuitionAmountGT: Int
+  tuitionAmountGTE: Int
+  tuitionAmountLT: Int
+  tuitionAmountLTE: Int
+  directory: String
+  directoryNEQ: String
+  directoryIn: [String!]
+  directoryNotIn: [String!]
+  directoryGT: String
+  directoryGTE: String
+  directoryLT: String
+  directoryLTE: String
+  directoryContains: String
+  directoryHasPrefix: String
+  directoryHasSuffix: String
+  directoryEqualFold: String
+  directoryContainsFold: String
+  active: Boolean
+  activeNEQ: Boolean
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasSchool: Boolean
+  hasSchoolWith: [SchoolWhereInput!]
+  hasClasses: Boolean
+  hasClassesWith: [ClassWhereInput!]
+  hasPayments: Boolean
+  hasPaymentsWith: [TuitionPaymentWhereInput!]
+  hasStudents: Boolean
+  hasStudentsWith: [UserWhereInput!]
+  hasCourseGrades: Boolean
+  hasCourseGradesWith: [CourseGradeWhereInput!]
+}
+
+enum State {
+  PRESENT
+  ABSENT
+  EXCUSED_ABSENT
+  SICK
+}
+
+type Subscription {
+  messagePosted(groupID: ID!): Message!
+}
 
 scalar Time
 
-scalar Cursor
+input TuitionPaymentWhereInput {
+  not: TuitionPaymentWhereInput
+  and: [TuitionPaymentWhereInput!]
+  or: [TuitionPaymentWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  paidAmount: Int
+  paidAmountNEQ: Int
+  paidAmountIn: [Int!]
+  paidAmountNotIn: [Int!]
+  paidAmountGT: Int
+  paidAmountGTE: Int
+  paidAmountLT: Int
+  paidAmountLTE: Int
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasStudent: Boolean
+  hasStudentWith: [UserWhereInput!]
+  hasStage: Boolean
+  hasStageWith: [StageWhereInput!]
+}
+
+input UpdateAssignmentInput {
+  name: String
+  description: String
+  file: Upload
+  dueDate: Time
+  duration: Duration
+}
+
+input UpdateAssignmentSubmissionInput {
+  files: [Upload!]!
+  submittedAt: Time
+}
+
+input UpdateClassInput {
+  name: String
+  active: Boolean
+  teacherID: ID
+}
+
+input UpdateCourseGradeInput {
+  activityFirst: Int
+  activitySecond: Int
+  writtenFirst: Int
+  writtenSecond: Int
+  courseFinal: Int
+}
+
+input UpdateGroupInput {
+  name: String
+  active: Boolean
+}
+
+input UpdateScheduleInput {
+  weekday: Weekday
+  duration: Duration
+  startsAt: Time
+}
+
+input UpdateSchoolInput {
+  name: String
+  image: Upload
+  active: Boolean
+}
+
+input UpdateStageInput {
+  name: String
+  active: Boolean
+  tuitionAmount: Int
+}
+
+input UpdateUserInput {
+  name: String
+  username: String
+  password: String
+  phone: String
+  image: Upload
+  active: Boolean
+  stageID: ID
+}
+
+scalar Upload
+
+type User implements Node {
+  id: ID!
+  name: String!
+  username: String!
+  phone: String!
+  image: String!
+  role: Role!
+  active: Boolean!
+  school: School
+  stage: Stage
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+type UserConnection {
+  totalCount: Int!
+  pageInfo: PageInfo!
+  edges: [UserEdge]
+}
+
+type UserEdge {
+  node: User
+  cursor: Cursor!
+}
+
+input UserOrder {
+  field: UserOrderField
+  direction: OrderDirection!
+}
+
+enum UserOrderField {
+  NAME
+  USERNAME
+  PHONE
+  ROLE
+  CREATED_AT
+  UPDATED_AT
+}
+
+input UserWhereInput {
+  not: UserWhereInput
+  and: [UserWhereInput!]
+  or: [UserWhereInput!]
+  createdAt: Time
+  createdAtNEQ: Time
+  createdAtIn: [Time!]
+  createdAtNotIn: [Time!]
+  createdAtGT: Time
+  createdAtGTE: Time
+  createdAtLT: Time
+  createdAtLTE: Time
+  updatedAt: Time
+  updatedAtNEQ: Time
+  updatedAtIn: [Time!]
+  updatedAtNotIn: [Time!]
+  updatedAtGT: Time
+  updatedAtGTE: Time
+  updatedAtLT: Time
+  updatedAtLTE: Time
+  name: String
+  nameNEQ: String
+  nameIn: [String!]
+  nameNotIn: [String!]
+  nameGT: String
+  nameGTE: String
+  nameLT: String
+  nameLTE: String
+  nameContains: String
+  nameHasPrefix: String
+  nameHasSuffix: String
+  nameEqualFold: String
+  nameContainsFold: String
+  username: String
+  usernameNEQ: String
+  usernameIn: [String!]
+  usernameNotIn: [String!]
+  usernameGT: String
+  usernameGTE: String
+  usernameLT: String
+  usernameLTE: String
+  usernameContains: String
+  usernameHasPrefix: String
+  usernameHasSuffix: String
+  usernameEqualFold: String
+  usernameContainsFold: String
+  phone: String
+  phoneNEQ: String
+  phoneIn: [String!]
+  phoneNotIn: [String!]
+  phoneGT: String
+  phoneGTE: String
+  phoneLT: String
+  phoneLTE: String
+  phoneContains: String
+  phoneHasPrefix: String
+  phoneHasSuffix: String
+  phoneEqualFold: String
+  phoneContainsFold: String
+  image: String
+  imageNEQ: String
+  imageIn: [String!]
+  imageNotIn: [String!]
+  imageGT: String
+  imageGTE: String
+  imageLT: String
+  imageLTE: String
+  imageContains: String
+  imageHasPrefix: String
+  imageHasSuffix: String
+  imageIsNil: Boolean
+  imageNotNil: Boolean
+  imageEqualFold: String
+  imageContainsFold: String
+  directory: String
+  directoryNEQ: String
+  directoryIn: [String!]
+  directoryNotIn: [String!]
+  directoryGT: String
+  directoryGTE: String
+  directoryLT: String
+  directoryLTE: String
+  directoryContains: String
+  directoryHasPrefix: String
+  directoryHasSuffix: String
+  directoryEqualFold: String
+  directoryContainsFold: String
+  tokenVersion: Int
+  tokenVersionNEQ: Int
+  tokenVersionIn: [Int!]
+  tokenVersionNotIn: [Int!]
+  tokenVersionGT: Int
+  tokenVersionGTE: Int
+  tokenVersionLT: Int
+  tokenVersionLTE: Int
+  role: Role
+  roleNEQ: Role
+  roleIn: [Role!]
+  roleNotIn: [Role!]
+  active: Boolean
+  activeNEQ: Boolean
+  deletedAt: Time
+  deletedAtNEQ: Time
+  deletedAtIn: [Time!]
+  deletedAtNotIn: [Time!]
+  deletedAtGT: Time
+  deletedAtGTE: Time
+  deletedAtLT: Time
+  deletedAtLTE: Time
+  deletedAtIsNil: Boolean
+  deletedAtNotNil: Boolean
+  id: ID
+  idNEQ: ID
+  idIn: [ID!]
+  idNotIn: [ID!]
+  idGT: ID
+  idGTE: ID
+  idLT: ID
+  idLTE: ID
+  hasStage: Boolean
+  hasStageWith: [StageWhereInput!]
+  hasSchool: Boolean
+  hasSchoolWith: [SchoolWhereInput!]
+  hasClasses: Boolean
+  hasClassesWith: [ClassWhereInput!]
+  hasMessages: Boolean
+  hasMessagesWith: [MessageWhereInput!]
+  hasSubmissions: Boolean
+  hasSubmissionsWith: [AssignmentSubmissionWhereInput!]
+  hasAttendances: Boolean
+  hasAttendancesWith: [AttendanceWhereInput!]
+  hasPayments: Boolean
+  hasPaymentsWith: [TuitionPaymentWhereInput!]
+  hasGrades: Boolean
+  hasGradesWith: [GradeWhereInput!]
+  hasGroups: Boolean
+  hasGroupsWith: [GroupWhereInput!]
+  hasCourseGrades: Boolean
+  hasCourseGradesWith: [CourseGradeWhereInput!]
+}
+
+scalar Weekday
+

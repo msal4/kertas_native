@@ -54,7 +54,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
 
           await setTokens(res.data?.loginUser);
 
-          navigation.replace("Root");
+          navigation.replace("Home");
         }}
         label={"LOGIN"}
       />
