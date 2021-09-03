@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import { Touchable } from '../components/touchable';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import Moment from 'moment';
 
 
 import { RootStackScreenProps } from "../types";
@@ -32,11 +33,46 @@ const getCurDate = () => {
 export default function Home({ navigation, screenProps }: RootStackScreenProps<"Home">) {
   const [res, refetch] = useScheduleQuery({
     variables: {
-      weekday: getCurDate().day
+      weekday: 2
     }
   });
 
   const t = screenProps.t;
+
+  const formatAMPM = (date) => {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();    
+    const ampm = hours >= 12 ? 'pm' : 'am';
+  
+    hours %= 12;
+    hours = hours || 12;    
+    minutes = minutes < 10 ? `0${minutes}` : minutes;
+    hours = hours < 10 ? `0${hours}` : hours;
+  
+    const strTime = `${hours}:${minutes} ${ampm}`;
+  
+    return strTime;
+  };
+  
+  function getTime(dateTime: Moment): Moment {
+    return Moment({h: dateTime.hours(), m: dateTime.minutes()});
+  }
+
+  const getClassTime = (item) => {
+    const d = new Date(item.startsAt);
+    const nsTohr = item.duration/3600000000000;
+    const dh = Moment(new Date(item.startsAt)).add(nsTohr, 'hours');
+    const curD = new Date();
+    let isNow = false;
+    if(getTime(Moment(curD)).isBetween(getTime(Moment(d)), getTime(Moment(dh)))) {
+      isNow = true;
+    }
+    return {
+      timeFrom: Moment(d).format('LT'),
+      timeTo: Moment(dh).format('LT'),
+      isNow: isNow
+    }
+  }
 
 
   if(res.error) {
@@ -76,12 +112,12 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
             }}>
               <View style={{flexDirection: 'row', padding: 15, backgroundColor: '#e4e4e4'}}>
                 <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingRight: 10}}>
-                  <View style={{backgroundColor: '#5fc414', width: 10, height: 10, borderRadius: 100}}></View>
+                  <View style={{backgroundColor: getClassTime(item).isNow == true? '#5fc414': 'transparent', width: 10, height: 10, borderRadius: 100}}></View>
                 </View>
-                <Text style={{fontFamily: 'Dubai-Bold', color: '#919191'}}>رياضيات</Text>
+                <Text style={{fontFamily: 'Dubai-Bold', color: '#919191'}}>{item.class.name}</Text>
                 <View style={{width: 1, backgroundColor: '#9a9a9a', marginHorizontal: 10}}></View>
-                <Text style={{fontFamily: 'Dubai-Regular', color: '#9a9a9a', flex: 1, textAlign: 'left'}}>أ. اياد</Text>
-                <Text style={{fontFamily: 'Dubai-Regular', color: '#919191'}}>{new Date(item?.startsAt).getDate()}</Text>
+                <Text style={{fontFamily: 'Dubai-Regular', color: '#9a9a9a', flex: 1, textAlign: 'left'}}>{item.class.teacher.name}</Text>
+                <Text style={{fontFamily: 'Dubai-Regular', color: '#919191'}}>{getClassTime(item).timeFrom} - {getClassTime(item).timeTo}</Text>
               </View>
             </Touchable>
           </View>

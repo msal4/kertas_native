@@ -3,6 +3,12 @@ query Schedule ($weekday: Weekday, $stageID: ID) {
         id
         duration
         weekday
-        startsAt
+        startsAt,
+        class {
+            name,
+            teacher {
+                name
+            }
+        }
     }
 }
