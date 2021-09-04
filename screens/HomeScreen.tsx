@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Text, View, Dimensions, FlatList, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeArea, useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
 import { Touchable } from "../components/Touchable";
@@ -168,9 +168,11 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
           </View>
           <View style={{ flexDirection: "row" }}>
             <View style={{ flex: 1 }}>
-              <Touchable onPress={() => {
-                navigation.navigate('Assignments');
-              }}>
+              <Touchable
+                onPress={() => {
+                  navigation.navigate("Assignments");
+                }}
+              >
                 <View style={{ backgroundColor: "#d5d5d5", justifyContent: "center", alignItems: "center", height: 150 }}>
                   <View
                     style={{

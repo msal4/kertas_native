@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
-import { Text, View, Dimensions, FlatList, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, View, FlatList, StatusBar } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Moment from "moment";
 import { Touchable } from "../components/Touchable";
@@ -11,8 +11,6 @@ import { Error } from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useAssignmentsQuery } from "../generated/graphql";
-
-const windowHeight = Dimensions.get("screen").height;
 
 const getCurDate = (wd?: number) => {
   const weekDays = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس", "الجمعة", "السبت"];
@@ -43,17 +41,19 @@ const getCurDate = (wd?: number) => {
   };
 };
 
-export default function Assignments({ navigation, screenProps }: RootStackScreenProps<"Assignments">) {
+export default function Assignments({ screenProps }: RootStackScreenProps<"Assignments">) {
   const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek);
+  const { top, bottom, right, left } = useSafeAreaInsets();
 
   const t = screenProps.t;
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
+    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom }}>
+      <StatusBar barStyle="light-content" />
       <View
         style={{
           backgroundColor: "#919191",
-          paddingTop: 20,
+          paddingTop: 20 + top,
           paddingBottom: 10,
           paddingHorizontal: 20,
           flexDirection: "row",
@@ -78,12 +78,12 @@ export default function Assignments({ navigation, screenProps }: RootStackScreen
             { name: "الخميس", value: 4 },
             { name: "الجمعة", value: 5 },
           ]}
-          onSelect={async (name, value, item) => {
+          onSelect={async (name, value) => {
             setWeekDay(value);
           }}
           selected={selectedWeekday}
           screenProps={screenProps}
-          renderBtn={(selected) => (
+          renderBtn={() => (
             <View
               style={{
                 backgroundColor: "#bcbcbc",
@@ -106,29 +106,13 @@ export default function Assignments({ navigation, screenProps }: RootStackScreen
       <View style={{ backgroundColor: "#fff", flex: 1 }}>
         <Schedule weekday={selectedWeekday} />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 function getTime(dateTime: Moment.Moment) {
   return Moment({ h: dateTime.hours(), m: dateTime.minutes() });
 }
-
-const getClassTime = (item: any) => {
-  const d = new Date(item.startsAt);
-  const nsTohr = item.duration / 3600000000000;
-  const dh = Moment(new Date(item.startsAt)).add(nsTohr, "hours");
-  const curD = new Date();
-  let isNow = false;
-  if (getTime(Moment(curD)).isBetween(getTime(Moment(d)), getTime(Moment(dh)))) {
-    isNow = true;
-  }
-  return {
-    timeFrom: Moment(d).format("LT"),
-    timeTo: Moment(dh).format("LT"),
-    isNow,
-  };
-};
 
 function Schedule() {
   const [res, refetch] = useAssignmentsQuery();
@@ -158,7 +142,7 @@ function Schedule() {
           keyExtractor={(item, index) => index + "a"}
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <Touchable>
               <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
                 <View style={{ flex: 1 }}>
