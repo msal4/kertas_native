@@ -1,0 +1,10 @@
+query Stages {
+  stages {
+    totalCount
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
