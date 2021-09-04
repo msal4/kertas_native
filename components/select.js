@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, FlatList, TouchableNativeFeedback } from "react-native";
 import Modal from "react-native-modal";
-import { Touchable } from "../components/touchable";
+import { Touchable } from "./Touchable";
 
 export default class SelectModal extends Component {
   constructor(props) {

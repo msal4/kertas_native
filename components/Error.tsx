@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { Touchable } from "./touchable";
+import { Touchable } from "./Touchable";
 
 interface ErrorProps {
   isError: boolean;

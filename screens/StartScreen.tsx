@@ -47,8 +47,8 @@ export function StartScreen() {
 
   return (
     <View>
-      <Loading isLoading={fetching} />
-      <Error isError={!!err} msg="Something went wrong" />
+      <Loading isLoading={fetching} height={500} />
+      <Error isError={!!err} msg="Something went wrong" height={500} />
     </View>
   );
 }
