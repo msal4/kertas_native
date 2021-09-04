@@ -17,9 +17,10 @@ import NotFoundScreen from "../screens/NotFoundScreen";
 import LoginScreen from "../screens/LoginScreen";
 import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
-import Home from "../screens/Home";
+import HomeScreen from "../screens/HomeScreen";
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
+import { StartScreen } from "../screens/StartScreen";
 
 const navigationRef = createNavigationContainerRef();
 
@@ -55,10 +56,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator(props) {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator initialRouteName="Start">
+      <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Home" options={{ headerShown: false }}>
-        {props1 => <Home {...props1} screenProps={props.screenProps} />}
+        {(props1) => <HomeScreen {...props1} screenProps={props.screenProps} />}
       </Stack.Screen>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
