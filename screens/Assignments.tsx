@@ -8,8 +8,8 @@ import { Touchable } from "../components/touchable";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import Moment from "moment";
 import SelectModal from "../components/select";
-import Loading from "../components/loading";
-import Error from "../components/error";
+import Loading from "../components/Loading";
+import Error from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useAssignmentsQuery } from "../generated/graphql";
@@ -51,7 +51,7 @@ export default function Assignments({ navigation, screenProps }: RootStackScreen
   const t = screenProps.t;
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#919191", flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: "#fff", flex: 1 }}>
       <View
         style={{
           backgroundColor: "#919191",
