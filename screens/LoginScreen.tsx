@@ -47,7 +47,6 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
           const res = await login({ username, password });
 
           if (res.error) {
-
             showErrToast("Invalid user");
             return;
           }

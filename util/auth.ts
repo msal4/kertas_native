@@ -5,7 +5,7 @@ import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Platform } from "react-native";
 import { Operation, createClient, dedupExchange, cacheExchange, errorExchange, makeOperation, fetchExchange } from "urql";
 import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDocument } from "../generated/graphql";
-import { replace } from "../navigation";
+import { replace } from "../navigation/navigationRef";
 
 const accessTokenExpKey = "access_token_exp";
 const accessTokenKey = "access_token";

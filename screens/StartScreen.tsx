@@ -3,7 +3,7 @@ import { View } from "react-native-ui-lib";
 import { CombinedError } from "urql";
 import Loading from "../components/Loading";
 import { useRefreshTokensMutation } from "../generated/graphql";
-import { replace } from "../navigation";
+import { replace } from "../navigation/navigationRef";
 import { clearTokens, getRefreshToken, setTokens } from "../util/auth";
 import { Error } from "../components/Error";
 

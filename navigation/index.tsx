@@ -22,24 +22,7 @@ import HomeScreen from "../screens/HomeScreen";
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
-
-const navigationRef = createNavigationContainerRef();
-
-export function navigate<RouteName extends keyof RootStackParamList>(
-  ...args: undefined extends RootStackParamList[RouteName]
-    ? [screen: RouteName] | [screen: RouteName, params: RootStackParamList[RouteName]]
-    : [screen: RouteName, params: RootStackParamList[RouteName]]
-): void {
-  if (navigationRef.isReady()) {
-    navigationRef.navigate(...args);
-  }
-}
-
-export function replace<RouteName extends keyof RootStackParamList>(name: RouteName, params?: RootStackParamList[RouteName]) {
-  if (navigationRef.isReady()) {
-    navigationRef.dispatch(StackActions.replace(name, params));
-  }
-}
+import { navigationRef } from "./navigationRef";
 
 export default function Navigation({ colorScheme, screenProps }: { colorScheme: ColorSchemeName }) {
   return (
@@ -64,7 +47,7 @@ function RootNavigator(props) {
         {(props1) => <HomeScreen {...props1} screenProps={props.screenProps} />}
       </Stack.Screen>
       <Stack.Screen name="Assignments" options={{ headerShown: false }}>
-        {props1 => <Assignments {...props1} screenProps={props.screenProps} />}
+        {(props1) => <Assignments {...props1} screenProps={props.screenProps} />}
       </Stack.Screen>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
