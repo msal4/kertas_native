@@ -20,6 +20,13 @@ input AddAssignmentSubmissionInput {
   submittedAt: Time
 }
 
+input AddAttendanceInput {
+  date: Time!
+  state: AttendanceState!
+  classID: ID!
+  studentID: ID!
+}
+
 input AddClassInput {
   name: String!
   active: Boolean! = true
@@ -36,6 +43,7 @@ input AddCourseGradeInput {
   writtenFirst: Int
   writtenSecond: Int
   courseFinal: Int
+  year: String!
 }
 
 input AddGroupInput {
@@ -62,6 +70,13 @@ input AddStageInput {
   active: Boolean! = true
   tuitionAmount: Int!
   schoolID: ID!
+}
+
+input AddTuitionPaymentInput {
+  stageID: ID!
+  studentID: ID!
+  year: String!
+  paidAmount: Int!
 }
 
 input AddUserInput {
@@ -533,11 +548,12 @@ input ClassWhereInput {
 
 type CourseGrade implements Node {
   id: ID!
-  activityFirst: Int!
-  activitySecond: Int!
-  writtenFirst: Int!
-  writtenSecond: Int!
-  courseFinal: Int!
+  activityFirst: Int
+  activitySecond: Int
+  writtenFirst: Int
+  writtenSecond: Int
+  courseFinal: Int
+  year: String!
   createdAt: Time!
   updatedAt: Time!
   student: User!
@@ -567,6 +583,7 @@ enum CourseGradeOrderField {
   WRITTEN_FIRST
   WRITTEN_SECOND
   COURSE_FINAL
+  YEAR
   CREATED_AT
   UPDATED_AT
 }
@@ -619,6 +636,8 @@ input CourseGradeWhereInput {
   writtenFirstGTE: Int
   writtenFirstLT: Int
   writtenFirstLTE: Int
+  writtenFirstIsNil: Boolean
+  writtenFirstNotNil: Boolean
   writtenSecond: Int
   writtenSecondNEQ: Int
   writtenSecondIn: [Int!]
@@ -627,6 +646,8 @@ input CourseGradeWhereInput {
   writtenSecondGTE: Int
   writtenSecondLT: Int
   writtenSecondLTE: Int
+  writtenSecondIsNil: Boolean
+  writtenSecondNotNil: Boolean
   courseFinal: Int
   courseFinalNEQ: Int
   courseFinalIn: [Int!]
@@ -635,6 +656,21 @@ input CourseGradeWhereInput {
   courseFinalGTE: Int
   courseFinalLT: Int
   courseFinalLTE: Int
+  courseFinalIsNil: Boolean
+  courseFinalNotNil: Boolean
+  year: String
+  yearNEQ: String
+  yearIn: [String!]
+  yearNotIn: [String!]
+  yearGT: String
+  yearGTE: String
+  yearLT: String
+  yearLTE: String
+  yearContains: String
+  yearHasPrefix: String
+  yearHasSuffix: String
+  yearEqualFold: String
+  yearContainsFold: String
   id: ID
   idNEQ: ID
   idIn: [ID!]
@@ -704,7 +740,7 @@ type Group implements Node {
   active: Boolean!
   createdAt: Time!
   updatedAt: Time!
-  class: Class!
+  class: Class
   users: [User!]
   messages(
     after: Cursor
@@ -961,6 +997,15 @@ type Mutation {
   addCourseGrade(input: AddCourseGradeInput!): CourseGrade!
   updateCourseGrade(id: ID!, input: UpdateCourseGradeInput!): CourseGrade!
   deleteCourseGrade(id: ID!): Boolean!
+  addTuitionPayment(input: AddTuitionPaymentInput!): TuitionPayment!
+  updateTuitionPayment(
+    id: ID!
+    input: UpdateTuitionPaymentInput!
+  ): TuitionPayment!
+  deleteTuitionPayment(id: ID!): Boolean!
+  addAttendance(input: AddAttendanceInput!): Attendance!
+  updateAttendance(id: ID!, input: UpdateAttendanceInput!): Attendance!
+  deleteAttendance(id: ID!): Boolean!
 }
 
 interface Node {
@@ -1078,6 +1123,26 @@ type Query {
     orderBy: CourseGradeOrder
     where: CourseGradeWhereInput
   ): CourseGradeConnection!
+  tuitionPayments(
+    studentID: ID
+    stageID: ID
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: TuitionPaymentOrder
+    where: TuitionPaymentWhereInput
+  ): TuitionPaymentConnection!
+  attendances(
+    studentID: ID
+    classID: ID
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: AttendanceOrder
+    where: AttendanceWhereInput
+  ): AttendanceConnection!
 }
 
 enum Role {
@@ -1449,6 +1514,7 @@ scalar Time
 
 type TuitionPayment implements Node {
   id: ID!
+  year: String!
   paidAmount: Int!
   createdAt: Time!
   updatedAt: Time!
@@ -1474,6 +1540,7 @@ input TuitionPaymentOrder {
 
 enum TuitionPaymentOrderField {
   PAID_AMOUNT
+  YEAR
   CREATED_AT
   UPDATED_AT
 }
@@ -1498,6 +1565,19 @@ input TuitionPaymentWhereInput {
   updatedAtGTE: Time
   updatedAtLT: Time
   updatedAtLTE: Time
+  year: String
+  yearNEQ: String
+  yearIn: [String!]
+  yearNotIn: [String!]
+  yearGT: String
+  yearGTE: String
+  yearLT: String
+  yearLTE: String
+  yearContains: String
+  yearHasPrefix: String
+  yearHasSuffix: String
+  yearEqualFold: String
+  yearContainsFold: String
   paidAmount: Int
   paidAmountNEQ: Int
   paidAmountIn: [Int!]
@@ -1531,6 +1611,11 @@ input UpdateAssignmentInput {
 input UpdateAssignmentSubmissionInput {
   files: [Upload!]!
   submittedAt: Time
+}
+
+input UpdateAttendanceInput {
+  date: Time
+  state: AttendanceState
 }
 
 input UpdateClassInput {
@@ -1570,6 +1655,11 @@ input UpdateStageInput {
   tuitionAmount: Int
 }
 
+input UpdateTuitionPaymentInput {
+  year: String
+  paidAmount: Int
+}
+
 input UpdateUserInput {
   name: String
   username: String
@@ -1592,8 +1682,8 @@ type User implements Node {
   active: Boolean!
   createdAt: Time!
   updatedAt: Time!
-  stage: Stage!
-  school: School!
+  stage: Stage
+  school: School
   messages(
     after: Cursor
     first: Int
@@ -1627,6 +1717,14 @@ type User implements Node {
     orderBy: AssignmentSubmissionOrder
     where: AssignmentSubmissionWhereInput
   ): AssignmentSubmissionConnection
+  payments(
+    after: Cursor
+    first: Int
+    before: Cursor
+    last: Int
+    orderBy: TuitionPaymentOrder
+    where: TuitionPaymentWhereInput
+  ): TuitionPaymentConnection
   courseGrades: [CourseGrade!]!
 }
 

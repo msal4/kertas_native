@@ -7,6 +7,7 @@ import ScrollBottomSheet from 'react-native-scroll-bottom-sheet';
 import { Touchable } from '../components/touchable';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import Moment from 'moment';
+import SelectModal from '../components/select';
 
 
 import { RootStackScreenProps } from "../types";
@@ -17,13 +18,19 @@ import { setTokens } from "../util/auth";
 const windowHeight = Dimensions.get('screen').height;
 
 
-const getCurDate = () => {
+const getCurDate = (wd = null) => {
   const weekDays = ['الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعة', 'السبت'];
   const months = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آيار', 'حزيران', 'تموز', 'آب', 'آيلول', 'تشرين الاول', 'تشرين الثاني', 'كانون الأول'];
   const d = new Date();
+  if(wd != null) {
+    var dwd = new Date();
+    var currentDay = dwd.getDay();
+    var distance = wd - currentDay;
+    dwd.setDate(dwd.getDate() + distance);
+  }
   return {
-    dayName: weekDays[d.getDay()],
-    day: d.getDate(),
+    dayName: wd == null? weekDays[d.getDay()]: weekDays[wd],
+    day: wd == null? d.getDate(): dwd.getDate(),
     monthName: months[d.getMonth()],
     month: d.getMonth()+1,
     year: d.getFullYear()
@@ -36,23 +43,9 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
       weekday: 2
     }
   });
+  const [selectedWeekDay, setWeekDay] = useState(getCurDate().day);
 
   const t = screenProps.t;
-
-  const formatAMPM = (date) => {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();    
-    const ampm = hours >= 12 ? 'pm' : 'am';
-  
-    hours %= 12;
-    hours = hours || 12;    
-    minutes = minutes < 10 ? `0${minutes}` : minutes;
-    hours = hours < 10 ? `0${hours}` : hours;
-  
-    const strTime = `${hours}:${minutes} ${ampm}`;
-  
-    return strTime;
-  };
   
   function getTime(dateTime: Moment): Moment {
     return Moment({h: dateTime.hours(), m: dateTime.minutes()});
@@ -92,12 +85,36 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
 
       <View style={{backgroundColor: 'rgba(145, 145, 145, 0.85)', paddingTop: 20, paddingBottom: 10, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', position: 'absolute', width: '100%', zIndex: 999, marginTop: getStatusBarHeight()}}>
         <View style={{flex: 1}}>
-          <Text style={{fontFamily: 'Dubai-Medium', color: '#fff', fontSize: 35, textAlign: 'left'}}>{t(getCurDate().dayName)}</Text>
+          <Text style={{fontFamily: 'Dubai-Medium', color: '#fff', fontSize: 35, textAlign: 'left'}}>{t(getCurDate(selectedWeekDay).dayName)}</Text>
           <Text style={{fontFamily: 'Dubai-Regular', color: '#fff', textAlign: 'left'}}>{getCurDate().day} - {getCurDate().monthName} - {getCurDate().year}</Text>
         </View>
-        <View style={{backgroundColor: '#bcbcbc', borderRadius: 100, width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-          <Icon name="calendar" size={28} color="#fff" />
-        </View>
+        <SelectModal
+          data={[
+            { name: 'الاحد', value: 0 },
+            { name: 'الاثنين', value: 1 },
+            { name: 'الثلاثاء', value: 2 },
+            { name: 'الاربعاء', value: 3 },
+            { name: 'الخميس', value: 4 },
+            { name: 'الجمعة', value: 5 },
+            { name: 'السبت', value: 6 },
+          ]}
+          onSelect={(name, value, item) => {
+            setWeekDay(value);
+            refetch({
+              variables: {
+                weekday: value
+              }
+            });
+          }}
+          selected={selectedWeekDay}
+          screenProps={screenProps}
+          renderBtn={(selected) => (
+            <View style={{backgroundColor: '#bcbcbc', borderRadius: 100, width: 50, height: 50, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+              <Icon name="calendar" size={28} color="#fff" />
+            </View>
+          )}
+          initialNumToRender={7}
+        />
       </View>
 
       <FlatList
