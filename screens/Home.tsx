@@ -8,6 +8,8 @@ import { Touchable } from "../components/touchable";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import Moment from "moment";
 import SelectModal from "../components/select";
+import Loading from "../components/loading";
+import Error from "../components/error";
 
 import { RootStackScreenProps } from "../types";
 import { useScheduleQuery } from "../generated/graphql";
@@ -17,18 +19,19 @@ const windowHeight = Dimensions.get("screen").height;
 const getCurDate = (wd = null) => {
   const weekDays = ['الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعة', 'السبت'];
   const months = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آيار', 'حزيران', 'تموز', 'آب', 'آيلول', 'تشرين الاول', 'تشرين الثاني', 'كانون الأول'];
-  let d = wd == null? new Date(): new Date(Moment().day(wd));
+  let d = wd == null? Moment(): Moment().day(wd < 6? wd+7: wd);
   return {
-    dayName: weekDays[d.getDay()],
-    day: d.getDate(),
-    monthName: months[d.getMonth()],
-    month: d.getMonth() + 1,
-    year: d.getFullYear(),
+    dayName: weekDays[d.day()],
+    day: d.date(),
+    dayOfWeek: d.day() < 6? d.day()+7: d.day(),
+    monthName: months[d.month()],
+    month: d.month() + 1,
+    year: d.year(),
   };
 };
 
 export default function Home({ navigation, screenProps }: RootStackScreenProps<"Home">) {
-  const [selectedWeekday, setWeekDay] = useState(getCurDate().day);
+  const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek);
 
   const [res, refetch] = useScheduleQuery({
     variables: {
@@ -62,18 +65,6 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
     };
   };
 
-  if (res.error) {
-    return (
-      <View>
-        <Text>error</Text>
-      </View>
-    );
-  }
-  if (res.fetching) {
-    <View>
-      <Text>loading..</Text>
-    </View>;
-  }
   return (
     <SafeAreaView style={{backgroundColor: '#919191', flex: 1}}>
 
@@ -117,6 +108,10 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
         />
       </View>
 
+      <Loading isLoading={res.fetching} height={500} color={'#fff'} />
+      <Error onPress={() => {}} isError={res.error != undefined} height={500} color={'#fff'} msg={t('حدث خطأ يرجى اعادة المحاولة')} btnText={t('اعد المحاولة')} />
+
+      {res.fetching == false?
       <FlatList
         data={res.data?.schedule}
         keyExtractor={(item, index) => index + "a"}
@@ -151,6 +146,7 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
           </View>
         )}
       />
+      : null}
 
       <ScrollBottomSheet<string>
         componentType="ScrollView"
