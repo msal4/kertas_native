@@ -4,15 +4,17 @@ import { Text, View, Dimensions, FlatList, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
-import { Touchable } from "../components/touchable";
+import { Touchable } from "../components/Touchable";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import Moment from "moment";
-import SelectModal from "../components/select";
-import Loading from "../components/loading";
-import Error from "../components/error";
+import SelectModal from "../components/Select";
+import Loading from "../components/Loading";
+import Error from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useScheduleQuery } from "../generated/graphql";
+import { replace } from "../navigation";
+import { clearTokens } from "../util/auth";
 
 const windowHeight = Dimensions.get("screen").height;
 
@@ -44,9 +46,10 @@ const getCurDate = (wd?: number) => {
     year: d.year(),
   };
 };
+// clamp (0, 6) => 8 => 1
 
 export default function Home({ navigation, screenProps }: RootStackScreenProps<"Home">) {
-  const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek);
+  const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek % 6);
 
   const t = screenProps.t;
 
@@ -263,7 +266,12 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
         }}
       >
         <View style={{ flex: 1 }}>
-          <Touchable>
+          <Touchable
+            onPress={() => {
+              clearTokens();
+              navigation.replace("Login");
+            }}
+          >
             <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
               <Icon name="calendar" size={28} color="#8e8e8e" />
               <Text style={{ fontFamily: "Dubai-Bold", color: "#9a9a9a", fontSize: 14 }}>الرئيسية</Text>
@@ -387,6 +395,7 @@ function Schedule({ weekday }: { weekday: number }) {
   );
 }
 
+// TODO: remove after implementing localization.
 function t(term: string): string {
   return term;
 }
