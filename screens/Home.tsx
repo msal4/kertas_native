@@ -165,7 +165,9 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
           </View>
           <View style={{ flexDirection: "row" }}>
             <View style={{ flex: 1 }}>
-              <Touchable>
+              <Touchable onPress={() => {
+                navigation.navigate('Assignments');
+              }}>
                 <View style={{ backgroundColor: "#d5d5d5", justifyContent: "center", alignItems: "center", height: 150 }}>
                   <View
                     style={{

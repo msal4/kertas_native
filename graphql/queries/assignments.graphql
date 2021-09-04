@@ -1,0 +1,14 @@
+query Assignments {
+    assignments {
+        edges {
+            node {
+                name,
+                description,
+                dueDate,
+                class {
+                    name
+                }
+            }
+        }
+    }
+}

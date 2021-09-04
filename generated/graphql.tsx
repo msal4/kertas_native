@@ -36,6 +36,13 @@ export type AddAssignmentSubmissionInput = {
   submittedAt?: Maybe<Scalars['Time']>;
 };
 
+export type AddAttendanceInput = {
+  date: Scalars['Time'];
+  state: AttendanceState;
+  classID: Scalars['ID'];
+  studentID: Scalars['ID'];
+};
+
 export type AddClassInput = {
   name: Scalars['String'];
   active?: Scalars['Boolean'];
@@ -52,6 +59,7 @@ export type AddCourseGradeInput = {
   writtenFirst?: Maybe<Scalars['Int']>;
   writtenSecond?: Maybe<Scalars['Int']>;
   courseFinal?: Maybe<Scalars['Int']>;
+  year: Scalars['String'];
 };
 
 export type AddGroupInput = {
@@ -78,6 +86,13 @@ export type AddStageInput = {
   active?: Scalars['Boolean'];
   tuitionAmount: Scalars['Int'];
   schoolID: Scalars['ID'];
+};
+
+export type AddTuitionPaymentInput = {
+  stageID: Scalars['ID'];
+  studentID: Scalars['ID'];
+  year: Scalars['String'];
+  paidAmount: Scalars['Int'];
 };
 
 export type AddUserInput = {
@@ -633,11 +648,12 @@ export type ClassWhereInput = {
 export type CourseGrade = Node & {
   __typename?: 'CourseGrade';
   id: Scalars['ID'];
-  activityFirst: Scalars['Int'];
-  activitySecond: Scalars['Int'];
-  writtenFirst: Scalars['Int'];
-  writtenSecond: Scalars['Int'];
-  courseFinal: Scalars['Int'];
+  activityFirst?: Maybe<Scalars['Int']>;
+  activitySecond?: Maybe<Scalars['Int']>;
+  writtenFirst?: Maybe<Scalars['Int']>;
+  writtenSecond?: Maybe<Scalars['Int']>;
+  courseFinal?: Maybe<Scalars['Int']>;
+  year: Scalars['String'];
   createdAt: Scalars['Time'];
   updatedAt: Scalars['Time'];
   student: User;
@@ -669,6 +685,7 @@ export enum CourseGradeOrderField {
   WrittenFirst = 'WRITTEN_FIRST',
   WrittenSecond = 'WRITTEN_SECOND',
   CourseFinal = 'COURSE_FINAL',
+  Year = 'YEAR',
   CreatedAt = 'CREATED_AT',
   UpdatedAt = 'UPDATED_AT'
 }
@@ -730,6 +747,8 @@ export type CourseGradeWhereInput = {
   writtenFirstGTE?: Maybe<Scalars['Int']>;
   writtenFirstLT?: Maybe<Scalars['Int']>;
   writtenFirstLTE?: Maybe<Scalars['Int']>;
+  writtenFirstIsNil?: Maybe<Scalars['Boolean']>;
+  writtenFirstNotNil?: Maybe<Scalars['Boolean']>;
   /** written_second field predicates */
   writtenSecond?: Maybe<Scalars['Int']>;
   writtenSecondNEQ?: Maybe<Scalars['Int']>;
@@ -739,6 +758,8 @@ export type CourseGradeWhereInput = {
   writtenSecondGTE?: Maybe<Scalars['Int']>;
   writtenSecondLT?: Maybe<Scalars['Int']>;
   writtenSecondLTE?: Maybe<Scalars['Int']>;
+  writtenSecondIsNil?: Maybe<Scalars['Boolean']>;
+  writtenSecondNotNil?: Maybe<Scalars['Boolean']>;
   /** course_final field predicates */
   courseFinal?: Maybe<Scalars['Int']>;
   courseFinalNEQ?: Maybe<Scalars['Int']>;
@@ -748,6 +769,22 @@ export type CourseGradeWhereInput = {
   courseFinalGTE?: Maybe<Scalars['Int']>;
   courseFinalLT?: Maybe<Scalars['Int']>;
   courseFinalLTE?: Maybe<Scalars['Int']>;
+  courseFinalIsNil?: Maybe<Scalars['Boolean']>;
+  courseFinalNotNil?: Maybe<Scalars['Boolean']>;
+  /** year field predicates */
+  year?: Maybe<Scalars['String']>;
+  yearNEQ?: Maybe<Scalars['String']>;
+  yearIn?: Maybe<Array<Scalars['String']>>;
+  yearNotIn?: Maybe<Array<Scalars['String']>>;
+  yearGT?: Maybe<Scalars['String']>;
+  yearGTE?: Maybe<Scalars['String']>;
+  yearLT?: Maybe<Scalars['String']>;
+  yearLTE?: Maybe<Scalars['String']>;
+  yearContains?: Maybe<Scalars['String']>;
+  yearHasPrefix?: Maybe<Scalars['String']>;
+  yearHasSuffix?: Maybe<Scalars['String']>;
+  yearEqualFold?: Maybe<Scalars['String']>;
+  yearContainsFold?: Maybe<Scalars['String']>;
   /** id field predicates */
   id?: Maybe<Scalars['ID']>;
   idNEQ?: Maybe<Scalars['ID']>;
@@ -830,7 +867,7 @@ export type Group = Node & {
   active: Scalars['Boolean'];
   createdAt: Scalars['Time'];
   updatedAt: Scalars['Time'];
-  class: Class;
+  class?: Maybe<Class>;
   users?: Maybe<Array<User>>;
   messages?: Maybe<MessageConnection>;
 };
@@ -1117,6 +1154,12 @@ export type Mutation = {
   addCourseGrade: CourseGrade;
   updateCourseGrade: CourseGrade;
   deleteCourseGrade: Scalars['Boolean'];
+  addTuitionPayment: TuitionPayment;
+  updateTuitionPayment: TuitionPayment;
+  deleteTuitionPayment: Scalars['Boolean'];
+  addAttendance: Attendance;
+  updateAttendance: Attendance;
+  deleteAttendance: Scalars['Boolean'];
 };
 
 
@@ -1304,6 +1347,38 @@ export type MutationDeleteCourseGradeArgs = {
   id: Scalars['ID'];
 };
 
+
+export type MutationAddTuitionPaymentArgs = {
+  input: AddTuitionPaymentInput;
+};
+
+
+export type MutationUpdateTuitionPaymentArgs = {
+  id: Scalars['ID'];
+  input: UpdateTuitionPaymentInput;
+};
+
+
+export type MutationDeleteTuitionPaymentArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationAddAttendanceArgs = {
+  input: AddAttendanceInput;
+};
+
+
+export type MutationUpdateAttendanceArgs = {
+  id: Scalars['ID'];
+  input: UpdateAttendanceInput;
+};
+
+
+export type MutationDeleteAttendanceArgs = {
+  id: Scalars['ID'];
+};
+
 export type Node = {
   id: Scalars['ID'];
 };
@@ -1346,6 +1421,8 @@ export type Query = {
   assignmentSubmissions: AssignmentSubmissionConnection;
   schedule: Array<Schedule>;
   courseGrades: CourseGradeConnection;
+  tuitionPayments: TuitionPaymentConnection;
+  attendances: AttendanceConnection;
 };
 
 
@@ -1484,6 +1561,30 @@ export type QueryCourseGradesArgs = {
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<CourseGradeOrder>;
   where?: Maybe<CourseGradeWhereInput>;
+};
+
+
+export type QueryTuitionPaymentsArgs = {
+  studentID?: Maybe<Scalars['ID']>;
+  stageID?: Maybe<Scalars['ID']>;
+  after?: Maybe<Scalars['Cursor']>;
+  first?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  last?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<TuitionPaymentOrder>;
+  where?: Maybe<TuitionPaymentWhereInput>;
+};
+
+
+export type QueryAttendancesArgs = {
+  studentID?: Maybe<Scalars['ID']>;
+  classID?: Maybe<Scalars['ID']>;
+  after?: Maybe<Scalars['Cursor']>;
+  first?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  last?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<AttendanceOrder>;
+  where?: Maybe<AttendanceWhereInput>;
 };
 
 export enum Role {
@@ -1925,6 +2026,7 @@ export type SubscriptionMessagePostedArgs = {
 export type TuitionPayment = Node & {
   __typename?: 'TuitionPayment';
   id: Scalars['ID'];
+  year: Scalars['String'];
   paidAmount: Scalars['Int'];
   createdAt: Scalars['Time'];
   updatedAt: Scalars['Time'];
@@ -1952,6 +2054,7 @@ export type TuitionPaymentOrder = {
 
 export enum TuitionPaymentOrderField {
   PaidAmount = 'PAID_AMOUNT',
+  Year = 'YEAR',
   CreatedAt = 'CREATED_AT',
   UpdatedAt = 'UPDATED_AT'
 }
@@ -1982,6 +2085,20 @@ export type TuitionPaymentWhereInput = {
   updatedAtGTE?: Maybe<Scalars['Time']>;
   updatedAtLT?: Maybe<Scalars['Time']>;
   updatedAtLTE?: Maybe<Scalars['Time']>;
+  /** year field predicates */
+  year?: Maybe<Scalars['String']>;
+  yearNEQ?: Maybe<Scalars['String']>;
+  yearIn?: Maybe<Array<Scalars['String']>>;
+  yearNotIn?: Maybe<Array<Scalars['String']>>;
+  yearGT?: Maybe<Scalars['String']>;
+  yearGTE?: Maybe<Scalars['String']>;
+  yearLT?: Maybe<Scalars['String']>;
+  yearLTE?: Maybe<Scalars['String']>;
+  yearContains?: Maybe<Scalars['String']>;
+  yearHasPrefix?: Maybe<Scalars['String']>;
+  yearHasSuffix?: Maybe<Scalars['String']>;
+  yearEqualFold?: Maybe<Scalars['String']>;
+  yearContainsFold?: Maybe<Scalars['String']>;
   /** paid_amount field predicates */
   paidAmount?: Maybe<Scalars['Int']>;
   paidAmountNEQ?: Maybe<Scalars['Int']>;
@@ -2021,6 +2138,11 @@ export type UpdateAssignmentSubmissionInput = {
   submittedAt?: Maybe<Scalars['Time']>;
 };
 
+export type UpdateAttendanceInput = {
+  date?: Maybe<Scalars['Time']>;
+  state?: Maybe<AttendanceState>;
+};
+
 export type UpdateClassInput = {
   name?: Maybe<Scalars['String']>;
   active?: Maybe<Scalars['Boolean']>;
@@ -2058,6 +2180,11 @@ export type UpdateStageInput = {
   tuitionAmount?: Maybe<Scalars['Int']>;
 };
 
+export type UpdateTuitionPaymentInput = {
+  year?: Maybe<Scalars['String']>;
+  paidAmount?: Maybe<Scalars['Int']>;
+};
+
 export type UpdateUserInput = {
   name?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
@@ -2080,12 +2207,13 @@ export type User = Node & {
   active: Scalars['Boolean'];
   createdAt: Scalars['Time'];
   updatedAt: Scalars['Time'];
-  stage: Stage;
-  school: School;
+  stage?: Maybe<Stage>;
+  school?: Maybe<School>;
   messages?: Maybe<MessageConnection>;
   groups?: Maybe<GroupConnection>;
   classes?: Maybe<ClassConnection>;
   assignmentSubmissions?: Maybe<AssignmentSubmissionConnection>;
+  payments?: Maybe<TuitionPaymentConnection>;
   courseGrades: Array<CourseGrade>;
 };
 
@@ -2128,6 +2256,16 @@ export type UserAssignmentSubmissionsArgs = {
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentSubmissionOrder>;
   where?: Maybe<AssignmentSubmissionWhereInput>;
+};
+
+
+export type UserPaymentsArgs = {
+  after?: Maybe<Scalars['Cursor']>;
+  first?: Maybe<Scalars['Int']>;
+  before?: Maybe<Scalars['Cursor']>;
+  last?: Maybe<Scalars['Int']>;
+  orderBy?: Maybe<TuitionPaymentOrder>;
+  where?: Maybe<TuitionPaymentWhereInput>;
 };
 
 export type UserConnection = {
@@ -2340,6 +2478,11 @@ export type RefreshTokensMutationVariables = Exact<{
 
 export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthData', accessToken: string, refreshToken: string } };
 
+export type AssignmentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', name: string, description?: Maybe<string>, dueDate: any, class: { __typename?: 'Class', name: string } }> }>>> } };
+
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2352,6 +2495,11 @@ export type ScheduleQueryVariables = Exact<{
 
 
 export type ScheduleQuery = { __typename?: 'Query', schedule: Array<{ __typename?: 'Schedule', id: string, duration: any, weekday: any, startsAt: any, class: { __typename?: 'Class', name: string, teacher: { __typename?: 'User', name: string } } }> };
+
+export type StagesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StagesQuery = { __typename?: 'Query', stages: { __typename?: 'StageConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'StageEdge', node?: Maybe<{ __typename?: 'Stage', id: string }> }>>> } };
 
 
 export const LoginDocument = gql`
@@ -2377,6 +2525,26 @@ export const RefreshTokensDocument = gql`
 
 export function useRefreshTokensMutation() {
   return Urql.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument);
+};
+export const AssignmentsDocument = gql`
+    query Assignments {
+  assignments {
+    edges {
+      node {
+        name
+        description
+        dueDate
+        class {
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+export function useAssignmentsQuery(options: Omit<Urql.UseQueryArgs<AssignmentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AssignmentsQuery>({ query: AssignmentsDocument, ...options });
 };
 export const ClassesDocument = gql`
     query Classes {
@@ -2422,4 +2590,20 @@ export const ScheduleDocument = gql`
 
 export function useScheduleQuery(options: Omit<Urql.UseQueryArgs<ScheduleQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ScheduleQuery>({ query: ScheduleDocument, ...options });
+};
+export const StagesDocument = gql`
+    query Stages {
+  stages {
+    totalCount
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}
+    `;
+
+export function useStagesQuery(options: Omit<Urql.UseQueryArgs<StagesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<StagesQuery>({ query: StagesDocument, ...options });
 };
