@@ -10,6 +10,7 @@ import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import { client } from "./util/auth";
+import "dayjs/locale/ar";
 
 let customFonts = {
   "Dubai-Regular": require("./assets/fonts/DubaiW23-Regular.ttf"),

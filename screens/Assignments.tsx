@@ -8,44 +8,14 @@ import { Touchable } from "../components/Touchable";
 import SelectModal from "../components/Select";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
+import dayjs from "dayjs";
+import { weekdays } from "dayjs/locale/ar";
 
-import { RootStackScreenProps } from "../types";
 import { useAssignmentsQuery } from "../generated/graphql";
 
-const getCurDate = (wd?: number) => {
-  const weekDays = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس", "الجمعة", "السبت"];
-  const months = [
-    "كانون الثاني",
-    "شباط",
-    "آذار",
-    "نيسان",
-    "آيار",
-    "حزيران",
-    "تموز",
-    "آب",
-    "آيلول",
-    "تشرين الاول",
-    "تشرين الثاني",
-    "كانون الأول",
-  ];
-
-  let d = wd == null || wd == undefined ? Moment() : Moment().day(wd < 6 ? wd + 7 : wd);
-
-  return {
-    dayName: weekDays[d.day()],
-    day: d.date(),
-    dayOfWeek: d.day() < 6 ? d.day() + 7 : d.day(),
-    monthName: months[d.month()],
-    month: d.month() + 1,
-    year: d.year(),
-  };
-};
-
-export default function Assignments({ screenProps }: RootStackScreenProps<"Assignments">) {
-  const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek);
+export default function Assignments({ screenProps }: any) {
+  const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const { top, bottom, right, left } = useSafeAreaInsets();
-
-  const t = screenProps.t;
 
   return (
     <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom }}>
@@ -62,22 +32,14 @@ export default function Assignments({ screenProps }: RootStackScreenProps<"Assig
       >
         <View style={{ flex: 1 }}>
           <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 35, textAlign: "left" }}>
-            {t(getCurDate(selectedWeekday).dayName)}
+            {dayjs().locale("ar").format("dddd")}
           </Text>
           <Text style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left" }}>
-            {getCurDate(selectedWeekday).day} - {getCurDate(selectedWeekday).monthName} - {getCurDate(selectedWeekday).year}
+            {dayjs().locale("ar").format("D - MMMM - YYYY")}
           </Text>
         </View>
         <SelectModal
-          data={[
-            { name: "السبت", value: 6 },
-            { name: "الاحد", value: 0 },
-            { name: "الاثنين", value: 1 },
-            { name: "الثلاثاء", value: 2 },
-            { name: "الاربعاء", value: 3 },
-            { name: "الخميس", value: 4 },
-            { name: "الجمعة", value: 5 },
-          ]}
+          data={weekdays.map((d, idx) => ({ name: d, value: idx }))}
           onSelect={async (name, value) => {
             setWeekDay(value);
           }}
@@ -108,10 +70,6 @@ export default function Assignments({ screenProps }: RootStackScreenProps<"Assig
       </View>
     </View>
   );
-}
-
-function getTime(dateTime: Moment.Moment) {
-  return Moment({ h: dateTime.hours(), m: dateTime.minutes() });
 }
 
 function Schedule() {
