@@ -3,13 +3,11 @@ import { useState } from "react";
 import { Text, View, Dimensions, FlatList, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome5";
-import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
-import { Touchable } from "../components/touchable";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import Moment from "moment";
-import SelectModal from "../components/select";
+import { Touchable } from "../components/Touchable";
+import SelectModal from "../components/Select";
 import Loading from "../components/Loading";
-import Error from "../components/Error";
+import { Error } from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useAssignmentsQuery } from "../generated/graphql";
@@ -59,7 +57,7 @@ export default function Assignments({ navigation, screenProps }: RootStackScreen
           paddingBottom: 10,
           paddingHorizontal: 20,
           flexDirection: "row",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <View style={{ flex: 1 }}>
@@ -105,10 +103,9 @@ export default function Assignments({ navigation, screenProps }: RootStackScreen
         />
       </View>
 
-      <View style={{ backgroundColor: '#fff', flex: 1 }}>
+      <View style={{ backgroundColor: "#fff", flex: 1 }}>
         <Schedule weekday={selectedWeekday} />
       </View>
-
     </SafeAreaView>
   );
 }
@@ -136,7 +133,7 @@ const getClassTime = (item: any) => {
 function Schedule() {
   const [res, refetch] = useAssignmentsQuery();
 
-  console.log(res)
+  console.log(res);
 
   if (res.error) {
     return (
@@ -163,14 +160,16 @@ function Schedule() {
           showsVerticalScrollIndicator={false}
           renderItem={({ item, index }) => (
             <Touchable>
-              <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: '#ddd' }}>
+              <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: 'left' }}>{item?.node?.class.name} - {item?.node.name}</Text>
-                  <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: 'left' }} numberOfLines={1}>{item?.node?.description}</Text>
+                  <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
+                    {item?.node?.class.name} - {item?.node.name}
+                  </Text>
+                  <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+                    {item?.node?.description}
+                  </Text>
                 </View>
-                <Text style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>
-                  {Moment(item?.node?.dueDate).format('Y-MM-DD')}
-                </Text>
+                <Text style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(item?.node?.dueDate).format("Y-MM-DD")}</Text>
               </View>
             </Touchable>
           )}
