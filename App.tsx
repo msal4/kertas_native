@@ -1,30 +1,38 @@
+import { authExchange } from "@urql/exchange-auth";
+import { retryExchange } from "@urql/exchange-retry";
+import AppLoading from "expo-app-loading";
+import * as Font from "expo-font";
 import { StatusBar } from "expo-status-bar";
+import * as Updates from "expo-updates";
 import React, { useEffect, useState } from "react";
+import { I18nManager, Platform } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import {
+  cacheExchange,
+  createClient,
+  dedupExchange,
+  errorExchange,
+  fetchExchange,
+  makeOperation,
+  Operation,
+  Provider as GraphQLProvider,
+} from "urql";
+import { RefreshTokensDocument, RefreshTokensMutation, RefreshTokensMutationVariables } from "./generated/graphql";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation, { replace } from "./navigation";
-import { cacheExchange, createClient, dedupExchange, fetchExchange, makeOperation, Operation, Provider as GraphQLProvider } from "urql";
 import { clearTokens, getAccessToken, getAccessTokenExp, getRefreshToken, getTokenExp, isTokenExpired, setTokens } from "./util/auth";
-import { authExchange } from "@urql/exchange-auth";
-import { RefreshTokensDocument, RefreshTokensMutation, RefreshTokensMutationVariables } from "./generated/graphql";
-import { retryExchange } from "@urql/exchange-retry";
-import { Platform, I18nManager } from "react-native";
-import AppLoading from 'expo-app-loading';
-import * as Font from 'expo-font';
-import * as Updates from 'expo-updates';
 
 let customFonts = {
-  'Dubai-Regular': require('./assets/fonts/DubaiW23-Regular.ttf'),
-  'Dubai-Medium': require('./assets/fonts/DubaiW23-Medium.ttf'),
-  'Dubai-Light': require('./assets/fonts/DubaiW23-Light.ttf'),
-  'Dubai-Bold': require('./assets/fonts/DubaiW23-Bold.ttf')
+  "Dubai-Regular": require("./assets/fonts/DubaiW23-Regular.ttf"),
+  "Dubai-Medium": require("./assets/fonts/DubaiW23-Medium.ttf"),
+  "Dubai-Light": require("./assets/fonts/DubaiW23-Light.ttf"),
+  "Dubai-Bold": require("./assets/fonts/DubaiW23-Bold.ttf"),
 };
 
 const langs = {
   ar: require("./lang/ar.json"),
-  en: require("./lang/en.json")
+  en: require("./lang/en.json"),
 };
 
 const isOperationLoginOrRefresh = (operation: Operation) => {
@@ -44,25 +52,38 @@ const isOperationLoginOrRefresh = (operation: Operation) => {
   );
 };
 
+//async function fetchWithTimeout(input: RequestInfo, init?: RequestInit & { timeout?: number }) {
+//  const { timeout = 8000, ...opts } = init ?? {};
+//
+//  const controller = new AbortController();
+//  const id = setTimeout(() => controller.abort(), timeout);
+//
+//  const response = await fetch(input, {
+//    ...opts,
+//    signal: controller.signal,
+//  });
+//  clearTimeout(id);
+//
+//  return response;
+//}
+
 const client = createClient({
-  url: Platform.OS == 'android'? 'http://10.0.2.2:3000/graphql': "http://localhost:3000/graphql",
+  url: Platform.OS == "android" ? "http://10.0.2.2:3000/graphql" : "http://localhost:3000/graphql",
   // TODO: update to cache-and-network
   requestPolicy: "network-only",
   exchanges: [
     dedupExchange,
     cacheExchange,
-    retryExchange({
-      maxNumberAttempts: 3,
+    retryExchange({}),
+    errorExchange({
+      onError: async (error) => {
+        console.log("on error is called:", error?.response?.status);
+        if (error?.response?.status === 401) {
+          await clearTokens();
+          replace("Login");
+        }
+      },
     }),
-    //errorExchange({
-    //  onError: async (error) => {
-    //    //console.log("on error is called:", error.response.status);
-    //    //if (error.response.status === 401) {
-    //    //  await clearTokens();
-    //    //  replace("Login");
-    //    //}
-    //  },
-    //}),
     authExchange<{ accessToken: string; refreshToken: string; accessTokenExp: string }>({
       addAuthToOperation({ authState, operation }): Operation {
         console.log("-> addAuthToOperation_authState:", authState);
@@ -86,8 +107,8 @@ const client = createClient({
         });
       },
       didAuthError({ error }): boolean {
-        console.log("-> didAuthError_status:", error.response.status);
-        return error.response.status === 401;
+        console.log("-> didAuthError_status:", error.response?.status);
+        return error?.response?.status === 401;
       },
       willAuthError({ authState, operation }): boolean {
         console.log("-> willAuthErr_authState:", authState);
@@ -121,12 +142,21 @@ const client = createClient({
         }
 
         console.log("-> refreshing tokens");
-        // THE REFRESH TOKEN IS OBVOIUSLY NOT VALID OR NOT EVEN A TOKEN. CHECK THAT THE REFRESH TOKEN IS VALID.
 
         const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, data);
         console.log("-> refreshTokens_mutate_error:", res.error?.response?.status);
 
-        // TODO: check error
+        if (res.error) {
+          if (res.error.response?.status === 401) {
+            await clearTokens();
+            replace("Login");
+            return null;
+          }
+
+          return null;
+        }
+
+        // extra check
         if (!res.data?.refreshTokens) {
           console.log("-> res.data.refreshTokens is nil -> logging out");
 
@@ -148,10 +178,10 @@ export default function App() {
   const [getFontsLoaded, setFontsLoaded] = useState(false);
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  const [lang, setLocale] = useState('ar');
+  const [lang, setLocale] = useState("ar");
 
   useEffect(() => {
-    if(I18nManager.isRTL == false && lang == 'ar'){
+    if (I18nManager.isRTL == false && lang == "ar") {
       Updates.reloadAsync();
     }
   });
@@ -166,21 +196,21 @@ export default function App() {
     await Font.loadAsync(customFonts);
     setFontsLoaded(true);
   };
-  
+
   const t = (scope, options) => {
-    var name = '';
-    if(options != undefined && options.name != undefined){
+    var name = "";
+    if (options != undefined && options.name != undefined) {
       name = options.name;
     }
-    return langs[lang][scope] != undefined? (name != ''? langs[lang][scope].replace('%{name}', name): langs[lang][scope]): scope;
+    return langs[lang][scope] != undefined ? (name != "" ? langs[lang][scope].replace("%{name}", name) : langs[lang][scope]) : scope;
   };
 
   const screenProps = {
     t: t,
     setLocale: setLocale,
     color: {
-      main: ''
-    }
+      main: "",
+    },
   };
 
   if (!isLoadingComplete || !getFontsLoaded) {
