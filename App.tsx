@@ -177,7 +177,10 @@ export default function App() {
 
   const screenProps = {
     t: t,
-    setLocale: setLocale
+    setLocale: setLocale,
+    color: {
+      main: ''
+    }
   };
 
   if (!isLoadingComplete || !getFontsLoaded) {

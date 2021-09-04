@@ -21,16 +21,10 @@ const windowHeight = Dimensions.get('screen').height;
 const getCurDate = (wd = null) => {
   const weekDays = ['الاحد', 'الاثنين', 'الثلاثاء', 'الاربعاء', 'الخميس', 'الجمعة', 'السبت'];
   const months = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'آيار', 'حزيران', 'تموز', 'آب', 'آيلول', 'تشرين الاول', 'تشرين الثاني', 'كانون الأول'];
-  const d = new Date();
-  if(wd != null) {
-    var dwd = new Date();
-    var currentDay = dwd.getDay();
-    var distance = wd - currentDay;
-    dwd.setDate(dwd.getDate() + distance);
-  }
+  let d = wd == null? new Date(): new Date(Moment().day(wd));
   return {
-    dayName: wd == null? weekDays[d.getDay()]: weekDays[wd],
-    day: wd == null? d.getDate(): dwd.getDate(),
+    dayName: weekDays[d.getDay()],
+    day: d.getDate(),
     monthName: months[d.getMonth()],
     month: d.getMonth()+1,
     year: d.getFullYear()
@@ -83,20 +77,20 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
   return (
     <SafeAreaView style={{backgroundColor: '#919191', flex: 1}}>
 
-      <View style={{backgroundColor: 'rgba(145, 145, 145, 0.85)', paddingTop: 20, paddingBottom: 10, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', position: 'absolute', width: '100%', zIndex: 999, marginTop: getStatusBarHeight()}}>
+      <View style={{backgroundColor: '#919191'+'dd', paddingTop: 20, paddingBottom: 10, paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center', position: 'absolute', width: '100%', zIndex: 999, marginTop: getStatusBarHeight()}}>
         <View style={{flex: 1}}>
           <Text style={{fontFamily: 'Dubai-Medium', color: '#fff', fontSize: 35, textAlign: 'left'}}>{t(getCurDate(selectedWeekDay).dayName)}</Text>
-          <Text style={{fontFamily: 'Dubai-Regular', color: '#fff', textAlign: 'left'}}>{getCurDate().day} - {getCurDate().monthName} - {getCurDate().year}</Text>
+          <Text style={{fontFamily: 'Dubai-Regular', color: '#fff', textAlign: 'left'}}>{getCurDate(selectedWeekDay).day} - {getCurDate(selectedWeekDay).monthName} - {getCurDate(selectedWeekDay).year}</Text>
         </View>
         <SelectModal
           data={[
+            { name: 'السبت', value: 6 },
             { name: 'الاحد', value: 0 },
             { name: 'الاثنين', value: 1 },
             { name: 'الثلاثاء', value: 2 },
             { name: 'الاربعاء', value: 3 },
             { name: 'الخميس', value: 4 },
             { name: 'الجمعة', value: 5 },
-            { name: 'السبت', value: 6 },
           ]}
           onSelect={(name, value, item) => {
             setWeekDay(value);
@@ -114,6 +108,7 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
             </View>
           )}
           initialNumToRender={7}
+          height={600}
         />
       </View>
 
