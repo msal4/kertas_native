@@ -22,7 +22,7 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName; screenProps: any }) {
+export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer ref={navigationRef} linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <RootNavigator />

@@ -19,22 +19,10 @@ let customFonts = {
   "Dubai-Bold": require("./assets/fonts/DubaiW23-Bold.ttf"),
 };
 
-const langs = {
-  ar: require("./lang/ar.json"),
-  en: require("./lang/en.json"),
-};
-
 export default function App() {
   const [getFontsLoaded, setFontsLoaded] = useState(false);
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  const [lang, setLocale] = useState("ar");
-
-  useEffect(() => {
-    if (I18nManager.isRTL == false && lang == "ar") {
-      Updates.reloadAsync();
-    }
-  });
 
   useEffect(() => {
     I18nManager.forceRTL(true);
@@ -47,29 +35,13 @@ export default function App() {
     setFontsLoaded(true);
   };
 
-  const t = (scope, options) => {
-    var name = "";
-    if (options != undefined && options.name != undefined) {
-      name = options.name;
-    }
-    return langs[lang][scope] != undefined ? (name != "" ? langs[lang][scope].replace("%{name}", name) : langs[lang][scope]) : scope;
-  };
-
-  const screenProps = {
-    t: t,
-    setLocale: setLocale,
-    color: {
-      main: "",
-    },
-  };
-
   if (!isLoadingComplete || !getFontsLoaded) {
     return <AppLoading />;
   } else {
     return (
       <GraphQLProvider value={client}>
         <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} screenProps={screenProps} />
+          <Navigation colorScheme={colorScheme} />
           <StatusBar />
         </SafeAreaProvider>
       </GraphQLProvider>
