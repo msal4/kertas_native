@@ -21,7 +21,7 @@ const windowHeight = Dimensions.get("screen").height;
 
 export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
-  const { t, locale } = useTrans();
+  const { locale } = useTrans();
 
   const currDate = dayjs()
     .locale(locale)
@@ -247,6 +247,7 @@ const getClassTime = (item: any) => {
 
 function Schedule({ weekday }: { weekday: number }) {
   const [res, refetch] = useScheduleQuery({ variables: { weekday } });
+  const { t } = useTrans();
 
   if (res.error) {
     return (
