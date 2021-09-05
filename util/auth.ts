@@ -5,7 +5,7 @@ import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Platform } from "react-native";
 import { Operation, createClient, dedupExchange, cacheExchange, errorExchange, makeOperation, fetchExchange } from "urql";
 import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDocument } from "../generated/graphql";
-import { replace } from "../navigation/navigationRef";
+import { currentRouteIs, replace } from "../navigation/navigationRef";
 
 const accessTokenExpKey = "access_token_exp";
 const accessTokenKey = "access_token";
@@ -59,7 +59,7 @@ export const client = createClient({
   exchanges: [
     dedupExchange,
     cacheExchange,
-    retryExchange({}),
+    //retryExchange(),
     errorExchange({
       onError: async (error) => {
         console.log("on error is called:", error?.response?.status);
@@ -120,7 +120,7 @@ export const client = createClient({
         }
 
         if (!data.refreshToken) {
-          console.log("-> refresh token does not exist -> logging out");
+          console.log("-> refresh token does not exist");
           await clearTokens();
           replace("Login");
           return null;

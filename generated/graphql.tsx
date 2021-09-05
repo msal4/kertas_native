@@ -2488,6 +2488,11 @@ export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', cursor: any, node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean } } };
 
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string }> } };
+
 export type ScheduleQueryVariables = Exact<{
   weekday?: Maybe<Scalars['Weekday']>;
   stageID?: Maybe<Scalars['ID']>;
@@ -2570,6 +2575,27 @@ export const ClassesDocument = gql`
 
 export function useClassesQuery(options: Omit<Urql.UseQueryArgs<ClassesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ClassesQuery>({ query: ClassesDocument, ...options });
+};
+export const MeDocument = gql`
+    query Me {
+  me {
+    id
+    name
+    school {
+      id
+      name
+    }
+    stage {
+      id
+      name
+    }
+    role
+  }
+}
+    `;
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
 export const ScheduleDocument = gql`
     query Schedule($weekday: Weekday, $stageID: ID) {

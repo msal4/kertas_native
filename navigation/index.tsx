@@ -24,7 +24,7 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
 
-export default function Navigation({ colorScheme, screenProps }: { colorScheme: ColorSchemeName }) {
+export default function Navigation({ colorScheme, screenProps }: { colorScheme: ColorSchemeName; screenProps: any }) {
   return (
     <NavigationContainer ref={navigationRef} linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <RootNavigator screenProps={screenProps} />
@@ -38,13 +38,13 @@ export default function Navigation({ colorScheme, screenProps }: { colorScheme: 
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function RootNavigator(props) {
+function RootNavigator(props: any) {
   return (
     <Stack.Navigator initialRouteName="Start">
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Home" options={{ headerShown: false }}>
-        {(props1) => <HomeScreen {...props1} screenProps={props.screenProps} />}
+        {(props1) => <HomeScreen {...(props1 as any)} screenProps={props.screenProps} />}
       </Stack.Screen>
       <Stack.Screen name="Assignments" options={{ headerShown: false }}>
         {(props1) => <AssignmentsScreen {...props1} screenProps={props.screenProps} />}
