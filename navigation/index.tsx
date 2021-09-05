@@ -17,7 +17,7 @@ import NotFoundScreen from "../screens/NotFoundScreen";
 import LoginScreen from "../screens/LoginScreen";
 import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
-import Assignments from "../screens/Assignments";
+import AssignmentsScreen from "../screens/AssignmentsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -47,7 +47,7 @@ function RootNavigator(props) {
         {(props1) => <HomeScreen {...props1} screenProps={props.screenProps} />}
       </Stack.Screen>
       <Stack.Screen name="Assignments" options={{ headerShown: false }}>
-        {(props1) => <Assignments {...props1} screenProps={props.screenProps} />}
+        {(props1) => <AssignmentsScreen {...props1} screenProps={props.screenProps} />}
       </Stack.Screen>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />

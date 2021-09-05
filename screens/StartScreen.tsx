@@ -32,6 +32,7 @@ export function StartScreen() {
       }
 
       setErr(res.error);
+      replace("Login");
       setFetching(false);
       return;
     }
