@@ -11,7 +11,7 @@ export function StartScreen() {
     if (res.data?.me.id) {
       // TODO: store results
 
-      replace("Home");
+      replace("Root");
     }
   }, [res.data?.me.id]);
 

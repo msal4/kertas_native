@@ -47,10 +47,8 @@ const getCurDate = (wd?: number) => {
 };
 // clamp (0, 6) => 8 => 1
 
-export default function Home({ navigation, screenProps }: RootStackScreenProps<"Home">) {
+export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek % 6);
-
-  const t = screenProps.t;
 
   return (
     <SafeAreaView style={{ backgroundColor: "#919191", flex: 1 }}>
@@ -90,7 +88,6 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
             setWeekDay(value);
           }}
           selected={selectedWeekday}
-          screenProps={screenProps}
           renderBtn={(selected) => (
             <View
               style={{
@@ -255,66 +252,6 @@ export default function Home({ navigation, screenProps }: RootStackScreenProps<"
           </View>
         </View>
       </ScrollBottomSheet>
-
-      <View
-        style={{
-          backgroundColor: "#f4f4f4",
-          position: "absolute",
-          width: "100%",
-          bottom: 0,
-          flexDirection: "row",
-          paddingBottom: Platform.OS == "ios" ? 15 : 0,
-        }}
-      >
-        <View style={{ flex: 1 }}>
-          <Touchable
-            onPress={() => {
-              clearTokens();
-              navigation.replace("Login");
-            }}
-          >
-            <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-              <Icon name="calendar" size={28} color="#8e8e8e" />
-              <Text style={{ fontFamily: "Dubai-Bold", color: "#9a9a9a", fontSize: 14 }}>الرئيسية</Text>
-            </View>
-          </Touchable>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Touchable>
-            <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-              <Icon name="calendar" size={28} color="#8e8e8e" />
-              <Text style={{ fontFamily: "Dubai-Bold", color: "#9a9a9a", fontSize: 14 }}>المحادثات</Text>
-            </View>
-          </Touchable>
-          <View
-            style={{
-              backgroundColor: "#f01640",
-              width: 13,
-              height: 13,
-              borderRadius: 100,
-              position: "absolute",
-              marginLeft: 30,
-              marginTop: 10,
-            }}
-          ></View>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Touchable>
-            <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-              <Icon name="calendar" size={28} color="#8e8e8e" />
-              <Text style={{ fontFamily: "Dubai-Bold", color: "#9a9a9a", fontSize: 14 }}>الاشعارات</Text>
-            </View>
-          </Touchable>
-        </View>
-        <View style={{ flex: 1 }}>
-          <Touchable>
-            <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-              <Icon name="calendar" size={28} color="#8e8e8e" />
-              <Text style={{ fontFamily: "Dubai-Bold", color: "#9a9a9a", fontSize: 14 }}>معلوماتي</Text>
-            </View>
-          </Touchable>
-        </View>
-      </View>
     </SafeAreaView>
   );
 }

@@ -43,13 +43,13 @@ function RootNavigator(props: any) {
     <Stack.Navigator initialRouteName="Start">
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="Home" options={{ headerShown: false }}>
         {(props1) => <HomeScreen {...(props1 as any)} screenProps={props.screenProps} />}
       </Stack.Screen>
       <Stack.Screen name="Assignments" options={{ headerShown: false }}>
         {(props1) => <Assignments {...props1} screenProps={props.screenProps} />}
       </Stack.Screen>
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -69,17 +69,22 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Home"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
+        tabBarLabelStyle: {
+          fontFamily: "Dubai-Light",
+          fontSize: 13,
+        },
       }}
     >
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<"TabOne">) => ({
-          title: "Tab One",
+        name="Home"
+        component={HomeScreen}
+        options={({ navigation }: RootTabScreenProps<"Home">) => ({
+          title: "الرئيسية",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          headerShown: false,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate("Modal")}
@@ -93,10 +98,26 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name="TabTwo"
+        name="Chat"
         component={TabTwoScreen}
         options={{
-          title: "Tab Two",
+          title: "المحادثات",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Notifications"
+        component={TabTwoScreen}
+        options={{
+          title: "الاشعارات",
+          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Profile"
+        component={TabTwoScreen}
+        options={{
+          title: "معلوماتي",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
