@@ -23,10 +23,10 @@ import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
 
-export default function Navigation({ colorScheme, screenProps }: { colorScheme: ColorSchemeName; screenProps: any }) {
+export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName; screenProps: any }) {
   return (
     <NavigationContainer ref={navigationRef} linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <RootNavigator screenProps={screenProps} />
+      <RootNavigator />
     </NavigationContainer>
   );
 }
@@ -37,19 +37,13 @@ export default function Navigation({ colorScheme, screenProps }: { colorScheme: 
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function RootNavigator(props: any) {
+function RootNavigator() {
   return (
     <Stack.Navigator initialRouteName="Start">
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Home" options={{ headerShown: false }}>
-        {(props1) => <HomeScreen {...(props1 as any)} screenProps={props.screenProps} />}
-      </Stack.Screen>
-      <Stack.Screen name="Assignments" options={{ headerShown: false }}>
-        {(props1) => <AssignmentsScreen {...props1} screenProps={props.screenProps} />}
-      </Stack.Screen>
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
+      <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
