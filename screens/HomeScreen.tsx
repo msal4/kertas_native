@@ -45,7 +45,6 @@ const getCurDate = (wd?: number) => {
     year: d.year(),
   };
 };
-// clamp (0, 6) => 8 => 1
 
 export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek % 6);
@@ -122,7 +121,11 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
         <View style={{ backgroundColor: "#fff", flex: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: "hidden" }}>
           <View style={{ flexDirection: "row" }}>
             <View style={{ flex: 1 }}>
-              <Touchable>
+              <Touchable
+                onPress={() => {
+                  navigation.navigate("Assignments");
+                }}
+              >
                 <View style={{ backgroundColor: "#e0e0e0", justifyContent: "center", alignItems: "center", height: 150 }}>
                   <View
                     style={{
