@@ -1,9 +1,7 @@
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import * as Updates from "expo-updates";
-import React, { useEffect, useState } from "react";
-import { I18nManager } from "react-native";
+import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as GraphQLProvider } from "urql";
 import useCachedResources from "./hooks/useCachedResources";
@@ -20,31 +18,20 @@ let customFonts = {
 };
 
 export default function App() {
-  const [getFontsLoaded, setFontsLoaded] = useState(false);
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
+  const [fontsLoaded] = Font.useFonts(customFonts);
 
-  useEffect(() => {
-    I18nManager.forceRTL(true);
-    I18nManager.allowRTL(true);
-    loadFontsAsync();
-  });
-
-  loadFontsAsync = async () => {
-    await Font.loadAsync(customFonts);
-    setFontsLoaded(true);
-  };
-
-  if (!isLoadingComplete || !getFontsLoaded) {
+  if (!isLoadingComplete || !fontsLoaded) {
     return <AppLoading />;
-  } else {
-    return (
-      <GraphQLProvider value={client}>
-        <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </SafeAreaProvider>
-      </GraphQLProvider>
-    );
   }
+
+  return (
+    <GraphQLProvider value={client}>
+      <SafeAreaProvider>
+        <Navigation colorScheme={colorScheme} />
+        <StatusBar />
+      </SafeAreaProvider>
+    </GraphQLProvider>
+  );
 }
