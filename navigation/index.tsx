@@ -21,6 +21,8 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "../typ
 import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
+import { ProfileScreen } from "../screens/ProfileScreen";
+import { useTrans } from "../context/trans";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -58,6 +60,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
+  const { t } = useTrans();
 
   return (
     <BottomTab.Navigator
@@ -74,7 +77,7 @@ function BottomTabNavigator() {
         name="Home"
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<"Home">) => ({
-          title: "الرئيسية",
+          title: t("home"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerShown: false,
           headerRight: () => (
@@ -93,7 +96,7 @@ function BottomTabNavigator() {
         name="Chat"
         component={TabTwoScreen}
         options={{
-          title: "المحادثات",
+          title: t("chat"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
@@ -101,15 +104,15 @@ function BottomTabNavigator() {
         name="Notifications"
         component={TabTwoScreen}
         options={{
-          title: "الاشعارات",
+          title: t("notifications"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Profile"
-        component={TabTwoScreen}
+        component={ProfileScreen}
         options={{
-          title: "معلوماتي",
+          title: t("my_profile"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />

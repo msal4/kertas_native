@@ -9,6 +9,8 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import { client } from "./util/auth";
 import "dayjs/locale/ar";
+import { TransProvider } from "./context/trans";
+import { useLocale } from "./hooks/useLocale";
 
 let customFonts = {
   "Dubai-Regular": require("./assets/fonts/DubaiW23-Regular.ttf"),
@@ -21,17 +23,20 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [fontsLoaded] = Font.useFonts(customFonts);
+  const { locale, loading: localeLoading } = useLocale();
 
-  if (!isLoadingComplete || !fontsLoaded) {
+  if (!isLoadingComplete || !fontsLoaded || localeLoading) {
     return <AppLoading />;
   }
 
   return (
-    <GraphQLProvider value={client}>
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    </GraphQLProvider>
+    <TransProvider locale={locale}>
+      <GraphQLProvider value={client}>
+        <SafeAreaProvider>
+          <Navigation colorScheme={colorScheme} />
+          <StatusBar />
+        </SafeAreaProvider>
+      </GraphQLProvider>
+    </TransProvider>
   );
 }

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { CombinedError } from "urql";
 import { useLoginMutation, useRefreshTokensMutation } from "../generated/graphql";
-import { replace } from "../navigation";
+import { replace } from "../navigation/navigationRef";
 import { clearTokens, getRefreshToken, setTokens } from "../util/auth";
 
 const AuthContext = createContext<{

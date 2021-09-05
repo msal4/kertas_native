@@ -10,18 +10,18 @@ import Loading from "../components/Loading";
 import { Error } from "../components/Error";
 import dayjs from "dayjs";
 import { weekdays } from "dayjs/locale/ar";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Dialog } from 'react-native-ui-lib';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Dialog } from "react-native-ui-lib";
 
 import { useAssignmentsQuery } from "../generated/graphql";
 
-export default function AssignmentsScreen({ navigation,  screenProps }: any) {
+export default function AssignmentsScreen({ navigation, screenProps }: any) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const [showDate, setShowDate] = useState(false);
   const { top, bottom, right, left } = useSafeAreaInsets();
 
   return (
-    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
       <StatusBar barStyle="light-content" />
       <View
         style={{
@@ -34,10 +34,12 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
         }}
       >
         <View style={{ flex: 1 }}>
-          <View style={{flexDirection: 'row'}}>
-            <Touchable onPress={() => {
-              navigation.goBack();
-            }}>
+          <View style={{ flexDirection: "row" }}>
+            <Touchable
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
               <View
                 style={{
                   borderRadius: 100,
@@ -61,9 +63,11 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
             </View>
           </View>
         </View>
-        <Touchable onPress={() => {
-          setShowDate(true);
-        }}>
+        <Touchable
+          onPress={() => {
+            setShowDate(true);
+          }}
+        >
           <View
             style={{
               backgroundColor: "#bcbcbc",
@@ -81,15 +85,15 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
       </View>
 
       <View style={{ backgroundColor: "#fff", flex: 1 }}>
-        {showDate ?
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={new Date()}
-          mode={"date"}
-          display={Platform.OS === "ios"? "spinner": "calendar"}
-          onChange={() => {}}
-        />
-        : null}
+        {showDate ? (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={new Date()}
+            mode={"date"}
+            display={Platform.OS === "ios" ? "spinner" : "calendar"}
+            onChange={() => {}}
+          />
+        ) : null}
         <Schedule weekday={selectedWeekday} />
       </View>
     </View>
@@ -122,13 +126,13 @@ function Schedule() {
         useSafeArea
         bottom={true}
         height={300}
-        panDirection={'UP'}
+        panDirection={"UP"}
         visible={showDialog}
         onDismiss={() => {
           setShowDialog(false);
         }}
       >
-        <View style={{ backgroundColor: '#fff', flex: 1, borderRadius: 20, overflow: 'hidden', padding: 10 }}>
+        <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10 }}>
           <Text>test</Text>
         </View>
       </Dialog>
@@ -139,9 +143,11 @@ function Schedule() {
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <Touchable onPress={() => {
-              setShowDialog(true);
-            }}>
+            <Touchable
+              onPress={() => {
+                setShowDialog(true);
+              }}
+            >
               <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>

@@ -15,14 +15,16 @@ import { RootStackScreenProps } from "../types";
 import { useScheduleQuery } from "../generated/graphql";
 import { weekdays } from "dayjs/locale/ar";
 import dayjs from "dayjs";
+import { useTrans } from "../context/trans";
 
 const windowHeight = Dimensions.get("screen").height;
 
 export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
+  const { t, locale } = useTrans();
 
   const currDate = dayjs()
-    .locale("ar")
+    .locale(locale)
     .add(selectedWeekday - dayjs().day(), "day");
 
   return (
@@ -296,9 +298,4 @@ function Schedule({ weekday }: { weekday: number }) {
       <Loading isLoading={res.fetching} height={500} color={"#fff"} />
     </>
   );
-}
-
-// TODO: remove after implementing localization.
-function t(term: string): string {
-  return term;
 }
