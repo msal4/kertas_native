@@ -1,0 +1,15 @@
+query Me {
+  me {
+    id
+    name
+    school {
+      id
+      name
+    }
+    stage {
+      id
+      name
+    }
+    role
+  }
+}

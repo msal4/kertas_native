@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState } from "react";
 import { Text, View, Dimensions, FlatList, Platform } from "react-native";
-import { SafeAreaView, useSafeArea, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
 import { Touchable } from "../components/Touchable";
@@ -9,11 +9,10 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import Moment from "moment";
 import SelectModal from "../components/Select";
 import Loading from "../components/Loading";
-import Error from "../components/Error";
+import { Error } from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useScheduleQuery } from "../generated/graphql";
-import { replace } from "../navigation";
 import { clearTokens } from "../util/auth";
 
 const windowHeight = Dimensions.get("screen").height;
