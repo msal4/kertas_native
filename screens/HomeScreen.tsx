@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Text, View, Dimensions, FlatList, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "react-native-vector-icons/FontAwesome5";
+import { FontAwesome as Icon } from "@expo/vector-icons";
 import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
 import { Touchable } from "../components/Touchable";
 import { getStatusBarHeight } from "react-native-status-bar-height";
@@ -13,41 +13,19 @@ import { Error } from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useScheduleQuery } from "../generated/graphql";
-import { clearTokens } from "../util/auth";
+import { weekdays } from "dayjs/locale/ar";
+import dayjs from "dayjs";
+import { useTrans } from "../context/trans";
 
 const windowHeight = Dimensions.get("screen").height;
 
-const getCurDate = (wd?: number) => {
-  const weekDays = ["الاحد", "الاثنين", "الثلاثاء", "الاربعاء", "الخميس", "الجمعة", "السبت"];
-  const months = [
-    "كانون الثاني",
-    "شباط",
-    "آذار",
-    "نيسان",
-    "آيار",
-    "حزيران",
-    "تموز",
-    "آب",
-    "آيلول",
-    "تشرين الاول",
-    "تشرين الثاني",
-    "كانون الأول",
-  ];
-
-  let d = wd == null || wd == undefined ? Moment() : Moment().day(wd < 6 ? wd + 7 : wd);
-
-  return {
-    dayName: weekDays[d.day()],
-    day: d.date(),
-    dayOfWeek: d.day() < 6 ? d.day() + 7 : d.day(),
-    monthName: months[d.month()],
-    month: d.month() + 1,
-    year: d.year(),
-  };
-};
-
 export default function Home({ navigation }: RootStackScreenProps<"Home">) {
-  const [selectedWeekday, setWeekDay] = useState(getCurDate().dayOfWeek % 6);
+  const [selectedWeekday, setWeekDay] = useState(dayjs().day());
+  const { locale } = useTrans();
+
+  const currDate = dayjs()
+    .locale(locale)
+    .add(selectedWeekday - dayjs().day(), "day");
 
   return (
     <SafeAreaView style={{ backgroundColor: "#919191", flex: 1 }}>
@@ -66,28 +44,16 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
         }}
       >
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 28, textAlign: "left" }}>
-            {t(getCurDate(selectedWeekday).dayName)}
-          </Text>
-          <Text style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left" }}>
-            {getCurDate(selectedWeekday).day} - {getCurDate(selectedWeekday).monthName} - {getCurDate(selectedWeekday).year}
-          </Text>
+          <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 35, textAlign: "left" }}>{currDate.format("dddd")}</Text>
+          <Text style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left" }}>{currDate.format("D - MMMM - YYYY")}</Text>
         </View>
         <SelectModal
-          data={[
-            { name: "السبت", value: 6 },
-            { name: "الاحد", value: 0 },
-            { name: "الاثنين", value: 1 },
-            { name: "الثلاثاء", value: 2 },
-            { name: "الاربعاء", value: 3 },
-            { name: "الخميس", value: 4 },
-            { name: "الجمعة", value: 5 },
-          ]}
-          onSelect={async (name, value, item) => {
+          data={weekdays!.map((name, value) => ({ name, value }))}
+          onSelect={({ value }) => {
             setWeekDay(value);
           }}
           selected={selectedWeekday}
-          renderBtn={(selected) => (
+          renderBtn={() => (
             <View
               style={{
                 backgroundColor: "#bcbcbc",
@@ -281,8 +247,7 @@ const getClassTime = (item: any) => {
 
 function Schedule({ weekday }: { weekday: number }) {
   const [res, refetch] = useScheduleQuery({ variables: { weekday } });
-
-  console.log(res.error, res.fetching);
+  const { t } = useTrans();
 
   if (res.error) {
     return (
@@ -304,10 +269,10 @@ function Schedule({ weekday }: { weekday: number }) {
       {res.data?.schedule ? (
         <FlatList
           data={res.data.schedule}
-          keyExtractor={(item, index) => index + "a"}
+          keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 140, paddingBottom: 250 }}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <View style={{ borderRadius: 20, overflow: "hidden", marginBottom: 15 }}>
               <View style={{ flexDirection: "row", padding: 15, backgroundColor: "#e4e4e4" }}>
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", paddingRight: 10 }}>
@@ -334,9 +299,4 @@ function Schedule({ weekday }: { weekday: number }) {
       <Loading isLoading={res.fetching} height={500} color={"#fff"} />
     </>
   );
-}
-
-// TODO: remove after implementing localization.
-function t(term: string): string {
-  return term;
 }

@@ -5,7 +5,7 @@
  */
 import { FontAwesome } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, DefaultTheme, DarkTheme, createNavigationContainerRef, StackActions } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
 import { ColorSchemeName, Pressable } from "react-native";
@@ -13,9 +13,7 @@ import { ColorSchemeName, Pressable } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import ModalScreen from "../screens/ModalScreen";
-import NotFoundScreen from "../screens/NotFoundScreen";
 import LoginScreen from "../screens/LoginScreen";
-import TabOneScreen from "../screens/TabOneScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import AssignmentsScreen from "../screens/AssignmentsScreen";
 import HomeScreen from "../screens/HomeScreen";
@@ -23,11 +21,13 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from "../typ
 import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
+import { ProfileScreen } from "../screens/ProfileScreen";
+import { useTrans } from "../context/trans";
 
-export default function Navigation({ colorScheme, screenProps }: { colorScheme: ColorSchemeName; screenProps: any }) {
+export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
     <NavigationContainer ref={navigationRef} linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <RootNavigator screenProps={screenProps} />
+      <RootNavigator />
     </NavigationContainer>
   );
 }
@@ -38,19 +38,13 @@ export default function Navigation({ colorScheme, screenProps }: { colorScheme: 
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function RootNavigator(props: any) {
+function RootNavigator() {
   return (
     <Stack.Navigator initialRouteName="Start">
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Home" options={{ headerShown: false }}>
-        {(props1) => <HomeScreen {...(props1 as any)} screenProps={props.screenProps} />}
-      </Stack.Screen>
-      <Stack.Screen name="Assignments" options={{ headerShown: false }}>
-        {(props1) => <AssignmentsScreen {...props1} screenProps={props.screenProps} />}
-      </Stack.Screen>
-      <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: "Oops!" }} />
+      <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
@@ -66,6 +60,7 @@ const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
+  const { t } = useTrans();
 
   return (
     <BottomTab.Navigator
@@ -82,7 +77,7 @@ function BottomTabNavigator() {
         name="Home"
         component={HomeScreen}
         options={({ navigation }: RootTabScreenProps<"Home">) => ({
-          title: "الرئيسية",
+          title: t("home"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerShown: false,
           headerRight: () => (
@@ -101,7 +96,7 @@ function BottomTabNavigator() {
         name="Chat"
         component={TabTwoScreen}
         options={{
-          title: "المحادثات",
+          title: t("chat"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
@@ -109,15 +104,15 @@ function BottomTabNavigator() {
         name="Notifications"
         component={TabTwoScreen}
         options={{
-          title: "الاشعارات",
+          title: t("notifications"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
       <BottomTab.Screen
         name="Profile"
-        component={TabTwoScreen}
+        component={ProfileScreen}
         options={{
-          title: "معلوماتي",
+          title: t("my_profile"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />

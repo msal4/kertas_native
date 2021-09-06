@@ -1,13 +1,13 @@
-import { Platform } from "react-native";
+import React, { FC } from "react";
+import { Platform, TouchableNativeFeedbackProps, TouchableOpacityProps } from "react-native";
 
 import { TouchableNativeFeedback, TouchableOpacity } from "react-native";
-import React from "react";
 
-export const Touchable = (props) => {
+export const Touchable: FC<TouchableOpacityProps & TouchableNativeFeedbackProps> = (props) => {
   return Platform.OS === "android" ? (
     <TouchableNativeFeedback
       disabled={props.disabled == undefined ? false : props.disabled}
-      background={TouchableNativeFeedback.Ripple("rgba(0,0,0,0.1)")}
+      background={TouchableNativeFeedback.Ripple("rgba(0,0,0,0.1)", true)}
       {...props}
     >
       {props.children}

@@ -1,9 +1,7 @@
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import * as Updates from "expo-updates";
-import React, { useEffect, useState } from "react";
-import { I18nManager } from "react-native";
+import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as GraphQLProvider } from "urql";
 import useCachedResources from "./hooks/useCachedResources";
@@ -11,6 +9,8 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import { client } from "./util/auth";
 import "dayjs/locale/ar";
+import { TransProvider } from "./context/trans";
+import { useLocale } from "./hooks/useLocale";
 
 let customFonts = {
   "Dubai-Regular": require("./assets/fonts/DubaiW23-Regular.ttf"),
@@ -19,60 +19,24 @@ let customFonts = {
   "Dubai-Bold": require("./assets/fonts/DubaiW23-Bold.ttf"),
 };
 
-const langs = {
-  ar: require("./lang/ar.json"),
-  en: require("./lang/en.json"),
-};
-
 export default function App() {
-  const [getFontsLoaded, setFontsLoaded] = useState(false);
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
-  const [lang, setLocale] = useState("ar");
+  const [fontsLoaded] = Font.useFonts(customFonts);
+  const { locale, loading: localeLoading } = useLocale();
 
-  useEffect(() => {
-    if (I18nManager.isRTL == false && lang == "ar") {
-      Updates.reloadAsync();
-    }
-  });
-
-  useEffect(() => {
-    I18nManager.forceRTL(true);
-    I18nManager.allowRTL(true);
-    loadFontsAsync();
-  });
-
-  loadFontsAsync = async () => {
-    await Font.loadAsync(customFonts);
-    setFontsLoaded(true);
-  };
-
-  const t = (scope, options) => {
-    var name = "";
-    if (options != undefined && options.name != undefined) {
-      name = options.name;
-    }
-    return langs[lang][scope] != undefined ? (name != "" ? langs[lang][scope].replace("%{name}", name) : langs[lang][scope]) : scope;
-  };
-
-  const screenProps = {
-    t: t,
-    setLocale: setLocale,
-    color: {
-      main: "",
-    },
-  };
-
-  if (!isLoadingComplete || !getFontsLoaded) {
+  if (!isLoadingComplete || !fontsLoaded || localeLoading) {
     return <AppLoading />;
-  } else {
-    return (
+  }
+
+  return (
+    <TransProvider locale={locale}>
       <GraphQLProvider value={client}>
         <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} screenProps={screenProps} />
+          <Navigation colorScheme={colorScheme} />
           <StatusBar />
         </SafeAreaProvider>
       </GraphQLProvider>
-    );
-  }
+    </TransProvider>
+  );
 }

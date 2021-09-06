@@ -52,8 +52,8 @@ const isOperationLoginOrRefresh = (operation: Operation) => {
   );
 };
 
-export const client = createClient({ //10.0.2.2
-  url: Platform.OS == "android" ? "http://10.10.20.104:3000/graphql" : "http://localhost:3000/graphql",
+export const client = createClient({
+  url: Platform.OS == "android" ? "http://10.0.2.2:3000/graphql" : "http://localhost:3000/graphql",
   // TODO: update to cache-and-network
   requestPolicy: "network-only",
   exchanges: [

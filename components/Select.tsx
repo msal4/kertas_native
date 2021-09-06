@@ -1,10 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList } from "react-native";
+import React, { useState, useEffect, ReactNode } from "react";
+import { View, Text, FlatList, ListRenderItemInfo } from "react-native";
 import Modal from "react-native-modal";
 import { Touchable } from "./Touchable";
 
-export default function SelectModal(props) {
+type Item = { name: string; value: number };
 
+interface SelectModalProps {
+  selected: number;
+  data: Array<Item>;
+  onSelect: (data: Item) => void;
+  height?: string | number;
+  initialNumToRender?: number;
+  renderBtn: (name: string) => ReactNode;
+}
+
+export default function SelectModal(props: SelectModalProps) {
   const [showed, setShowed] = useState(false);
   const [selectedTitle, setSelectedTitle] = useState("");
 
@@ -16,18 +26,18 @@ export default function SelectModal(props) {
     }
   });
 
-  const renderItem = ({ item, index }) => {
+  const renderItem = ({ item }: ListRenderItemInfo<Item>) => {
     return (
       <View style={{ borderRadius: 20, overflow: "hidden", marginBottom: 15 }}>
         <Touchable
           onPress={() => {
             setSelectedTitle(item.name);
             setShowed(false);
-            props.onSelect(item.name, item.value, item);
+            props.onSelect(item);
           }}
         >
-          <View style={{ flexDirection: "row", padding: 15, backgroundColor: props.selected === item.value? "#919191": "#e4e4e4" }}>
-            <Text style={{ fontFamily: "Dubai-Bold", color: props.selected === item.value? "#fff": "#919191" }}>{item.name}</Text>
+          <View style={{ flexDirection: "row", padding: 15, backgroundColor: props.selected === item.value ? "#919191" : "#e4e4e4" }}>
+            <Text style={{ fontFamily: "Dubai-Bold", color: props.selected === item.value ? "#fff" : "#919191" }}>{item.name}</Text>
           </View>
         </Touchable>
       </View>
@@ -53,7 +63,7 @@ export default function SelectModal(props) {
         >
           <FlatList
             data={props.data}
-            keyExtractor={(item, index) => index + "a"}
+            keyExtractor={(item, index) => index + item.name + item.value}
             renderItem={renderItem}
             initialNumToRender={props.initialNumToRender ? props.initialNumToRender : 10}
             showsVerticalScrollIndicator={false}

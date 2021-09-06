@@ -13,12 +13,13 @@ import DatePicker from "../components/DatePicker";
 import CalendarIcon from "../assets/icons/Calendar.svg";
 
 import { useAssignmentsQuery } from "../generated/graphql";
+import { useTrans } from "../context/trans";
 
 export default function AssignmentsScreen({ navigation, screenProps }: any) {
-  const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const [showDate, setShowDate] = useState(false);
   const { top, bottom, right, left } = useSafeAreaInsets();
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const { t, locale } = useTrans();
 
   return (
     <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
@@ -50,15 +51,15 @@ export default function AssignmentsScreen({ navigation, screenProps }: any) {
                   alignItems: "center",
                 }}
               >
-                <Icon name="chevron-right" size={24} color="#fff" />
+                <Icon name={locale === "ar" ? "chevron-right" : "chevron-left"} size={24} color="#fff" />
               </View>
             </Touchable>
             <View style={{ flex: 1 }}>
               <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 28, textAlign: "left", marginHorizontal: 10 }}>
-                الواجبات
+                {t("assignments")}
               </Text>
               <Text style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left" }}>
-                {dayjs(selectedDate).locale("ar").format("D - MMMM - YYYY")}
+                {dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY")}
               </Text>
             </View>
           </View>
