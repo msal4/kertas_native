@@ -3,7 +3,7 @@ import { SvgXml } from 'react-native-svg';
 
 interface IconProps {
   name: string;
-  filled?: string;
+  filled?: boolean;
   color?: string;
   width?: number;
   height?: number;
