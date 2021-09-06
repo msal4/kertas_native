@@ -13,6 +13,7 @@ import { weekdays } from "dayjs/locale/ar";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dialog } from 'react-native-ui-lib';
 import DatePicker from '../components/DatePicker';
+import IconSet from '../components/Icons';
 
 import { useAssignmentsQuery } from "../generated/graphql";
 
@@ -77,7 +78,7 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
               alignItems: "center",
             }}
           >
-            <Icon name="calendar" size={28} color="#fff" />
+            <IconSet name="Calendar" color="#fff" width={28} height={28} />
           </View>
         </Touchable>
       </View>
