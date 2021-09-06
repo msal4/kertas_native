@@ -2478,10 +2478,12 @@ export type RefreshTokensMutationVariables = Exact<{
 
 export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthData', accessToken: string, refreshToken: string } };
 
-export type AssignmentsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AssignmentsQueryVariables = Exact<{
+  dueDate: Scalars['Time'];
+}>;
 
 
-export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', name: string, description?: Maybe<string>, dueDate: any, class: { __typename?: 'Class', name: string } }> }>>> } };
+export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, class: { __typename?: 'Class', name: string } }> }>>> } };
 
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2532,8 +2534,8 @@ export function useRefreshTokensMutation() {
   return Urql.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument);
 };
 export const AssignmentsDocument = gql`
-    query Assignments {
-  assignments {
+    query Assignments($dueDate: Time!) {
+  assignments(where: {dueDate: $dueDate}) {
     edges {
       node {
         name
@@ -2542,6 +2544,7 @@ export const AssignmentsDocument = gql`
         class {
           name
         }
+        isExam
       }
     }
   }

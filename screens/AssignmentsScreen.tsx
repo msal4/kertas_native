@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { weekdays } from "dayjs/locale/ar";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Dialog } from 'react-native-ui-lib';
+import DatePicker from '../components/DatePicker';
 
 import { useAssignmentsQuery } from "../generated/graphql";
 
@@ -19,6 +20,7 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const [showDate, setShowDate] = useState(false);
   const { top, bottom, right, left } = useSafeAreaInsets();
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
     <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: '#fff' }}>
@@ -52,11 +54,11 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
               </View>
             </Touchable>
             <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 35, textAlign: "left", marginHorizontal: 10 }}>
+              <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 28, textAlign: "left", marginHorizontal: 10 }}>
                 الواجبات
               </Text>
               <Text style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left" }}>
-                {dayjs().locale("ar").format("D - MMMM - YYYY")}
+                {dayjs(selectedDate).locale("ar").format("D - MMMM - YYYY")}
               </Text>
             </View>
           </View>
@@ -80,25 +82,29 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
         </Touchable>
       </View>
 
+      <DatePicker
+        showed={showDate}
+        value={selectedDate}
+        onDismiss={() => {
+          setShowDate(false);
+        }}
+        onChange={(date) => {
+          setSelectedDate(date);
+        }}
+      />
+
       <View style={{ backgroundColor: "#fff", flex: 1 }}>
-        {showDate ?
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={new Date()}
-          mode={"date"}
-          display={Platform.OS === "ios"? "spinner": "calendar"}
-          onChange={() => {}}
-        />
-        : null}
-        <Schedule weekday={selectedWeekday} />
+        <Schedule selectedDate={selectedDate} />
       </View>
     </View>
   );
 }
 
-function Schedule() {
-  const [res, refetch] = useAssignmentsQuery();
+function Schedule({ selectedDate }) {
+  const [res, refetch] = useAssignmentsQuery({ variables: { dueDate: selectedDate } });
   const [showDialog, setShowDialog] = useState(false);
+
+  console.log(res, res.fetching);
 
   if (res.error) {
     return (

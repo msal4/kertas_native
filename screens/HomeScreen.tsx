@@ -66,7 +66,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
         }}
       >
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 35, textAlign: "left" }}>
+          <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 28, textAlign: "left" }}>
             {t(getCurDate(selectedWeekday).dayName)}
           </Text>
           <Text style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left" }}>

@@ -1,5 +1,5 @@
-query Assignments {
-    assignments {
+query Assignments ($dueDate: Time!) {
+    assignments (where: {dueDate: $dueDate}) {
         edges {
             node {
                 name,
@@ -7,7 +7,8 @@ query Assignments {
                 dueDate,
                 class {
                     name
-                }
+                },
+                isExam
             }
         }
     }

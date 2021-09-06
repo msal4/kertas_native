@@ -1,5 +1,5 @@
-import React, { Component, useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableNativeFeedback } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, FlatList } from "react-native";
 import Modal from "react-native-modal";
 import { Touchable } from "./Touchable";
 
