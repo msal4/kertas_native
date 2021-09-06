@@ -1,13 +1,13 @@
-query Assignments ($dueDate: Time!) {
-    assignments (where: {dueDate: $dueDate}) {
+query Assignments ($where: AssignmentWhereInput) {
+    assignments (where: $where) {
         edges {
             node {
-                name,
-                description,
-                dueDate,
+                name
+                description
+                dueDate
                 class {
                     name
-                },
+                }
                 isExam
             }
         }

@@ -34,9 +34,10 @@ export default function DatePicker(props) {
       <Dialog
         migrate
         useSafeArea
+        top={true}
         bottom={true}
         height={300}
-        panDirection={'DOWN'}
+        panDirection={'UP'}
         visible={props.showed}
         onDismiss={props.onDismiss}
       >

@@ -2479,7 +2479,7 @@ export type RefreshTokensMutationVariables = Exact<{
 export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthData', accessToken: string, refreshToken: string } };
 
 export type AssignmentsQueryVariables = Exact<{
-  dueDate: Scalars['Time'];
+  where?: Maybe<AssignmentWhereInput>;
 }>;
 
 
@@ -2534,8 +2534,8 @@ export function useRefreshTokensMutation() {
   return Urql.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument);
 };
 export const AssignmentsDocument = gql`
-    query Assignments($dueDate: Time!) {
-  assignments(where: {dueDate: $dueDate}) {
+    query Assignments($where: AssignmentWhereInput) {
+  assignments(where: $where) {
     edges {
       node {
         name

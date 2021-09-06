@@ -2,29 +2,26 @@ import * as React from "react";
 import { useState } from "react";
 import { Text, View, FlatList, StatusBar, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Icon from "react-native-vector-icons/FontAwesome5";
+import { FontAwesome5 as Icon } from "@expo/vector-icons";
 import Moment from "moment";
 import { Touchable } from "../components/Touchable";
-import SelectModal from "../components/Select";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
 import dayjs from "dayjs";
-import { weekdays } from "dayjs/locale/ar";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Dialog } from 'react-native-ui-lib';
-import DatePicker from '../components/DatePicker';
-import IconSet from '../components/Icons';
+import { Dialog } from "react-native-ui-lib";
+import DatePicker from "../components/DatePicker";
+import CalendarIcon from "../assets/icons/Calendar.svg";
 
 import { useAssignmentsQuery } from "../generated/graphql";
 
-export default function AssignmentsScreen({ navigation,  screenProps }: any) {
+export default function AssignmentsScreen({ navigation, screenProps }: any) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const [showDate, setShowDate] = useState(false);
   const { top, bottom, right, left } = useSafeAreaInsets();
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   return (
-    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
       <StatusBar barStyle="light-content" />
       <View
         style={{
@@ -37,10 +34,12 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
         }}
       >
         <View style={{ flex: 1 }}>
-          <View style={{flexDirection: 'row'}}>
-            <Touchable onPress={() => {
-              navigation.goBack();
-            }}>
+          <View style={{ flexDirection: "row" }}>
+            <Touchable
+              onPress={() => {
+                navigation.goBack();
+              }}
+            >
               <View
                 style={{
                   borderRadius: 100,
@@ -64,9 +63,11 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
             </View>
           </View>
         </View>
-        <Touchable onPress={() => {
-          setShowDate(true);
-        }}>
+        <Touchable
+          onPress={() => {
+            setShowDate(true);
+          }}
+        >
           <View
             style={{
               backgroundColor: "#bcbcbc",
@@ -78,7 +79,7 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
               alignItems: "center",
             }}
           >
-            <IconSet name="Calendar" color="#fff" width={28} height={28} />
+            <CalendarIcon name="Calendar" color="#fff" width={28} height={28} />
           </View>
         </Touchable>
       </View>
@@ -101,8 +102,15 @@ export default function AssignmentsScreen({ navigation,  screenProps }: any) {
   );
 }
 
-function Schedule({ selectedDate }) {
-  const [res, refetch] = useAssignmentsQuery({ variables: { dueDate: selectedDate } });
+function Schedule({ selectedDate }: { selectedDate: Date }) {
+  const [res, refetch] = useAssignmentsQuery({
+    variables: {
+      where: {
+        dueDateGTE: dayjs(selectedDate).set("hour", 3).set("minute", 0).set("second", 0).toDate(),
+        dueDateLT: dayjs(selectedDate).add(1, "day").set("hour", 3).set("minute", 0).set("second", 0).toDate(),
+      },
+    },
+  });
   const [showDialog, setShowDialog] = useState(false);
 
   console.log(res, res.fetching);
@@ -129,13 +137,13 @@ function Schedule({ selectedDate }) {
         useSafeArea
         bottom={true}
         height={300}
-        panDirection={'UP'}
+        panDirection={"UP"}
         visible={showDialog}
         onDismiss={() => {
           setShowDialog(false);
         }}
       >
-        <View style={{ backgroundColor: '#fff', flex: 1, borderRadius: 20, overflow: 'hidden', padding: 10 }}>
+        <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10 }}>
           <Text>test</Text>
         </View>
       </Dialog>
@@ -146,9 +154,11 @@ function Schedule({ selectedDate }) {
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <Touchable onPress={() => {
-              setShowDialog(true);
-            }}>
+            <Touchable
+              onPress={() => {
+                setShowDialog(true);
+              }}
+            >
               <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
