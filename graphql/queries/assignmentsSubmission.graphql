@@ -1,0 +1,10 @@
+query AssignmentsSubmission ($assignmentID: ID) {
+    assignmentSubmissions (assignmentID: $assignmentID) {
+        edges {
+            node {
+                files
+                submittedAt
+            }
+        }
+    }
+}

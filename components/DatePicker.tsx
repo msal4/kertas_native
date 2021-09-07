@@ -8,7 +8,7 @@ function DateComponent(props) {
   return (
     <DateTimePicker
       testID="dateTimePicker"
-      value={props.selectedDate}
+      value={props.selectedDate?? new Date()}
       mode={"date"}
       display={Platform.OS === "ios"? "spinner": "calendar"}
       onChange={(e, date) => {

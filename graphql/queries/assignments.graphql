@@ -2,6 +2,7 @@ query Assignments ($where: AssignmentWhereInput) {
     assignments (where: $where) {
         edges {
             node {
+                id
                 name
                 description
                 dueDate

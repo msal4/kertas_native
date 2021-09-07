@@ -3,5 +3,6 @@
   "chat": "Chat",
   "notifications": "Notifications",
   "my_profile": "My Profile",
-  "assignments": "Assignments"
+  "assignments": "Assignments",
+  "upload_assignment_file": "Upload Assignment File"
 }

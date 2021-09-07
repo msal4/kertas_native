@@ -2483,7 +2483,14 @@ export type AssignmentsQueryVariables = Exact<{
 }>;
 
 
-export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, class: { __typename?: 'Class', name: string } }> }>>> } };
+export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, class: { __typename?: 'Class', name: string } }> }>>> } };
+
+export type AssignmentsSubmissionQueryVariables = Exact<{
+  assignmentID?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type AssignmentsSubmissionQuery = { __typename?: 'Query', assignmentSubmissions: { __typename?: 'AssignmentSubmissionConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentSubmissionEdge', node?: Maybe<{ __typename?: 'AssignmentSubmission', files: Array<string>, submittedAt?: Maybe<any> }> }>>> } };
 
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2538,6 +2545,7 @@ export const AssignmentsDocument = gql`
   assignments(where: $where) {
     edges {
       node {
+        id
         name
         description
         dueDate
@@ -2553,6 +2561,22 @@ export const AssignmentsDocument = gql`
 
 export function useAssignmentsQuery(options: Omit<Urql.UseQueryArgs<AssignmentsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AssignmentsQuery>({ query: AssignmentsDocument, ...options });
+};
+export const AssignmentsSubmissionDocument = gql`
+    query AssignmentsSubmission($assignmentID: ID) {
+  assignmentSubmissions(assignmentID: $assignmentID) {
+    edges {
+      node {
+        files
+        submittedAt
+      }
+    }
+  }
+}
+    `;
+
+export function useAssignmentsSubmissionQuery(options: Omit<Urql.UseQueryArgs<AssignmentsSubmissionQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AssignmentsSubmissionQuery>({ query: AssignmentsSubmissionDocument, ...options });
 };
 export const ClassesDocument = gql`
     query Classes {
