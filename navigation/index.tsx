@@ -23,6 +23,8 @@ import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
 import { ProfileScreen } from "../screens/ProfileScreen";
 import { useTrans } from "../context/trans";
+import { ChatScreen } from "../screens/ChatScreen";
+import { ConversationScreen } from "../screens/ConversationScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -44,6 +46,7 @@ function RootNavigator() {
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Conversation" component={ConversationScreen} />
       <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
@@ -94,7 +97,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Chat"
-        component={TabTwoScreen}
+        component={ChatScreen}
         options={{
           title: t("chat"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,

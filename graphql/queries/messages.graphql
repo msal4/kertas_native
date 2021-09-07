@@ -1,0 +1,17 @@
+query Messages($groupID: ID!) {
+  messages(groupID: $groupID, orderBy: {field: CREATED_AT, direction: DESC}) {
+    edges {
+      node {
+        id
+        content
+        owner {
+          id
+          name
+          image
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}

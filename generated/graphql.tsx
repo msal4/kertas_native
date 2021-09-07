@@ -2471,6 +2471,13 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', loginUser: { __typename?: 'AuthData', accessToken: string, refreshToken: string } };
 
+export type PostMessageMutationVariables = Exact<{
+  input: PostMessageInput;
+}>;
+
+
+export type PostMessageMutation = { __typename?: 'Mutation', postMessage: { __typename?: 'Message', id: string, content: string } };
+
 export type RefreshTokensMutationVariables = Exact<{
   refreshToken: Scalars['String'];
 }>;
@@ -2488,10 +2495,22 @@ export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', cursor: any, node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean } } };
 
+export type GroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string }>> }> }>>> } };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string }> } };
+
+export type MessagesQueryVariables = Exact<{
+  groupID: Scalars['ID'];
+}>;
+
+
+export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, updatedAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> } };
 
 export type ScheduleQueryVariables = Exact<{
   weekday?: Maybe<Scalars['Weekday']>;
@@ -2518,6 +2537,18 @@ export const LoginDocument = gql`
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const PostMessageDocument = gql`
+    mutation PostMessage($input: PostMessageInput!) {
+  postMessage(input: $input) {
+    id
+    content
+  }
+}
+    `;
+
+export function usePostMessageMutation() {
+  return Urql.useMutation<PostMessageMutation, PostMessageMutationVariables>(PostMessageDocument);
 };
 export const RefreshTokensDocument = gql`
     mutation RefreshTokens($refreshToken: String!) {
@@ -2576,6 +2607,26 @@ export const ClassesDocument = gql`
 export function useClassesQuery(options: Omit<Urql.UseQueryArgs<ClassesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ClassesQuery>({ query: ClassesDocument, ...options });
 };
+export const GroupsDocument = gql`
+    query Groups {
+  groups {
+    edges {
+      node {
+        id
+        name
+        users {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+export function useGroupsQuery(options: Omit<Urql.UseQueryArgs<GroupsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GroupsQuery>({ query: GroupsDocument, ...options });
+};
 export const MeDocument = gql`
     query Me {
   me {
@@ -2596,6 +2647,29 @@ export const MeDocument = gql`
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const MessagesDocument = gql`
+    query Messages($groupID: ID!) {
+  messages(groupID: $groupID, orderBy: {field: CREATED_AT, direction: DESC}) {
+    edges {
+      node {
+        id
+        content
+        owner {
+          id
+          name
+          image
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+    `;
+
+export function useMessagesQuery(options: Omit<Urql.UseQueryArgs<MessagesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MessagesQuery>({ query: MessagesDocument, ...options });
 };
 export const ScheduleDocument = gql`
     query Schedule($weekday: Weekday, $stageID: ID) {

@@ -15,6 +15,12 @@ export function StartScreen() {
     }
   }, [res.data?.me.id]);
 
+  useEffect(() => {
+    if (res.error?.graphQLErrors?.some((e) => e.extensions?.code === "NOT_FOUND")) {
+      replace("Login");
+    }
+  }, [res.error]);
+
   return (
     <>
       <Error color="black" onPress={refetch} isError={!!res.error} msg="Something went wrong" height={500} />
