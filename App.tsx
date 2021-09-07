@@ -12,6 +12,10 @@ import "dayjs/locale/ar";
 import { TransProvider } from "./context/trans";
 import { useLocale } from "./hooks/useLocale";
 import { TextProps, ThemeManager } from "react-native-ui-lib";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 let customFonts = {
   "Dubai-Regular": require("./assets/fonts/DubaiW23-Regular.ttf"),

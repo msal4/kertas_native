@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Locale } from "../hooks/useLocale";
 import { I18nManager } from "react-native";
 import * as Updates from "expo-updates";
+import dayjs from "dayjs";
 
 const trans = {
   ar: require("../assets/langs/ar.json"),
@@ -23,6 +24,8 @@ export const TransProvider: FC<{ locale: Locale }> = ({ locale: l, children }) =
   const [locale, setLocale] = useState<Locale>(l);
 
   useEffect(() => {
+    dayjs.locale(locale);
+
     if (locale === "ar" && !I18nManager.isRTL) {
       I18nManager.forceRTL(true);
       Updates.reloadAsync();

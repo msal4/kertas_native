@@ -14,10 +14,8 @@ export function useLocale() {
     setLoading(true);
 
     const l = await AsyncStorage.getItem(localeKey);
-    console.log("current storage locale:", l);
     const currentLocale = l ? l : Localization.locale;
     if (currentLocale === "ar" || currentLocale === "en") {
-      console.log("setLocale is called");
       setLocale(currentLocale as Locale);
     }
 
