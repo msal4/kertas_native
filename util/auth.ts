@@ -154,7 +154,6 @@ export const client = createClient({
         return { ...res.data.refreshTokens, accessTokenExp: getTokenExp(res.data.refreshTokens.accessToken) };
       },
     }),
-    fetchExchange,
     multipartFetchExchange,
     subscriptionExchange({
       forwardSubscription: (operation) => subscriptionClient.request(operation) as any,
