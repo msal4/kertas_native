@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Localization from "expo-localization";
+import * as Localization from "expo-localization";
 import { useEffect, useState } from "react";
 
 export type Locale = "en" | "ar";

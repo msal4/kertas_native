@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import Loading from "../components/Loading";
-import { CurrentUserFragment, useMeQuery } from "../generated/graphql";
+import { useMeQuery } from "../generated/graphql";
 import { replace } from "../navigation/navigationRef";
 import { Error } from "../components/Error";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { saveCurrentUser } from "../hooks/useMe";
 
 export function StartScreen() {
