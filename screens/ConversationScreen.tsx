@@ -1,9 +1,14 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, SafeAreaView, TextInput } from "react-native";
+import { FlatList, KeyboardAvoidingView, SafeAreaView, TextInput } from "react-native";
 
 import {
+  CurrentUserFragment,
+  GroupFragment,
+  GroupType,
   Message,
   MessagePostedSubscription,
+  useGroupQuery,
+  useGroupsQuery,
   useMessagePostedSubscription,
   useMessagesQuery,
   usePostMessageMutation,
@@ -16,33 +21,103 @@ import { View, Image } from "react-native-ui-lib";
 import { useMe } from "../hooks/useMe";
 import dayjs from "dayjs";
 import Loading from "../components/Loading";
+import { Ionicons } from "@expo/vector-icons";
+import { useTrans } from "../context/trans";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { getGroupName } from "../util/group";
 
 function handleSubscription(messages: any = [], res: MessagePostedSubscription) {
   return [res.messagePosted, ...messages];
 }
 
-export function ConversationScreen({ route }: RootStackScreenProps<"Conversation">) {
+export function ConversationScreen({ route, navigation }: RootStackScreenProps<"Conversation">) {
   const { groupID } = route.params;
   const [, postMessage] = usePostMessageMutation();
+  const { me } = useMe();
+  const [res] = useGroupQuery({ variables: { groupID } });
   const [content, setContent] = useState("");
   const list = useRef<FlatList>();
 
+  const disabled = !content.trim();
+
+  const { t, isRTL } = useTrans();
+  const { top, right, bottom, left } = useSafeAreaInsets();
+
+  const group = res.data?.group;
+
+  const submit = async () => {
+    list.current?.scrollToOffset({ offset: 0, animated: true });
+    await postMessage({ input: { content, groupID } });
+    setContent("");
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+    <>
+      <StatusBar style="light" />
+
+      <View
+        row
+        centerV
+        style={{
+          backgroundColor: "#6A90CC",
+          elevation: 10,
+          shadowColor: "#9a9a9a",
+          shadowRadius: 10,
+          shadowOpacity: 1,
+          paddingTop: top + 10,
+          paddingRight: right + 10,
+          paddingLeft: left + 10,
+          paddingBottom: 10,
+        }}
+      >
+        <Ionicons
+          onPress={() => {
+            navigation.pop();
+          }}
+          color="white"
+          name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"}
+          style={{ borderRadius: 10, overflow: "hidden" }}
+          size={40}
+        />
+        <KText style={{ marginLeft: 10, fontSize: 17, color: "#fff", fontFamily: "Dubai-Bold" }}>{getGroupName(group, me)}</KText>
+      </View>
+
+      <KeyboardAvoidingView behavior="padding" style={{ flex: 1, paddingLeft: left, paddingRight: right }}>
         <MessageList ref={list} groupID={groupID} />
-        <TextInput value={content} onChangeText={setContent} style={{ height: 50 }} placeholder="Type here idiot..." />
-        <Touchable
-          onPress={async () => {
-            list.current?.scrollToOffset({ offset: 0, animated: true });
-            await postMessage({ input: { content, groupID } });
-            setContent("");
+
+        <View
+          row
+          centerV
+          style={{
+            paddingHorizontal: 15,
+            paddingVertical: 15,
+            borderTopColor: "#9a9a9a11",
+            minHeight: 50,
+            borderTopWidth: 2,
           }}
         >
-          <KText style={{ color: "blue" }}>Send</KText>
-        </Touchable>
-      </View>
-    </SafeAreaView>
+          <TextInput
+            multiline
+            returnKeyType="send"
+            value={content}
+            onChangeText={setContent}
+            style={{ flex: 1, fontSize: 14, marginRight: 15 }}
+            placeholder={t("say_something") + "..."}
+            textAlign={isRTL ? "right" : undefined}
+            onSubmitEditing={submit}
+          />
+          <Touchable disabled={disabled} onPress={submit}>
+            <Ionicons
+              style={{ color: disabled ? "#9a9a9a" : "#6A90CC", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
+              name={`send${disabled ? "-outline" : ""}` as any}
+              size={20}
+            />
+          </Touchable>
+        </View>
+      </KeyboardAvoidingView>
+      <View height={bottom} />
+    </>
   );
 }
 
@@ -75,7 +150,9 @@ const MessageList = memo(
               }
             }}
           ></FlatList>
-        ) : null}
+        ) : (
+          <View style={{ flex: 1 }} />
+        )}
       </>
     );
   })
@@ -83,6 +160,7 @@ const MessageList = memo(
 
 function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
   const { me } = useMe();
+  const { t } = useTrans();
   const isMe = msg.owner?.id === me?.id;
 
   return (
@@ -107,7 +185,7 @@ function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
         }}
       >
         <View row spread style={{ paddingBottom: 5 }}>
-          <KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: "white" }}>{msg.owner?.name}</KText>
+          {<KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: "white" }}>{isMe ? t("you") : msg.owner?.name}</KText>}
           <KText style={{ color: "#f3f3f3", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
         </View>
         <KText style={{ color: "white" }}>{msg?.content}</KText>

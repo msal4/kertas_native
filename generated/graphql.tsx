@@ -2495,10 +2495,19 @@ export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', cursor: any, node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean } } };
 
+export type GroupQueryVariables = Exact<{
+  groupID: Scalars['ID'];
+}>;
+
+
+export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> } };
+
+export type GroupFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> };
+
 export type GroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string }>> }> }>>> } };
+export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> }> }>>> } };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2535,6 +2544,18 @@ export type MessagePostedSubscriptionVariables = Exact<{
 
 export type MessagePostedSubscription = { __typename?: 'Subscription', messagePosted: { __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } } };
 
+export const GroupFragmentDoc = gql`
+    fragment Group on Group {
+  id
+  name
+  groupType
+  users {
+    id
+    name
+    image
+  }
+}
+    `;
 export const CurrentUserFragmentDoc = gql`
     fragment CurrentUser on User {
   id
@@ -2631,22 +2652,28 @@ export const ClassesDocument = gql`
 export function useClassesQuery(options: Omit<Urql.UseQueryArgs<ClassesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ClassesQuery>({ query: ClassesDocument, ...options });
 };
+export const GroupDocument = gql`
+    query Group($groupID: ID!) {
+  group(id: $groupID) {
+    ...Group
+  }
+}
+    ${GroupFragmentDoc}`;
+
+export function useGroupQuery(options: Omit<Urql.UseQueryArgs<GroupQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<GroupQuery>({ query: GroupDocument, ...options });
+};
 export const GroupsDocument = gql`
     query Groups {
   groups {
     edges {
       node {
-        id
-        name
-        users {
-          id
-          name
-        }
+        ...Group
       }
     }
   }
 }
-    `;
+    ${GroupFragmentDoc}`;
 
 export function useGroupsQuery(options: Omit<Urql.UseQueryArgs<GroupsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GroupsQuery>({ query: GroupsDocument, ...options });

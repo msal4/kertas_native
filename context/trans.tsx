@@ -14,10 +14,12 @@ const TransContext = createContext<{
   t: (term: string) => string;
   locale: Locale;
   setLocale: (l: Locale) => Promise<void> | void;
+  isRTL: boolean;
 }>({
   t: (term) => term,
   locale: "ar",
   setLocale: () => {},
+  isRTL: false,
 });
 
 export const TransProvider: FC<{ locale: Locale }> = ({ locale: l, children }) => {
@@ -44,7 +46,7 @@ export const TransProvider: FC<{ locale: Locale }> = ({ locale: l, children }) =
     return trans[locale][term] || term;
   };
 
-  return <TransContext.Provider value={{ locale, setLocale: changeLocale, t }}>{children}</TransContext.Provider>;
+  return <TransContext.Provider value={{ locale, setLocale: changeLocale, t, isRTL: locale === "ar" }}>{children}</TransContext.Provider>;
 };
 
 export const useTrans = () => useContext(TransContext);

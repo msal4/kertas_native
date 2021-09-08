@@ -5,8 +5,10 @@ import Loading from "../components/Loading";
 import { KText } from "../components/KText";
 
 import { Touchable } from "../components/Touchable";
-import { useGroupsQuery } from "../generated/graphql";
+import { GroupFragment, useGroupsQuery } from "../generated/graphql";
 import { navigate } from "../navigation/navigationRef";
+import { useMe } from "../hooks/useMe";
+import { getGroupName } from "../util/group";
 
 export function ChatScreen() {
   const [res, refetch] = useGroupsQuery();
@@ -20,12 +22,10 @@ export function ChatScreen() {
   );
 }
 
-interface Item {
-  id: string;
-  name: string;
-}
+function ChatGroup({ group }: { group: GroupFragment }) {
+  const { me } = useMe();
+  const name = getGroupName(group, me);
 
-function ChatGroup({ group }: { group: Item & { users?: Item[] | null } }) {
   return (
     <Touchable
       onPress={() => {
@@ -34,7 +34,7 @@ function ChatGroup({ group }: { group: Item & { users?: Item[] | null } }) {
     >
       <View row centerV style={{ marginBottom: 10, padding: 10 }}>
         <Image source={{ uri: "" }} width={60} height={60} style={{ backgroundColor: "#9a9a9a", marginRight: 10 }} borderRadius={16} />
-        <KText>{group.name}</KText>
+        <KText>{name}</KText>
       </View>
     </Touchable>
   );
