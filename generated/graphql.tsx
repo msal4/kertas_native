@@ -2504,10 +2504,15 @@ export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', 
 
 export type GroupFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> };
 
-export type GroupsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GroupsQueryVariables = Exact<{
+  after?: Maybe<Scalars['Cursor']>;
+  where?: Maybe<GroupWhereInput>;
+}>;
 
 
-export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> }> }>>> } };
+export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string } }> }>>> }> }> }>>> } };
+
+export type GroupDetailFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string } }> }>>> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2553,6 +2558,31 @@ export const GroupFragmentDoc = gql`
     id
     name
     image
+  }
+}
+    `;
+export const GroupDetailFragmentDoc = gql`
+    fragment GroupDetail on Group {
+  id
+  name
+  groupType
+  users {
+    id
+    name
+    image
+  }
+  messages(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
+    edges {
+      node {
+        id
+        content
+        createdAt
+        owner {
+          id
+          name
+        }
+      }
+    }
   }
 }
     `;
@@ -2664,16 +2694,24 @@ export function useGroupQuery(options: Omit<Urql.UseQueryArgs<GroupQueryVariable
   return Urql.useQuery<GroupQuery>({ query: GroupDocument, ...options });
 };
 export const GroupsDocument = gql`
-    query Groups {
-  groups {
+    query Groups($after: Cursor, $where: GroupWhereInput) {
+  groups(
+    after: $after
+    where: $where
+    orderBy: {field: UPDATED_AT, direction: DESC}
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     edges {
       node {
-        ...Group
+        ...GroupDetail
       }
     }
   }
 }
-    ${GroupFragmentDoc}`;
+    ${GroupDetailFragmentDoc}`;
 
 export function useGroupsQuery(options: Omit<Urql.UseQueryArgs<GroupsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<GroupsQuery>({ query: GroupsDocument, ...options });

@@ -36,7 +36,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
   const [content, setContent] = useState("");
   const list = useRef<FlatList>();
 
-  const disabled = !content.trim();
+  const _cnt = content.trim();
 
   const { t, isRTL } = useTrans();
   const { top, right, bottom, left } = useSafeAreaInsets();
@@ -44,8 +44,9 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
   const group = res.data?.group;
 
   const submit = async () => {
+    if (!_cnt) return;
     list.current?.scrollToOffset({ offset: 0, animated: true });
-    await postMessage({ input: { content, groupID } });
+    await postMessage({ input: { content: _cnt, groupID } });
     setContent("");
   };
 
@@ -104,10 +105,10 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             textAlign={isRTL ? "right" : undefined}
             onSubmitEditing={submit}
           />
-          <Touchable disabled={disabled} onPress={submit}>
+          <Touchable disabled={!_cnt} onPress={submit}>
             <Ionicons
-              style={{ color: disabled ? "#9a9a9a" : "#6A90CC", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
-              name={`send${disabled ? "-outline" : ""}` as any}
+              style={{ color: !_cnt ? "#9a9a9a" : "#6A90CC", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
+              name={`send${!_cnt ? "-outline" : ""}` as any}
               size={20}
             />
           </Touchable>

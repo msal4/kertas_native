@@ -4,5 +4,8 @@
   "notifications": "Notifications",
   "my_profile": "My Profile",
   "you": "You",
-  "say_something": "Say something"
+  "say_something": "Say something",
+  "all": "All",
+  "groups": "Groups",
+  "private": "Private"
 }
