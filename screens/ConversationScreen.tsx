@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FlatList, SafeAreaView, TextInput } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, InteractionManager, SafeAreaView, TextInput } from "react-native";
 
 import {
   Message,
@@ -20,6 +20,8 @@ function handleSubscription(messages: any = [], res: MessagePostedSubscription) 
   return [res.messagePosted, ...messages];
 }
 
+const threshold = 300;
+
 export function ConversationScreen({ route }: RootStackScreenProps<"Conversation">) {
   const { groupID } = route.params;
   const [after, setAfter] = useState();
@@ -30,26 +32,21 @@ export function ConversationScreen({ route }: RootStackScreenProps<"Conversation
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Touchable
-        onPress={() => {
-          if (!response.fetching && response?.data?.messages?.pageInfo.hasNextPage) {
-            setAfter(response?.data?.messages?.pageInfo.endCursor);
-          }
-        }}
-      >
-        <KText>Load more</KText>
-      </Touchable>
       <View style={{ flex: 1 }}>
         <Error isError={!!response.error} onPress={refetch} />
         {response.data?.messages ? (
           <FlatList
             ItemSeparatorComponent={() => <View height={15} />}
             inverted
-            contentContainerStyle={{ padding: 20 }}
+            contentContainerStyle={{ padding: 10 }}
             data={[...(res.data ?? []), ...(response.data.messages?.edges?.map((e) => e?.node) ?? [])]}
             renderItem={({ item }) => <MessageItem msg={item} />}
             keyExtractor={(item) => item.id}
-            onScroll={() => {}}
+            onEndReached={() => {
+              if (!response.fetching && response?.data?.messages?.pageInfo.hasNextPage) {
+                setAfter(response?.data?.messages?.pageInfo.endCursor);
+              }
+            }}
           ></FlatList>
         ) : null}
         <TextInput value={content} onChangeText={setContent} style={{ height: 50 }} placeholder="Type here idiot..." />
@@ -92,10 +89,10 @@ function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
         }}
       >
         <View row spread style={{ paddingBottom: 5 }}>
-          <KText style={{ marginRight: 20, fontFamily: "Dubai-Bold", color: "white" }}>{msg.owner?.name}</KText>
+          <KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: "white" }}>{msg.owner?.name}</KText>
           <KText style={{ color: "#f3f3f3", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
         </View>
-        <KText style={{ color: "white", fontFamily: "Dubai-Light" }}>{msg?.content}</KText>
+        <KText style={{ color: "white" }}>{msg?.content}</KText>
       </View>
     </View>
   );

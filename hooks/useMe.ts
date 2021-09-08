@@ -24,7 +24,7 @@ async function getCurrentUser() {
 }
 
 export function useMe() {
-  const [me, setMe] = useState<CurrentUserFragment | null>(null);
+  const [me, setMe] = useState<CurrentUserFragment | null>(user);
 
   useEffect(() => {
     getCurrentUser().then(setMe);
