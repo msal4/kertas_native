@@ -2463,6 +2463,21 @@ export type UserWhereInput = {
 };
 
 
+export type AddAssignmentSubmissionMutationVariables = Exact<{
+  input: AddAssignmentSubmissionInput;
+}>;
+
+
+export type AddAssignmentSubmissionMutation = { __typename?: 'Mutation', addAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any> } };
+
+export type UpdateAssignmentSubmissionMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: UpdateAssignmentSubmissionInput;
+}>;
+
+
+export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any> } };
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -2580,6 +2595,32 @@ export const CurrentUserFragmentDoc = gql`
   role
 }
     `;
+export const AddAssignmentSubmissionDocument = gql`
+    mutation AddAssignmentSubmission($input: AddAssignmentSubmissionInput!) {
+  addAssignmentSubmission(input: $input) {
+    id
+    files
+    submittedAt
+  }
+}
+    `;
+
+export function useAddAssignmentSubmissionMutation() {
+  return Urql.useMutation<AddAssignmentSubmissionMutation, AddAssignmentSubmissionMutationVariables>(AddAssignmentSubmissionDocument);
+};
+export const UpdateAssignmentSubmissionDocument = gql`
+    mutation UpdateAssignmentSubmission($id: ID!, $input: UpdateAssignmentSubmissionInput!) {
+  updateAssignmentSubmission(id: $id, input: $input) {
+    id
+    files
+    submittedAt
+  }
+}
+    `;
+
+export function useUpdateAssignmentSubmissionMutation() {
+  return Urql.useMutation<UpdateAssignmentSubmissionMutation, UpdateAssignmentSubmissionMutationVariables>(UpdateAssignmentSubmissionDocument);
+};
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   loginUser(input: {username: $username, password: $password}) {

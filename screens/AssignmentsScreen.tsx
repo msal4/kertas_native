@@ -12,8 +12,9 @@ import { Dialog } from "react-native-ui-lib";
 import DatePicker from "../components/DatePicker";
 import CalendarIcon from "../assets/icons/Calendar.svg";
 import FilesIcon from '../assets/icons/Files.svg';
+import * as DocumentPicker from 'expo-document-picker';
 
-import { useAssignmentsQuery, useAssignmentsSubmissionQuery } from "../generated/graphql";
+import { useAssignmentsQuery, useAssignmentsSubmissionQuery, useUpdateAssignmentSubmissionMutation } from "../generated/graphql";
 import { useTrans } from "../context/trans";
 
 export default function AssignmentsScreen({ navigation, screenProps }: any) {
@@ -193,7 +194,8 @@ function AssignmentSubmission({ item, showDialog, setShowDialog } : { item: obje
     variables: {
       assignmentID: item.node.id
     }
-  })
+  });
+  const [, updateSubmission] = useUpdateAssignmentSubmissionMutation();
 
   console.log(res)
 
@@ -256,24 +258,27 @@ function AssignmentSubmission({ item, showDialog, setShowDialog } : { item: obje
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <Touchable
-              onPress={() => {
-              }}
-            >
-              <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
-                <View style={{ width: 50, height: 50, borderRadius: 100, backgroundColor: '#bcbcbc', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                  <FilesIcon color="#fff" width={28} height={28} />
+            item?.node?.files.map((item, index) => (
+              <Touchable
+                onPress={() => {
+                }}
+                key={index}
+              >
+                <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+                  <View style={{ width: 50, height: 50, borderRadius: 100, backgroundColor: '#bcbcbc', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <FilesIcon color="#fff" width={28} height={28} />
+                  </View>
+                  <View style={{ flex: 1, paddingHorizontal: 10 }}>
+                    <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }} numberOfLines={1}>
+                      {getFileNameFromUrl(item)}
+                    </Text>
+                    <Text style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
+                      {Moment(item?.node?.submittedAt).format("Y-MM-DD")}
+                    </Text>
+                  </View>
                 </View>
-                <View style={{ flex: 1, paddingHorizontal: 10 }}>
-                  <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }} numberOfLines={1}>
-                    {getFileNameFromUrl(item?.node?.files[0])}
-                  </Text>
-                  <Text style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
-                    {Moment(item?.node?.submittedAt).format("Y-MM-DD")}
-                  </Text>
-                </View>
-              </View>
-            </Touchable>
+              </Touchable>
+            ))
           )}
         />
         : null}
@@ -282,6 +287,15 @@ function AssignmentSubmission({ item, showDialog, setShowDialog } : { item: obje
 
         <View style={{ borderRadius: 5, overflow: "hidden", marginTop: 10 }}>
           <Touchable onPress={() => {
+            DocumentPicker.getDocumentAsync().then((files) => {
+              console.log(files)
+              updateSubmission({
+                id: item.node.id,
+                input: {
+                  files: [files]
+                }
+              })
+            })
           }}>
             <View style={{ backgroundColor: "#d5d5d5", padding: 10 }}>
               <Text style={{ fontFamily: "Dubai-Regular", textAlign: 'center' }}>{t("upload_assignment_file")}</Text>
