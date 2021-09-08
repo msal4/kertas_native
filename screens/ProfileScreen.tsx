@@ -5,9 +5,13 @@ import { Text } from "react-native-ui-lib";
 import { I18nManager } from "react-native";
 import * as Updates from "expo-updates";
 import { useTrans } from "../context/trans";
+import { useAuth } from "../context/auth";
+import { clearTokens } from "../util/auth";
+import { navigationRef } from "../navigation/navigationRef";
 
-export const ProfileScreen = () => {
+export const ProfileScreen = ({ navigation }) => {
   const { locale, setLocale } = useTrans();
+  const { logout } = useAuth();
 
   return (
     <>
@@ -17,6 +21,14 @@ export const ProfileScreen = () => {
         }}
       >
         <Text>change locale</Text>
+      </Touchable>
+      <Touchable
+        onPress={async () => {
+          await clearTokens();
+          navigation.replace('Login');
+        }}
+      >
+        <Text>logout</Text>
       </Touchable>
     </>
   );

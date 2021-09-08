@@ -63,22 +63,10 @@ const subscriptionClient = new SubscriptionClient(url.replace("http", "ws"), {
 });
 
 export const client = createClient({
-<<<<<<< HEAD
   url: Platform.OS == "android" ? "http://10.0.2.2:3000/graphql" : "http://localhost:3000/graphql",
-=======
-  url,
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
-  // TODO: update to cache-and-network
   requestPolicy: "network-only",
   exchanges: [
     dedupExchange,
-<<<<<<< HEAD
-    cacheExchange,
-    //retryExchange(),
-    errorExchange({
-      onError: async (error) => {
-        console.log("on error is called:", error?.response?.status);
-=======
     cacheExchange({
       resolvers: {
         Query: {
@@ -86,10 +74,8 @@ export const client = createClient({
         },
       },
     }),
-    //retryExchange(),
     errorExchange({
       onError: async (error) => {
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
         if (error?.response?.status === 401) {
           await clearTokens();
           replace("Login");
@@ -98,11 +84,6 @@ export const client = createClient({
     }),
     authExchange<{ accessToken: string; refreshToken: string; accessTokenExp: string }>({
       addAuthToOperation({ authState, operation }): Operation {
-<<<<<<< HEAD
-        console.log("-> addAuthToOperation_authState:", authState);
-
-=======
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
         if (!authState || !authState.accessToken || isOperationLoginOrRefresh(operation)) {
           return operation;
         }
@@ -122,17 +103,9 @@ export const client = createClient({
         });
       },
       didAuthError({ error }): boolean {
-<<<<<<< HEAD
-        console.log("-> didAuthError_status:", error.response?.status);
         return error?.response?.status === 401;
       },
       willAuthError({ authState, operation }): boolean {
-        console.log("-> willAuthErr_authState:", authState);
-=======
-        return error?.response?.status === 401;
-      },
-      willAuthError({ authState, operation }): boolean {
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
         if (!authState) {
           // let login operations through
           return !isOperationLoginOrRefresh(operation);
@@ -141,10 +114,6 @@ export const client = createClient({
         return isTokenExpired(authState.accessTokenExp);
       },
       async getAuth({ authState, mutate }) {
-<<<<<<< HEAD
-        console.log("-> getAuth_authState:", authState);
-=======
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
         let data = Object.assign({}, authState);
 
         if (!authState) {
@@ -154,35 +123,17 @@ export const client = createClient({
         }
 
         if (data.refreshToken && data.accessToken && !isTokenExpired(data.accessTokenExp ?? "")) {
-<<<<<<< HEAD
-          console.log("-> tokens are valid");
-=======
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
           return data;
         }
 
         if (!data.refreshToken) {
-<<<<<<< HEAD
-          console.log("-> refresh token does not exist");
-=======
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
           await clearTokens();
           replace("Login");
           return null;
         }
 
-<<<<<<< HEAD
-        console.log("-> refreshing tokens");
-
-        const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, data);
-        console.log("-> refreshTokens_mutate_error:", res.error?.response?.status);
-
-        if (res.error) {
-          console.log("from refresh:", res.error, res.error.response?.status);
-=======
         const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, data);
         if (res.error) {
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
           if (res.error.graphQLErrors.some((e) => e.extensions?.code === "INVALID_TOKEN")) {
             await clearTokens();
             replace("Login");
@@ -194,31 +145,19 @@ export const client = createClient({
 
         // extra check
         if (!res.data?.refreshTokens) {
-<<<<<<< HEAD
-          console.log("-> res.data.refreshTokens is nil -> logging out");
-
-=======
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
           await clearTokens();
           replace("Login");
           return null;
         }
         await setTokens(res.data.refreshTokens);
-<<<<<<< HEAD
-        console.log("-> refreshed tokens");
-=======
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
 
         return { ...res.data.refreshTokens, accessTokenExp: getTokenExp(res.data.refreshTokens.accessToken) };
       },
     }),
-<<<<<<< HEAD
     fetchExchange,
-=======
     multipartFetchExchange,
     subscriptionExchange({
       forwardSubscription: (operation) => subscriptionClient.request(operation) as any,
     }),
->>>>>>> ba0d3fe7fdaa5160be7ace5e2b7bc02fc8c59b45
   ],
 });

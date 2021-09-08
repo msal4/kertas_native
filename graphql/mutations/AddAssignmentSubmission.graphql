@@ -1,0 +1,7 @@
+mutation AddAssignmentSubmission ($input: AddAssignmentSubmissionInput!) {
+    addAssignmentSubmission (input: $input) {
+      id
+      files
+      submittedAt
+    }
+}
