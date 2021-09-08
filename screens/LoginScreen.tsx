@@ -7,7 +7,6 @@ import { Button, TextField, Toast, View } from "react-native-ui-lib";
 import { useLoginMutation, useMeQuery } from "../generated/graphql";
 import { setTokens } from "../util/auth";
 import { saveCurrentUser } from "../hooks/useMe";
-import { replace } from "../navigation/navigationRef";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
   const [, login] = useLoginMutation();
@@ -15,18 +14,6 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
   const [errToastMsg, setErrToastMsg] = useState("failed");
   const [username, setUsername] = useState("student01");
   const [password, setPassword] = useState("student01pass");
-  const [res, refetch] = useMeQuery();
-
-  async function _init() {
-    if (res.data?.me.id) {
-      await saveCurrentUser(res.data?.me);
-      navigation.replace("Root");
-    }
-  }
-
-  React.useEffect(() => {
-    _init();
-  }, [res.data?.me.id]);
 
   const showErrToast = (msg?: string) => {
     if (msg) {
@@ -66,7 +53,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
           }
 
           await setTokens(res.data?.loginUser);
-          refetch();
+          navigation.navigate("Start");
         }}
         label={"LOGIN"}
       />

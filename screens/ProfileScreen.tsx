@@ -1,12 +1,11 @@
 import React from "react";
 import { Touchable } from "../components/Touchable";
-import i18n from "i18n-js";
 import { Text } from "react-native-ui-lib";
-import { I18nManager } from "react-native";
-import * as Updates from "expo-updates";
 import { useTrans } from "../context/trans";
+import { clearTokens } from "../util/auth";
+import { RootTabScreenProps } from "../types";
 
-export const ProfileScreen = () => {
+export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => {
   const { locale, setLocale } = useTrans();
 
   return (
@@ -17,6 +16,14 @@ export const ProfileScreen = () => {
         }}
       >
         <Text>change locale</Text>
+      </Touchable>
+      <Touchable
+        onPress={async () => {
+          await clearTokens();
+          navigation.navigate("Login");
+        }}
+      >
+        <Text>Logout</Text>
       </Touchable>
     </>
   );
