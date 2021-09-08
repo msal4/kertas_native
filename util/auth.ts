@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authExchange } from "@urql/exchange-auth";
 import { cacheExchange } from "@urql/exchange-graphcache";
 import { relayPagination } from "@urql/exchange-graphcache/extras";
+import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Platform } from "react-native";
 import { SubscriptionClient } from "subscriptions-transport-ws";
@@ -155,7 +156,7 @@ export const client = createClient({
         return { ...res.data.refreshTokens, accessTokenExp: getTokenExp(res.data.refreshTokens.accessToken) };
       },
     }),
-    fetchExchange,
+    multipartFetchExchange,
     subscriptionExchange({
       forwardSubscription: (operation) => subscriptionClient.request(operation) as any,
     }),
