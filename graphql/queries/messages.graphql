@@ -1,0 +1,21 @@
+query Messages($groupID: ID!, $after: Cursor) {
+  messages(groupID: $groupID, orderBy: {field: CREATED_AT, direction: DESC}, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      cursor
+      node {
+        id
+        content
+        owner {
+          id
+          name
+          image
+        }
+        createdAt
+      }
+    }
+  }
+}

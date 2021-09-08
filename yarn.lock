@@ -3097,6 +3097,14 @@
     "@urql/core" ">=2.2.0"
     wonka "^4.0.14"
 
+"@urql/exchange-graphcache@^4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@urql/exchange-graphcache/-/exchange-graphcache-4.3.3.tgz#5a4fee253458fd2faeb70a2bb1474d4f775f7846"
+  integrity sha512-30xFeagf1pJj+ilQeujY0J/qczFW6kQHMbK+WzLBjuomVkn/+D2ZCylMplaUMZ2gYKZ6hHIpkG4MWX1KUnmqhQ==
+  dependencies:
+    "@urql/core" ">=2.3.1"
+    wonka "^4.0.14"
+
 "@urql/exchange-retry@^0.3.0":
   version "0.3.0"
   resolved "https://registry.npmjs.org/@urql/exchange-retry/-/exchange-retry-0.3.0.tgz"
@@ -10360,6 +10368,17 @@ subscriptions-transport-ws@^0.10.0:
   version "0.10.0"
   resolved "https://registry.npmjs.org/subscriptions-transport-ws/-/subscriptions-transport-ws-0.10.0.tgz"
   integrity sha512-k28LhLn3abJ1mowFW+LP4QGggE0e3hrk55zXbMHyAeZkCUYtC0owepiwqMD3zX8DglQVaxnhE760pESrNSEzpg==
+  dependencies:
+    backo2 "^1.0.2"
+    eventemitter3 "^3.1.0"
+    iterall "^1.2.1"
+    symbol-observable "^1.0.4"
+    ws "^5.2.0 || ^6.0.0 || ^7.0.0"
+
+subscriptions-transport-ws@^0.9.19:
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws/-/subscriptions-transport-ws-0.9.19.tgz#10ca32f7e291d5ee8eb728b9c02e43c52606cdcf"
+  integrity sha512-dxdemxFFB0ppCLg10FTtRqH/31FNRL1y1BQv8209MK5I4CwALb7iihQg+7p65lFcIl8MHatINWBLOqpgU4Kyyw==
   dependencies:
     backo2 "^1.0.2"
     eventemitter3 "^3.1.0"

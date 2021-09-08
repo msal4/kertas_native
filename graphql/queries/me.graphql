@@ -1,5 +1,11 @@
 query Me {
   me {
+    ...CurrentUser
+  }
+}
+
+
+fragment CurrentUser on User {
     id
     name
     school {
@@ -11,5 +17,5 @@ query Me {
       name
     }
     role
-  }
 }
+

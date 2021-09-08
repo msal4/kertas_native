@@ -1,0 +1,14 @@
+query Groups {
+  groups {
+    edges {
+      node {
+        id
+        name
+        users {
+          id
+          name
+        }
+      }
+    }
+  }
+}

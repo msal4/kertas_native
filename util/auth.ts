@@ -1,11 +1,13 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authExchange } from "@urql/exchange-auth";
-import { retryExchange } from "@urql/exchange-retry";
+import { cacheExchange } from "@urql/exchange-graphcache";
+import { relayPagination } from "@urql/exchange-graphcache/extras";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Platform } from "react-native";
-import { Operation, createClient, dedupExchange, cacheExchange, errorExchange, makeOperation, fetchExchange } from "urql";
+import { SubscriptionClient } from "subscriptions-transport-ws";
+import { Operation, createClient, dedupExchange, errorExchange, makeOperation, fetchExchange, subscriptionExchange } from "urql";
 import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDocument } from "../generated/graphql";
-import { currentRouteIs, replace } from "../navigation/navigationRef";
+import { replace } from "../navigation/navigationRef";
 
 const accessTokenExpKey = "access_token_exp";
 const accessTokenKey = "access_token";
@@ -52,17 +54,29 @@ const isOperationLoginOrRefresh = (operation: Operation) => {
   );
 };
 
+const url = Platform.select({ ios: "http://localhost:3000/graphql", android: "http://10.0.2.2:3000/graphql" })!;
+
+const subscriptionClient = new SubscriptionClient(url.replace("http", "ws"), {
+  reconnect: true,
+  connectionParams: async () => ({ authorization: await getAccessToken() }),
+});
+
 export const client = createClient({
-  url: Platform.OS == "android" ? "http://10.0.2.2:3000/graphql" : "http://localhost:3000/graphql",
+  url,
   // TODO: update to cache-and-network
   requestPolicy: "network-only",
   exchanges: [
     dedupExchange,
-    cacheExchange,
+    cacheExchange({
+      resolvers: {
+        Query: {
+          messages: relayPagination(),
+        },
+      },
+    }),
     //retryExchange(),
     errorExchange({
       onError: async (error) => {
-        console.log("on error is called:", error?.response?.status);
         if (error?.response?.status === 401) {
           await clearTokens();
           replace("Login");
@@ -71,8 +85,6 @@ export const client = createClient({
     }),
     authExchange<{ accessToken: string; refreshToken: string; accessTokenExp: string }>({
       addAuthToOperation({ authState, operation }): Operation {
-        console.log("-> addAuthToOperation_authState:", authState);
-
         if (!authState || !authState.accessToken || isOperationLoginOrRefresh(operation)) {
           return operation;
         }
@@ -92,11 +104,9 @@ export const client = createClient({
         });
       },
       didAuthError({ error }): boolean {
-        console.log("-> didAuthError_status:", error.response?.status);
         return error?.response?.status === 401;
       },
       willAuthError({ authState, operation }): boolean {
-        console.log("-> willAuthErr_authState:", authState);
         if (!authState) {
           // let login operations through
           return !isOperationLoginOrRefresh(operation);
@@ -105,7 +115,6 @@ export const client = createClient({
         return isTokenExpired(authState.accessTokenExp);
       },
       async getAuth({ authState, mutate }) {
-        console.log("-> getAuth_authState:", authState);
         let data = Object.assign({}, authState);
 
         if (!authState) {
@@ -115,24 +124,17 @@ export const client = createClient({
         }
 
         if (data.refreshToken && data.accessToken && !isTokenExpired(data.accessTokenExp ?? "")) {
-          console.log("-> tokens are valid");
           return data;
         }
 
         if (!data.refreshToken) {
-          console.log("-> refresh token does not exist");
           await clearTokens();
           replace("Login");
           return null;
         }
 
-        console.log("-> refreshing tokens");
-
         const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, data);
-        console.log("-> refreshTokens_mutate_error:", res.error?.response?.status);
-
         if (res.error) {
-          console.log("from refresh:", res.error, res.error.response?.status);
           if (res.error.graphQLErrors.some((e) => e.extensions?.code === "INVALID_TOKEN")) {
             await clearTokens();
             replace("Login");
@@ -144,18 +146,18 @@ export const client = createClient({
 
         // extra check
         if (!res.data?.refreshTokens) {
-          console.log("-> res.data.refreshTokens is nil -> logging out");
-
           await clearTokens();
           replace("Login");
           return null;
         }
         await setTokens(res.data.refreshTokens);
-        console.log("-> refreshed tokens");
 
         return { ...res.data.refreshTokens, accessTokenExp: getTokenExp(res.data.refreshTokens.accessToken) };
       },
     }),
     fetchExchange,
+    subscriptionExchange({
+      forwardSubscription: (operation) => subscriptionClient.request(operation) as any,
+    }),
   ],
 });
