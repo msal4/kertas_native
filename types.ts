@@ -16,12 +16,15 @@ declare global {
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Home: undefined;
+  Conversation: ConversationParams;
   Assignments: undefined;
   Start: undefined;
   Login: undefined;
-  Modal: undefined;
-  NotFound: undefined;
 };
+
+export interface ConversationParams {
+  groupID: string;
+}
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, Screen>;
 
@@ -36,3 +39,7 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> = Composit
   BottomTabScreenProps<RootTabParamList, Screen>,
   NativeStackScreenProps<RootStackParamList>
 >;
+
+export type DeepPartial<T> = {
+  [P in keyof T]?: DeepPartial<T[P]>;
+};

@@ -3081,7 +3081,7 @@
     expo-modules-autolinking "^0.0.3"
     invariant "^2.2.4"
 
-"@urql/core@>=2.2.0", "@urql/core@>=2.3.1", "@urql/core@^2.1.4":
+"@urql/core@>=2.1.0", "@urql/core@>=2.2.0", "@urql/core@>=2.3.1", "@urql/core@^2.1.4":
   version "2.3.1"
   resolved "https://registry.npmjs.org/@urql/core/-/core-2.3.1.tgz"
   integrity sha512-M9gGz02+TH7buqkelVg+m0eTkLCKly9ZjuTp6NHMP7hXD/zpImPu/m3YluA+D4HbFqw3kofBtLCuVk67X9dxRw==
@@ -3095,6 +3095,23 @@
   integrity sha512-jVyUaV+hHe3p2rIJauh6lgILMAjXOsHQ98xjKhUF3TXYx88TZXuBIl5DPZwnMcGra8YPOSHO/Wsn6NEjO5hQ+Q==
   dependencies:
     "@urql/core" ">=2.2.0"
+    wonka "^4.0.14"
+
+"@urql/exchange-graphcache@^4.3.3":
+  version "4.3.3"
+  resolved "https://registry.yarnpkg.com/@urql/exchange-graphcache/-/exchange-graphcache-4.3.3.tgz#5a4fee253458fd2faeb70a2bb1474d4f775f7846"
+  integrity sha512-30xFeagf1pJj+ilQeujY0J/qczFW6kQHMbK+WzLBjuomVkn/+D2ZCylMplaUMZ2gYKZ6hHIpkG4MWX1KUnmqhQ==
+  dependencies:
+    "@urql/core" ">=2.3.1"
+    wonka "^4.0.14"
+
+"@urql/exchange-multipart-fetch@^0.1.13":
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/@urql/exchange-multipart-fetch/-/exchange-multipart-fetch-0.1.13.tgz#21c48826636ddc215684c6f9acbf355ae9159fad"
+  integrity sha512-doyIbIGEDW1MQhNmQBkt07WfesQ8iBld9TvuUQJCxQtnhDfa/bt6Ovxm+WYHpUTm4OH0j+9QecMiGEx2at51yQ==
+  dependencies:
+    "@urql/core" ">=2.1.0"
+    extract-files "^11.0.0"
     wonka "^4.0.14"
 
 "@urql/exchange-retry@^0.3.0":
@@ -5303,7 +5320,7 @@ extglob@^2.0.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-extract-files@11.0.0:
+extract-files@11.0.0, extract-files@^11.0.0:
   version "11.0.0"
   resolved "https://registry.npmjs.org/extract-files/-/extract-files-11.0.0.tgz"
   integrity sha512-FuoE1qtbJ4bBVvv94CC7s0oTnKUGvQs+Rjf1L2SJFfS+HTVVjhPFtehPdQ0JiGPqVNfSSZvL5yzHHQq2Z4WNhQ==
@@ -10360,6 +10377,17 @@ subscriptions-transport-ws@^0.10.0:
   version "0.10.0"
   resolved "https://registry.npmjs.org/subscriptions-transport-ws/-/subscriptions-transport-ws-0.10.0.tgz"
   integrity sha512-k28LhLn3abJ1mowFW+LP4QGggE0e3hrk55zXbMHyAeZkCUYtC0owepiwqMD3zX8DglQVaxnhE760pESrNSEzpg==
+  dependencies:
+    backo2 "^1.0.2"
+    eventemitter3 "^3.1.0"
+    iterall "^1.2.1"
+    symbol-observable "^1.0.4"
+    ws "^5.2.0 || ^6.0.0 || ^7.0.0"
+
+subscriptions-transport-ws@^0.9.19:
+  version "0.9.19"
+  resolved "https://registry.yarnpkg.com/subscriptions-transport-ws/-/subscriptions-transport-ws-0.9.19.tgz#10ca32f7e291d5ee8eb728b9c02e43c52606cdcf"
+  integrity sha512-dxdemxFFB0ppCLg10FTtRqH/31FNRL1y1BQv8209MK5I4CwALb7iihQg+7p65lFcIl8MHatINWBLOqpgU4Kyyw==
   dependencies:
     backo2 "^1.0.2"
     eventemitter3 "^3.1.0"

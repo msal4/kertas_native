@@ -1,0 +1,9 @@
+query Groups {
+  groups {
+    edges {
+      node {
+        ...Group
+      }
+    }
+  }
+}
