@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { FlatList, InteractionManager, SafeAreaView, TextInput } from "react-native";
+import React, { forwardRef, memo, useRef, useState } from "react";
+import { FlatList, SafeAreaView, TextInput } from "react-native";
 
 import {
   Message,
@@ -15,43 +15,26 @@ import { Touchable } from "../components/Touchable";
 import { View, Image } from "react-native-ui-lib";
 import { useMe } from "../hooks/useMe";
 import dayjs from "dayjs";
+import Loading from "../components/Loading";
 
 function handleSubscription(messages: any = [], res: MessagePostedSubscription) {
   return [res.messagePosted, ...messages];
 }
 
-const threshold = 300;
-
 export function ConversationScreen({ route }: RootStackScreenProps<"Conversation">) {
   const { groupID } = route.params;
-  const [after, setAfter] = useState();
-  const [response, refetch] = useMessagesQuery({ variables: { groupID, after } });
-  const [res] = useMessagePostedSubscription({ variables: { groupID } }, handleSubscription);
   const [, postMessage] = usePostMessageMutation();
   const [content, setContent] = useState("");
+  const list = useRef<FlatList>();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <Error isError={!!response.error} onPress={refetch} />
-        {response.data?.messages ? (
-          <FlatList
-            ItemSeparatorComponent={() => <View height={15} />}
-            inverted
-            contentContainerStyle={{ padding: 10 }}
-            data={[...(res.data ?? []), ...(response.data.messages?.edges?.map((e) => e?.node) ?? [])]}
-            renderItem={({ item }) => <MessageItem msg={item} />}
-            keyExtractor={(item) => item.id}
-            onEndReached={() => {
-              if (!response.fetching && response?.data?.messages?.pageInfo.hasNextPage) {
-                setAfter(response?.data?.messages?.pageInfo.endCursor);
-              }
-            }}
-          ></FlatList>
-        ) : null}
+        <MessageList ref={list} groupID={groupID} />
         <TextInput value={content} onChangeText={setContent} style={{ height: 50 }} placeholder="Type here idiot..." />
         <Touchable
           onPress={async () => {
+            list.current?.scrollToOffset({ offset: 0, animated: true });
             await postMessage({ input: { content, groupID } });
             setContent("");
           }}
@@ -62,6 +45,41 @@ export function ConversationScreen({ route }: RootStackScreenProps<"Conversation
     </SafeAreaView>
   );
 }
+
+interface MessageListProps {
+  groupID: string;
+}
+
+const MessageList = memo(
+  forwardRef(function ({ groupID }: MessageListProps, ref) {
+    const [after, setAfter] = useState();
+    const [queryResponse, refetch] = useMessagesQuery({ variables: { groupID, after } });
+    const [subscriptionResponse] = useMessagePostedSubscription({ variables: { groupID } }, handleSubscription);
+
+    return (
+      <>
+        <Error isError={!!queryResponse.error} onPress={refetch} />
+        <Loading isLoading={queryResponse.fetching && !queryResponse.data} color="#9a9a9a55" />
+        {queryResponse.data?.messages ? (
+          <FlatList
+            ref={ref as any}
+            ItemSeparatorComponent={() => <View height={15} />}
+            inverted
+            contentContainerStyle={{ padding: 10 }}
+            data={[...(subscriptionResponse.data ?? []), ...(queryResponse.data.messages?.edges?.map((e) => e?.node) ?? [])]}
+            renderItem={({ item }) => <MessageItem msg={item} />}
+            keyExtractor={(item) => item.id}
+            onEndReached={() => {
+              if (!queryResponse.fetching && queryResponse?.data?.messages?.pageInfo.hasNextPage) {
+                setAfter(queryResponse?.data?.messages?.pageInfo.endCursor);
+              }
+            }}
+          ></FlatList>
+        ) : null}
+      </>
+    );
+  })
+);
 
 function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
   const { me } = useMe();
