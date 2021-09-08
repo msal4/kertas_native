@@ -12,7 +12,6 @@ import { ColorSchemeName, Pressable } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
-import ModalScreen from "../screens/ModalScreen";
 import LoginScreen from "../screens/LoginScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import AssignmentsScreen from "../screens/AssignmentsScreen";
@@ -46,11 +45,8 @@ function RootNavigator() {
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Conversation" component={ConversationScreen} />
+      <Stack.Screen name="Conversation" component={ConversationScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
-      <Stack.Group screenOptions={{ presentation: "modal" }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-      </Stack.Group>
     </Stack.Navigator>
   );
 }

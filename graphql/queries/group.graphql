@@ -1,0 +1,16 @@
+query Group($groupID: ID!) {
+  group(id: $groupID) {
+    ...Group
+  }
+}
+
+fragment Group on Group {
+    id
+    name
+    groupType
+    users {
+      id
+      name
+      image
+    }
+}
