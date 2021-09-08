@@ -1,14 +1,10 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, SafeAreaView, TextInput } from "react-native";
+import { FlatList, KeyboardAvoidingView, TextInput } from "react-native";
 
 import {
-  CurrentUserFragment,
-  GroupFragment,
-  GroupType,
   Message,
   MessagePostedSubscription,
   useGroupQuery,
-  useGroupsQuery,
   useMessagePostedSubscription,
   useMessagesQuery,
   usePostMessageMutation,
@@ -28,6 +24,7 @@ import { StatusBar } from "expo-status-bar";
 import { getGroupName } from "../util/group";
 
 function handleSubscription(messages: any = [], res: MessagePostedSubscription) {
+  if (!res.messagePosted) return;
   return [res.messagePosted, ...messages];
 }
 

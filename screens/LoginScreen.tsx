@@ -4,9 +4,8 @@ import { StyleSheet } from "react-native";
 
 import { RootStackScreenProps } from "../types";
 import { Button, TextField, Toast, View } from "react-native-ui-lib";
-import { useLoginMutation, useMeQuery } from "../generated/graphql";
+import { useLoginMutation } from "../generated/graphql";
 import { setTokens } from "../util/auth";
-import { saveCurrentUser } from "../hooks/useMe";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
   const [, login] = useLoginMutation();

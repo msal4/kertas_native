@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Image } from "react-native-ui-lib";
 import { Error } from "../components/Error";
 import Loading from "../components/Loading";
@@ -16,7 +16,7 @@ export function ChatScreen() {
   return (
     <View style={{}}>
       {res.data?.groups && res.data.groups.edges?.map((g) => <ChatGroup key={g?.node?.id} group={g?.node!} />)}
-      <Error isError={!!res.error} onPress={refetch} />
+      <Error isError={!res.error} onPress={refetch} />
       <Loading isLoading={res.fetching} />
     </View>
   );
