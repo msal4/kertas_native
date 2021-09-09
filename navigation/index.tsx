@@ -48,7 +48,11 @@ function RootNavigator() {
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen name="Conversation" component={ConversationScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Conversation"
+        component={ConversationScreen}
+        options={{ headerShown: false, contentStyle: { backgroundColor: "white" } }}
+      />
       <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
     </Stack.Navigator>
   );

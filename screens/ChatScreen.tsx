@@ -120,7 +120,7 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
             <KText style={{ color: "#393939" }}>{info?.name}</KText>
             <KText style={{ fontSize: 12, fontFamily: "Dubai-Light" }}>{dayjs(msg?.createdAt).fromNow()}</KText>
           </View>
-          <KText key={msg?.id} style={{ fontSize: 12 }}>
+          <KText key={msg?.id} style={{ fontSize: 12 }} numberOfLines={1}>
             {msg?.owner?.name}: {msg?.content}
           </KText>
         </View>
