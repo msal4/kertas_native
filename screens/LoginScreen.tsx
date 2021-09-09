@@ -6,6 +6,7 @@ import { RootStackScreenProps } from "../types";
 import { Button, TextField, Toast, View } from "react-native-ui-lib";
 import { useLoginMutation } from "../generated/graphql";
 import { setTokens } from "../util/auth";
+import { useAuth } from "../context/auth";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
   const [, login] = useLoginMutation();
@@ -13,6 +14,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
   const [errToastMsg, setErrToastMsg] = useState("failed");
   const [username, setUsername] = useState("student01");
   const [password, setPassword] = useState("student01pass");
+  const { setIsAuthenticated } = useAuth();
 
   const showErrToast = (msg?: string) => {
     if (msg) {
@@ -52,6 +54,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
           }
 
           await setTokens(res.data?.loginUser);
+          setIsAuthenticated(true);
           navigation.navigate("Start");
         }}
         label={"LOGIN"}

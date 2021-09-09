@@ -4,9 +4,13 @@ import { Text } from "react-native-ui-lib";
 import { useTrans } from "../context/trans";
 import { clearTokens } from "../util/auth";
 import { RootTabScreenProps } from "../types";
+import { saveCurrentUser } from "../hooks/useMe";
+import { useAuth } from "../context/auth";
+import { replace } from "../navigation/navigationRef";
 
 export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => {
   const { locale, setLocale } = useTrans();
+  const { setIsAuthenticated } = useAuth();
 
   return (
     <>
@@ -20,7 +24,9 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
       <Touchable
         onPress={async () => {
           await clearTokens();
-          navigation.navigate("Login");
+          await saveCurrentUser(null);
+          setIsAuthenticated(false);
+          replace("Login");
         }}
       >
         <Text>Logout</Text>

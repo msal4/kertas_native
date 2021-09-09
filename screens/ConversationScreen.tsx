@@ -23,8 +23,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { getGroupName } from "../util/group";
 
-function handleSubscription(messages: any = [], res: MessagePostedSubscription) {
-  if (!res.messagePosted) return;
+function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
+  if (!res?.messagePosted) return;
   return [res.messagePosted, ...messages];
 }
 

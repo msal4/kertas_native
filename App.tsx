@@ -15,6 +15,7 @@ import { TextProps, ThemeManager } from "react-native-ui-lib";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useMe } from "./hooks/useMe";
+import { AuthProvider, useAuth } from "./context/auth";
 
 dayjs.extend(relativeTime);
 
@@ -40,12 +41,20 @@ ThemeManager.setComponentTheme("Text", (props: TextProps) => {
 });
 
 export default function App() {
+  return (
+    <AuthProvider>
+      <_App />
+    </AuthProvider>
+  );
+}
+
+function _App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [fontsLoaded] = Font.useFonts(customFonts);
   const { locale, loading: localeLoading } = useLocale();
-  const { me } = useMe();
-  const client = useMemo(createAuthClient, [me?.id]);
+  const { isAuthenticated } = useAuth();
+  const client = useMemo(createAuthClient, [isAuthenticated]);
 
   if (!isLoadingComplete || !fontsLoaded || localeLoading) {
     return <AppLoading />;

@@ -6,13 +6,14 @@ import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { Platform } from "react-native";
 import { SubscriptionClient } from "subscriptions-transport-ws";
-import { Operation, createClient, dedupExchange, errorExchange, makeOperation, fetchExchange, subscriptionExchange } from "urql";
+import { Operation, createClient, dedupExchange, errorExchange, makeOperation, subscriptionExchange } from "urql";
 import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDocument } from "../generated/graphql";
 import { replace } from "../navigation/navigationRef";
 
 const accessTokenExpKey = "access_token_exp";
 const accessTokenKey = "access_token";
 const refreshTokenKey = "refresh_token";
+const meKey = "me";
 
 export async function setTokens(data?: { refreshToken: string; accessToken: string } | null) {
   if (!data) {
@@ -36,7 +37,7 @@ export const getTokenExp = (token: string) => jwtDecode<JwtPayload>(token).exp?.
 
 export const isTokenExpired = (exp: string) => Number.parseInt(exp) <= Date.now() / 1000;
 
-export const clearTokens = () => AsyncStorage.multiRemove([refreshTokenKey, accessTokenKey, accessTokenExpKey]);
+export const clearTokens = () => AsyncStorage.multiRemove([refreshTokenKey, accessTokenKey, accessTokenExpKey, meKey]);
 
 const isOperationLoginOrRefresh = (operation: Operation) => {
   return (
