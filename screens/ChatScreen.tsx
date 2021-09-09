@@ -27,9 +27,9 @@ export function ChatScreen() {
   }, [res.fetching]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <SafeAreaView style={{ flex: 1 }}>
-        <View row style={{ paddingTop: 10 }}>
+        <View row style={{ paddingTop: 10, backgroundColor: "#f4f4f4" }}>
           <Touchable
             style={{ marginRight: 15, borderBottomColor: "#6A90CC", borderBottomWidth: !groupType ? 3 : 0, minWidth: 80 }}
             onPress={() => {

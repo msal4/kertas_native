@@ -84,8 +84,8 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         flexDirection: "row",
         paddingBottom: Platform.OS == "ios" ? 15 : 0,
         height: 80,
-        borderTopWidth: 1,
-        borderTopColor: "#ddd",
+        borderTopWidth: 2,
+        borderTopColor: "#9a9a9a11",
       }}
     >
       <View style={{ flex: 1 }}>
