@@ -9,7 +9,7 @@ import { Touchable } from "../components/Touchable";
 import { GroupDetailFragment, GroupType, useGroupsQuery } from "../generated/graphql";
 import { navigate } from "../navigation/navigationRef";
 import { useMe } from "../hooks/useMe";
-import { getGroupName } from "../util/group";
+import { getGroupInfo as getGroupInfo } from "../util/group";
 import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
 
@@ -97,6 +97,7 @@ export function ChatScreen() {
 
 function ChatGroup({ group }: { group: GroupDetailFragment }) {
   const { me } = useMe();
+  const info = getGroupInfo(group, me);
 
   const msg = group.messages?.edges && group.messages.edges[0]?.node;
 
@@ -107,10 +108,16 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
       }}
     >
       <View row centerV style={{ padding: 10 }}>
-        <Image source={{ uri: "" }} width={60} height={60} style={{ backgroundColor: "#6A90CC", marginRight: 10 }} borderRadius={16} />
+        <Image
+          source={{ uri: `http://localhost:9000/root/${info?.image}` }}
+          width={60}
+          height={60}
+          style={{ backgroundColor: "#6A90CC", marginRight: 10 }}
+          borderRadius={16}
+        />
         <View style={{ flex: 1 }}>
           <View row spread centerV style={{ paddingBottom: 5 }}>
-            <KText style={{ color: "#393939" }}>{getGroupName(group, me)}</KText>
+            <KText style={{ color: "#393939" }}>{info?.name}</KText>
             <KText style={{ fontSize: 12, fontFamily: "Dubai-Light" }}>{dayjs(msg?.createdAt).fromNow()}</KText>
           </View>
           <KText key={msg?.id} style={{ fontSize: 12 }}>

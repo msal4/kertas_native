@@ -21,10 +21,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTrans } from "../context/trans";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { getGroupName } from "../util/group";
+import { getGroupInfo } from "../util/group";
 
 function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
-  if (!res?.messagePosted) return;
+  if (!res?.messagePosted) return messages;
   return [res.messagePosted, ...messages];
 }
 
@@ -49,6 +49,8 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
     await postMessage({ input: { content: _cnt, groupID } });
     setContent("");
   };
+
+  const info = getGroupInfo(group, me);
 
   return (
     <>
@@ -78,7 +80,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
           style={{ borderRadius: 10, overflow: "hidden" }}
           size={40}
         />
-        <KText style={{ marginLeft: 10, fontSize: 17, color: "#fff", fontFamily: "Dubai-Bold" }}>{getGroupName(group, me)}</KText>
+        <KText style={{ marginLeft: 10, fontSize: 17, color: "#fff", fontFamily: "Dubai-Bold" }}>{info?.name}</KText>
       </View>
 
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1, paddingLeft: left, paddingRight: right }}>

@@ -15,7 +15,7 @@ export function navigate<RouteName extends keyof RootStackParamList>(
 
 export function replace<RouteName extends keyof RootStackParamList>(name: RouteName, params?: RootStackParamList[RouteName]) {
   if (navigationRef.isReady() && !currentRouteIs(name)) {
-    navigationRef.dispatch(StackActions.popToTop());
+    if (navigationRef.canGoBack()) navigationRef.dispatch(StackActions.popToTop());
     navigationRef.dispatch(StackActions.replace(name, params));
   }
 }

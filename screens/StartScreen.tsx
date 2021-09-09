@@ -12,20 +12,18 @@ export function StartScreen({ navigation }: RootStackScreenProps<"Start">) {
   const { setIsAuthenticated } = useAuth();
 
   useEffect(() => {
-    console.log(res.data, res.error, res.fetching);
     if (res.data?.me.id) {
       saveCurrentUser(res.data?.me).then(() => {
         setIsAuthenticated(true);
-        replace("Root");
+        navigation.replace("Root");
       });
     }
   }, [res.data?.me.id]);
 
   useEffect(() => {
-    console.log(res.data, res.error, res.fetching);
     if (res.error?.graphQLErrors?.some((e) => e.extensions?.code === "NOT_FOUND")) {
       setIsAuthenticated(false);
-      replace("Login");
+      navigation.replace("Login");
       return;
     }
   }, [res.error]);
