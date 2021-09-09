@@ -14,8 +14,7 @@ import { useLocale } from "./hooks/useLocale";
 import { TextProps, ThemeManager } from "react-native-ui-lib";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useMe } from "./hooks/useMe";
-import { AuthProvider, useAuth } from "./context/auth";
+import { useAuth, AuthProvider } from "./context/auth";
 
 dayjs.extend(relativeTime);
 
