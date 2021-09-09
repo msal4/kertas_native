@@ -4,7 +4,7 @@
  *
  */
 import { FontAwesome } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabBarProps, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
@@ -29,14 +29,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { KText } from "../components/KText";
 import { Touchable } from "../components/Touchable";
 
-import HomeIcon from '../assets/icons/Home.svg';
-import HomeActiveIcon from '../assets/icons/Home-Active.svg';
-import ChatIcon from '../assets/icons/Chat.svg';
-import ChatActiveIcon from '../assets/icons/Chat-Active.svg';
-import NotificationIcon from '../assets/icons/Notification.svg';
-import NotificationActiveIcon from '../assets/icons/Notification-Active.svg';
-import ProfileIcon from '../assets/icons/Profile.svg';
-import ProfileActiveIcon from '../assets/icons/Profile-Active.svg';
+import HomeIcon from "../assets/icons/Home.svg";
+import HomeActiveIcon from "../assets/icons/Home-Active.svg";
+import ChatIcon from "../assets/icons/Chat.svg";
+import ChatActiveIcon from "../assets/icons/Chat-Active.svg";
+import NotificationIcon from "../assets/icons/Notification.svg";
+import NotificationActiveIcon from "../assets/icons/Notification-Active.svg";
+import ProfileIcon from "../assets/icons/Profile.svg";
+import ProfileActiveIcon from "../assets/icons/Profile-Active.svg";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -74,7 +74,7 @@ function RootNavigator() {
  */
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
-function TabBarRender({ state, descriptors, navigation }) {
+function TabBar({ state, navigation }: BottomTabBarProps) {
   const { t } = useTrans();
 
   return (
@@ -85,67 +85,79 @@ function TabBarRender({ state, descriptors, navigation }) {
         paddingBottom: Platform.OS == "ios" ? 15 : 0,
         height: 80,
         borderTopWidth: 1,
-        borderTopColor: "#ddd"
+        borderTopColor: "#ddd",
       }}
     >
       <View style={{ flex: 1 }}>
-        <Touchable onPress={() => {
-          navigation.navigate({ name: "Home", merge: true });
-        }}>
+        <Touchable
+          onPress={() => {
+            navigation.navigate("Home");
+          }}
+        >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-            {state.index === 0?
-            <HomeActiveIcon width={28} height={28} fill="#a18cd1" />
-            :
-            <HomeIcon width={28} height={28} stroke="#8e8e8e" />
-            }
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 0? "#a18cd1": "#9a9a9a", fontSize: 14 }}>{t("home")}</Text>
+            {state.index === 0 ? (
+              <HomeActiveIcon width={28} height={28} fill="#a18cd1" />
+            ) : (
+              <HomeIcon width={28} height={28} stroke="#8e8e8e" />
+            )}
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 0 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>{t("home")}</Text>
           </View>
         </Touchable>
       </View>
       <View style={{ flex: 1 }}>
-        <Touchable onPress={() => {
-          navigation.navigate({ name: "Chat", merge: true });
-        }}>
+        <Touchable
+          onPress={() => {
+            navigation.navigate("Chat");
+          }}
+        >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-            {state.index === 1?
-            <ChatActiveIcon width={28} height={28} fill="#a18cd1" />
-            :
-            <ChatIcon width={28} height={28} fill="#8e8e8e" />
-            }
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 1? "#a18cd1": "#9a9a9a", fontSize: 14 }}>{t("chat")}</Text>
+            {state.index === 1 ? (
+              <ChatActiveIcon width={28} height={28} fill="#a18cd1" />
+            ) : (
+              <ChatIcon width={28} height={28} fill="#8e8e8e" />
+            )}
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 1 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>{t("chat")}</Text>
           </View>
         </Touchable>
       </View>
       <View style={{ flex: 1 }}>
-        <Touchable onPress={() => {
-          navigation.navigate({ name: "Notifications", merge: true });
-        }}>
+        <Touchable
+          onPress={() => {
+            navigation.navigate("Notifications");
+          }}
+        >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-            {state.index === 2?
-            <NotificationActiveIcon width={28} height={28} fill="#a18cd1" />
-            :
-            <NotificationIcon width={28} height={28} fill="#8e8e8e" />
-            }
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 2? "#a18cd1": "#9a9a9a", fontSize: 14 }}>{t("notifications")}</Text>
+            {state.index === 2 ? (
+              <NotificationActiveIcon width={28} height={28} fill="#a18cd1" />
+            ) : (
+              <NotificationIcon width={28} height={28} fill="#8e8e8e" />
+            )}
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 2 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>
+              {t("notifications")}
+            </Text>
           </View>
         </Touchable>
       </View>
       <View style={{ flex: 1 }}>
-        <Touchable onPress={() => {
-          navigation.navigate({ name: "Profile", merge: true });
-        }}>
+        <Touchable
+          onPress={() => {
+            navigation.navigate("Profile");
+          }}
+        >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
-            {state.index === 3?
-            <ProfileActiveIcon width={28} height={28} fill="#a18cd1" />
-            :
-            <ProfileIcon width={28} height={28} fill="#8e8e8e" />
-            }
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 3? "#a18cd1": "#9a9a9a", fontSize: 14 }}>{t("my_profile")}</Text>
+            {state.index === 3 ? (
+              <ProfileActiveIcon width={28} height={28} fill="#a18cd1" />
+            ) : (
+              <ProfileIcon width={28} height={28} fill="#8e8e8e" />
+            )}
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 3 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>
+              {t("my_profile")}
+            </Text>
           </View>
         </Touchable>
       </View>
     </View>
-  )
+  );
 }
 
 function BottomTabNavigator() {
@@ -163,7 +175,7 @@ function BottomTabNavigator() {
           fontSize: 13,
         },
       }}
-      tabBar={props => <TabBarRender {...props} />}
+      tabBar={(props) => <TabBar {...props} />}
     >
       <BottomTab.Screen
         name="Home"

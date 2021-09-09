@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Loading from "../components/Loading";
 import { useMeQuery } from "../generated/graphql";
 import { Error } from "../components/Error";
 import { saveCurrentUser } from "../hooks/useMe";
 import { RootStackScreenProps } from "../types";
 import { useAuth } from "../context/auth";
-import { replace } from "../navigation/navigationRef";
 
 export function StartScreen({ navigation }: RootStackScreenProps<"Start">) {
   const [res, refetch] = useMeQuery();
