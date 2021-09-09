@@ -1,10 +1,19 @@
 import { GroupFragment, CurrentUserFragment, GroupType } from "../generated/graphql";
 
-export function getGroupName(group?: GroupFragment | null, me?: CurrentUserFragment | null) {
+interface GroupInfo {
+  name: string;
+  image: string;
+}
+
+export function getGroupInfo(group?: GroupFragment | null, me?: CurrentUserFragment | null): GroupInfo | null {
   if (group?.groupType === GroupType.Private) {
     const u = group.users?.filter((u) => u.id !== me?.id);
-    return u?.length ? u[0].name : null;
+
+    return u?.length ? { name: u[0].name, image: u[0].image } : null;
   }
 
-  return group?.name;
+  return {
+    name: group?.name ?? "",
+    image: "",
+  };
 }

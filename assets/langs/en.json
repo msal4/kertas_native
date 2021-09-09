@@ -6,5 +6,8 @@
   "assignments": "Assignments",
   "upload_assignment_file": "Upload Assignment File",
   "you": "You",
-  "say_something": "Say something"
+  "say_something": "Say something",
+  "all": "All",
+  "groups": "Groups",
+  "private": "Private"
 }

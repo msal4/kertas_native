@@ -4,8 +4,12 @@ import { CurrentUserFragment } from "../generated/graphql";
 
 let user: CurrentUserFragment | null = null;
 
-export async function saveCurrentUser(u: CurrentUserFragment) {
+export async function saveCurrentUser(u: CurrentUserFragment | null) {
   user = u;
+  if (!u) {
+    await AsyncStorage.removeItem("me");
+    return;
+  }
   await AsyncStorage.setItem("me", JSON.stringify(u));
 }
 

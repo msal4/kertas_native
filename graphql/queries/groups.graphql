@@ -1,8 +1,39 @@
-query Groups {
-  groups {
+query Groups ($after: Cursor, $where: GroupWhereInput) {
+  groups(after: $after, where: $where, orderBy: {field: UPDATED_AT, direction: DESC}) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
     edges {
       node {
-        ...Group
+        ...GroupDetail
+      }
+    }
+  }
+}
+
+fragment GroupDetail on Group {
+  id
+  name
+  groupType
+
+  users {
+    id
+    name
+    image
+  }
+
+  messages(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
+    edges {
+      node {
+        id
+        content
+        createdAt
+
+        owner {
+          id
+          name
+        }
       }
     }
   }

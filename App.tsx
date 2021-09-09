@@ -1,19 +1,21 @@
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useMemo } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as GraphQLProvider } from "urql";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
-import { client } from "./util/auth";
+import { createAuthClient } from "./util/auth";
 import "dayjs/locale/ar";
 import { TransProvider } from "./context/trans";
 import { useLocale } from "./hooks/useLocale";
 import { TextProps, ThemeManager } from "react-native-ui-lib";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useMe } from "./hooks/useMe";
+import { AuthProvider, useAuth } from "./context/auth";
 
 dayjs.extend(relativeTime);
 
@@ -39,10 +41,20 @@ ThemeManager.setComponentTheme("Text", (props: TextProps) => {
 });
 
 export default function App() {
+  return (
+    <AuthProvider>
+      <_App />
+    </AuthProvider>
+  );
+}
+
+function _App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [fontsLoaded] = Font.useFonts(customFonts);
   const { locale, loading: localeLoading } = useLocale();
+  const { isAuthenticated } = useAuth();
+  const client = useMemo(createAuthClient, [isAuthenticated]);
 
   if (!isLoadingComplete || !fontsLoaded || localeLoading) {
     return <AppLoading />;

@@ -13,7 +13,7 @@ interface ErrorProps {
 
 export function Error({
   isError = false,
-  color = "white",
+  color = "#9a9a9a",
   height = "auto",
   msg = "Semething went wrong",
   btnText = "Retry",

@@ -1,14 +1,11 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, SafeAreaView, TextInput } from "react-native";
+import { FlatList, KeyboardAvoidingView, TextInput } from "react-native";
 
 import {
-  CurrentUserFragment,
-  GroupFragment,
   GroupType,
   Message,
   MessagePostedSubscription,
   useGroupQuery,
-  useGroupsQuery,
   useMessagePostedSubscription,
   useMessagesQuery,
   usePostMessageMutation,
@@ -20,14 +17,15 @@ import { Touchable } from "../components/Touchable";
 import { View, Image } from "react-native-ui-lib";
 import { useMe } from "../hooks/useMe";
 import dayjs from "dayjs";
-import Loading from "../components/Loading";
 import { Ionicons } from "@expo/vector-icons";
 import { useTrans } from "../context/trans";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { getGroupName } from "../util/group";
+import { getGroupInfo } from "../util/group";
+import { LinearGradient } from "expo-linear-gradient";
 
-function handleSubscription(messages: any = [], res: MessagePostedSubscription) {
+function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
+  if (!res?.messagePosted) return messages;
   return [res.messagePosted, ...messages];
 }
 
@@ -39,7 +37,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
   const [content, setContent] = useState("");
   const list = useRef<FlatList>();
 
-  const disabled = !content.trim();
+  const _cnt = content.trim();
 
   const { t, isRTL } = useTrans();
   const { top, right, bottom, left } = useSafeAreaInsets();
@@ -47,41 +45,47 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
   const group = res.data?.group;
 
   const submit = async () => {
+    if (!_cnt) return;
     list.current?.scrollToOffset({ offset: 0, animated: true });
-    await postMessage({ input: { content, groupID } });
+    await postMessage({ input: { content: _cnt, groupID } });
     setContent("");
   };
+
+  const info = getGroupInfo(group, me);
 
   return (
     <>
       <StatusBar style="light" />
 
-      <View
-        row
-        centerV
+      <LinearGradient
         style={{
-          backgroundColor: "#6A90CC",
-          elevation: 10,
-          shadowColor: "#9a9a9a",
-          shadowRadius: 10,
-          shadowOpacity: 1,
+          flexDirection: "row",
+          alignItems: "center",
           paddingTop: top + 10,
           paddingRight: right + 10,
           paddingLeft: left + 10,
           paddingBottom: 10,
         }}
+        start={{ x: 0, y: 0 }}
+        colors={group?.groupType === GroupType.Private ? ["#fecfef", "#ff9a9e"] : ["#fbc2eb", "#a18cd1"]}
       >
-        <Ionicons
+        <Touchable
+          style={{ paddingRight: 5 }}
           onPress={() => {
             navigation.pop();
           }}
-          color="white"
-          name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"}
-          style={{ borderRadius: 10, overflow: "hidden" }}
-          size={40}
+        >
+          <Ionicons color="white" name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} style={{ padding: 5 }} size={30} />
+        </Touchable>
+        <Image
+          source={{ uri: `http://localhost:9000/root/${info?.image}` }}
+          width={40}
+          height={40}
+          style={{ marginLeft: 10, backgroundColor: "#f2f2f2", marginRight: 10 }}
+          borderRadius={8}
         />
-        <KText style={{ marginLeft: 10, fontSize: 17, color: "#fff", fontFamily: "Dubai-Bold" }}>{getGroupName(group, me)}</KText>
-      </View>
+        <KText style={{ marginLeft: 5, fontSize: 17, color: "#fff", fontFamily: "Dubai-Medium" }}>{info?.name}</KText>
+      </LinearGradient>
 
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1, paddingLeft: left, paddingRight: right }}>
         <MessageList ref={list} groupID={groupID} />
@@ -107,10 +111,10 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             textAlign={isRTL ? "right" : undefined}
             onSubmitEditing={submit}
           />
-          <Touchable disabled={disabled} onPress={submit}>
+          <Touchable disabled={!_cnt} onPress={submit}>
             <Ionicons
-              style={{ color: disabled ? "#9a9a9a" : "#6A90CC", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
-              name={`send${disabled ? "-outline" : ""}` as any}
+              style={{ color: !_cnt ? "#9a9a9a" : "#6A90CC", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
+              name={`send${!_cnt ? "-outline" : ""}` as any}
               size={20}
             />
           </Touchable>
@@ -134,7 +138,6 @@ const MessageList = memo(
     return (
       <>
         <Error isError={!!queryResponse.error} onPress={refetch} />
-        <Loading isLoading={queryResponse.fetching && !queryResponse.data} color="#9a9a9a55" />
         {queryResponse.data?.messages ? (
           <FlatList
             ref={ref as any}
@@ -168,15 +171,16 @@ function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
       {!isMe ? (
         <Image
           source={{ uri: `http://localhost:9000/root/${msg.owner?.image}` }}
-          style={{ backgroundColor: "#9a9a9a55", marginRight: 15 }}
+          style={{ backgroundColor: "#f2f2f2", marginRight: 15 }}
           borderRadius={16}
           width={60}
           height={60}
         />
       ) : null}
-      <View
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        colors={isMe ? ["#a7a6cb", "#8989ba"] : ["#e6e9f0", "#eef1f5"]}
         style={{
-          backgroundColor: isMe ? "#6A90CC" : "#9a9a9a99",
           padding: 10,
           borderRadius: 16,
           marginLeft: isMe ? "auto" : undefined,
@@ -185,11 +189,15 @@ function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
         }}
       >
         <View row spread style={{ paddingBottom: 5 }}>
-          {<KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: "white" }}>{isMe ? t("you") : msg.owner?.name}</KText>}
-          <KText style={{ color: "#f3f3f3", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
+          {
+            <KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: isMe ? "#fff" : "#383838" }}>
+              {isMe ? t("you") : msg.owner?.name}
+            </KText>
+          }
+          <KText style={{ color: isMe ? "#f3f3f3" : "#5f5f5f", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
         </View>
-        <KText style={{ color: "white" }}>{msg?.content}</KText>
-      </View>
+        <KText style={{ color: isMe ? "white" : "#383838" }}>{msg?.content}</KText>
+      </LinearGradient>
     </View>
   );
 }
