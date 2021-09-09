@@ -13,6 +13,7 @@ import DatePicker from "../components/DatePicker";
 import CalendarIcon from "../assets/icons/Calendar.svg";
 import FilesIcon from '../assets/icons/Files.svg';
 import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 
 import { useAssignmentsQuery, useAssignmentsSubmissionQuery, useUpdateAssignmentSubmissionMutation } from "../generated/graphql";
 import { useTrans } from "../context/trans";
