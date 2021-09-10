@@ -125,7 +125,7 @@ export type Assignment = Node & {
 
 export type AssignmentSubmissionsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentSubmissionOrder>;
@@ -498,7 +498,7 @@ export type Class = Node & {
 
 export type ClassAssignmentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentOrder>;
@@ -508,7 +508,7 @@ export type ClassAssignmentsArgs = {
 
 export type ClassAttendancesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AttendanceOrder>;
@@ -518,7 +518,7 @@ export type ClassAttendancesArgs = {
 
 export type ClassSchedulesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ScheduleOrder>;
@@ -528,7 +528,7 @@ export type ClassSchedulesArgs = {
 
 export type ClassCourseGradesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<CourseGradeOrder>;
@@ -875,7 +875,7 @@ export type Group = Node & {
 
 export type GroupMessagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<MessageOrder>;
@@ -1433,7 +1433,7 @@ export type QuerySchoolArgs = {
 
 export type QuerySchoolsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<SchoolOrder>;
@@ -1448,7 +1448,7 @@ export type QueryUserArgs = {
 
 export type QueryUsersArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<UserOrder>;
@@ -1463,7 +1463,7 @@ export type QueryStageArgs = {
 
 export type QueryStagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<StageOrder>;
@@ -1474,7 +1474,7 @@ export type QueryStagesArgs = {
 export type QueryMessagesArgs = {
   groupID: Scalars['ID'];
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<MessageOrder>;
@@ -1490,7 +1490,7 @@ export type QueryGroupArgs = {
 export type QueryGroupsArgs = {
   userID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<GroupOrder>;
@@ -1508,7 +1508,7 @@ export type QueryClassesArgs = {
   stageID?: Maybe<Scalars['ID']>;
   schoolID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ClassOrder>;
@@ -1526,7 +1526,7 @@ export type QueryAssignmentsArgs = {
   stageID?: Maybe<Scalars['ID']>;
   schoolID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentOrder>;
@@ -1537,7 +1537,7 @@ export type QueryAssignmentsArgs = {
 export type QueryAssignmentSubmissionsArgs = {
   assignmentID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentSubmissionOrder>;
@@ -1556,7 +1556,7 @@ export type QueryCourseGradesArgs = {
   stageID?: Maybe<Scalars['ID']>;
   classID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<CourseGradeOrder>;
@@ -1568,7 +1568,7 @@ export type QueryTuitionPaymentsArgs = {
   studentID?: Maybe<Scalars['ID']>;
   stageID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<TuitionPaymentOrder>;
@@ -1580,7 +1580,7 @@ export type QueryAttendancesArgs = {
   studentID?: Maybe<Scalars['ID']>;
   classID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AttendanceOrder>;
@@ -1693,7 +1693,7 @@ export type School = Node & {
 
 export type SchoolUsersArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<UserOrder>;
@@ -1703,7 +1703,7 @@ export type SchoolUsersArgs = {
 
 export type SchoolStagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<StageOrder>;
@@ -1851,7 +1851,7 @@ export type Stage = Node & {
 
 export type StageClassesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ClassOrder>;
@@ -1861,7 +1861,7 @@ export type StageClassesArgs = {
 
 export type StagePaymentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<TuitionPaymentOrder>;
@@ -1871,7 +1871,7 @@ export type StagePaymentsArgs = {
 
 export type StageStudentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<UserOrder>;
@@ -2220,7 +2220,7 @@ export type User = Node & {
 
 export type UserMessagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<MessageOrder>;
@@ -2230,7 +2230,7 @@ export type UserMessagesArgs = {
 
 export type UserGroupsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<GroupOrder>;
@@ -2241,7 +2241,7 @@ export type UserGroupsArgs = {
 export type UserClassesArgs = {
   stageID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ClassOrder>;
@@ -2251,7 +2251,7 @@ export type UserClassesArgs = {
 
 export type UserAssignmentSubmissionsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentSubmissionOrder>;
@@ -2261,7 +2261,7 @@ export type UserAssignmentSubmissionsArgs = {
 
 export type UserPaymentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<TuitionPaymentOrder>;
@@ -2476,7 +2476,7 @@ export type PostMessageMutationVariables = Exact<{
 }>;
 
 
-export type PostMessageMutation = { __typename?: 'Mutation', postMessage: { __typename?: 'Message', id: string, content: string } };
+export type PostMessageMutation = { __typename?: 'Mutation', postMessage: { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any } };
 
 export type RefreshTokensMutationVariables = Exact<{
   refreshToken: Scalars['String'];
@@ -2510,9 +2510,9 @@ export type GroupsQueryVariables = Exact<{
 }>;
 
 
-export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string } }> }>>> }> }> }>>> } };
+export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }> }> }>>> } };
 
-export type GroupDetailFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string } }> }>>> }> };
+export type GroupDetailFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2527,7 +2527,9 @@ export type MessagesQueryVariables = Exact<{
 }>;
 
 
-export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', cursor: any, node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> } };
+export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', cursor: any, node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> } };
+
+export type MessageFragment = { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } };
 
 export type ScheduleQueryVariables = Exact<{
   weekday?: Maybe<Scalars['Weekday']>;
@@ -2547,7 +2549,7 @@ export type MessagePostedSubscriptionVariables = Exact<{
 }>;
 
 
-export type MessagePostedSubscription = { __typename?: 'Subscription', messagePosted: { __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } } };
+export type MessagePostedSubscription = { __typename?: 'Subscription', messagePosted: { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } } };
 
 export const GroupFragmentDoc = gql`
     fragment Group on Group {
@@ -2559,6 +2561,19 @@ export const GroupFragmentDoc = gql`
     name
     image
   }
+}
+    `;
+export const MessageFragmentDoc = gql`
+    fragment Message on Message {
+  id
+  content
+  attachment
+  owner {
+    id
+    name
+    image
+  }
+  createdAt
 }
     `;
 export const GroupDetailFragmentDoc = gql`
@@ -2574,18 +2589,12 @@ export const GroupDetailFragmentDoc = gql`
   messages(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
     edges {
       node {
-        id
-        content
-        createdAt
-        owner {
-          id
-          name
-        }
+        ...Message
       }
     }
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 export const CurrentUserFragmentDoc = gql`
     fragment CurrentUser on User {
   id
@@ -2618,6 +2627,8 @@ export const PostMessageDocument = gql`
   postMessage(input: $input) {
     id
     content
+    attachment
+    createdAt
   }
 }
     `;
@@ -2741,19 +2752,12 @@ export const MessagesDocument = gql`
     edges {
       cursor
       node {
-        id
-        content
-        owner {
-          id
-          name
-          image
-        }
-        createdAt
+        ...Message
       }
     }
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 export function useMessagesQuery(options: Omit<Urql.UseQueryArgs<MessagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MessagesQuery>({ query: MessagesDocument, ...options });
@@ -2797,17 +2801,10 @@ export function useStagesQuery(options: Omit<Urql.UseQueryArgs<StagesQueryVariab
 export const MessagePostedDocument = gql`
     subscription MessagePosted($groupID: ID!) {
   messagePosted(groupID: $groupID) {
-    id
-    content
-    owner {
-      id
-      name
-      image
-    }
-    createdAt
+    ...Message
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 export function useMessagePostedSubscription<TData = MessagePostedSubscription>(options: Omit<Urql.UseSubscriptionArgs<MessagePostedSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<MessagePostedSubscription, TData>) {
   return Urql.useSubscription<MessagePostedSubscription, TData, MessagePostedSubscriptionVariables>({ query: MessagePostedDocument, ...options }, handler);

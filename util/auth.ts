@@ -9,6 +9,7 @@ import { SubscriptionClient } from "subscriptions-transport-ws";
 import { Operation, createClient, dedupExchange, errorExchange, makeOperation, subscriptionExchange } from "urql";
 import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDocument } from "../generated/graphql";
 import { replace } from "../navigation/navigationRef";
+import { devtoolsExchange } from "@urql/devtools";
 
 const accessTokenExpKey = "access_token_exp";
 const accessTokenKey = "access_token";
@@ -69,6 +70,7 @@ export const createAuthClient = () =>
     // TODO: update to cache-and-network
     requestPolicy: "network-only",
     exchanges: [
+      devtoolsExchange,
       dedupExchange,
       cacheExchange({
         resolvers: {

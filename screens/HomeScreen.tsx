@@ -13,7 +13,7 @@ import { Error } from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useScheduleQuery } from "../generated/graphql";
-import { weekdays } from "dayjs/locale/ar";
+import { weekdays } from "dayjs/locale/ar-iq";
 import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
 
@@ -23,9 +23,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const { locale } = useTrans();
 
-  const currDate = dayjs()
-    .locale(locale)
-    .add(selectedWeekday - dayjs().day(), "day");
+  const currDate = dayjs().add(selectedWeekday - dayjs().day(), "day");
 
   return (
     <SafeAreaView style={{ backgroundColor: "#919191", flex: 1 }}>

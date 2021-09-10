@@ -8,13 +8,12 @@ import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import { createAuthClient } from "./util/auth";
-import "dayjs/locale/ar";
 import { TransProvider } from "./context/trans";
 import { useLocale } from "./hooks/useLocale";
 import { TextProps, ThemeManager } from "react-native-ui-lib";
 import dayjs from "dayjs";
+import "dayjs/locale/ar-iq";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useMe } from "./hooks/useMe";
 import { AuthProvider, useAuth } from "./context/auth";
 
 dayjs.extend(relativeTime);

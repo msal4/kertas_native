@@ -26,14 +26,7 @@ fragment GroupDetail on Group {
   messages(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
     edges {
       node {
-        id
-        content
-        createdAt
-
-        owner {
-          id
-          name
-        }
+        ...Message
       }
     }
   }

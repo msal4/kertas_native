@@ -1,16 +1,16 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, TextInput } from "react-native";
+import { FlatList, KeyboardAvoidingView, TextInput, TouchableOpacity } from "react-native";
 
 import {
   GroupType,
-  Message,
+  MessageFragment,
   MessagePostedSubscription,
   useGroupQuery,
   useMessagePostedSubscription,
   useMessagesQuery,
   usePostMessageMutation,
 } from "../generated/graphql";
-import { DeepPartial, RootStackScreenProps } from "../types";
+import { RootStackScreenProps } from "../types";
 import { Error } from "../components/Error";
 import { KText } from "../components/KText";
 import { Touchable } from "../components/Touchable";
@@ -23,6 +23,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { getGroupInfo } from "../util/group";
 import { LinearGradient } from "expo-linear-gradient";
+import { ReactNativeFile } from "extract-files";
+import * as ImagePicker from "expo-image-picker";
+import * as mime from "react-native-mime-types";
+import ImageView from "react-native-image-viewing";
 
 function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
   if (!res?.messagePosted) return messages;
@@ -35,20 +39,45 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
   const { me } = useMe();
   const [res] = useGroupQuery({ variables: { groupID } });
   const [content, setContent] = useState("");
+  const [attachment, setAttachment] = useState<ReactNativeFile>();
   const list = useRef<FlatList>();
-
-  const _cnt = content.trim();
 
   const { t, isRTL } = useTrans();
   const { top, right, bottom, left } = useSafeAreaInsets();
 
+  const _cnt = content.trim();
+  const disabled = !_cnt && !attachment;
+
   const group = res.data?.group;
 
   const submit = async () => {
-    if (!_cnt) return;
+    if (disabled) return;
     list.current?.scrollToOffset({ offset: 0, animated: true });
-    await postMessage({ input: { content: _cnt, groupID } });
+    const res = await postMessage({ input: { content: _cnt, groupID, attachment } });
+    if (res.error) {
+      console.log(res.error);
+      return;
+    }
     setContent("");
+    setAttachment(undefined);
+  };
+
+  const addAttachment = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+
+    if (res.cancelled) return;
+
+    const filetype = mime.lookup(res.uri) || "image";
+
+    setAttachment(new ReactNativeFile({ uri: res.uri, name: res.uri.substr(res.uri.lastIndexOf("/") + 1), type: filetype }));
   };
 
   const info = getGroupInfo(group, me);
@@ -90,34 +119,61 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1, paddingLeft: left, paddingRight: right }}>
         <MessageList ref={list} groupID={groupID} />
 
-        <View
-          row
-          centerV
-          style={{
-            paddingHorizontal: 15,
-            paddingVertical: 15,
-            borderTopColor: "#9a9a9a11",
-            minHeight: 50,
-            borderTopWidth: 2,
-          }}
-        >
-          <TextInput
-            multiline
-            returnKeyType="send"
-            value={content}
-            onChangeText={setContent}
-            style={{ flex: 1, fontSize: 14, marginRight: 15 }}
-            placeholder={t("say_something") + "..."}
-            textAlign={isRTL ? "right" : undefined}
-            onSubmitEditing={submit}
-          />
-          <Touchable disabled={!_cnt} onPress={submit}>
-            <Ionicons
-              style={{ color: !_cnt ? "#9a9a9a" : "#6A90CC", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
-              name={`send${!_cnt ? "-outline" : ""}` as any}
-              size={20}
+        <View>
+          {attachment && (
+            <View row centerV style={{ paddingHorizontal: 15, borderTopColor: "#9a9a9a11", borderTopWidth: 2 }}>
+              <Touchable
+                style={{ paddingRight: 10 }}
+                onPress={() => {
+                  setAttachment(undefined);
+                }}
+              >
+                <Ionicons name="close" />
+              </Touchable>
+              <KText numberOfLines={1} style={{ flex: 1 }}>
+                {attachment?.name}
+              </KText>
+            </View>
+          )}
+          <View
+            row
+            centerV
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 15,
+              borderTopColor: "#9a9a9a11",
+              minHeight: 50,
+              borderTopWidth: 2,
+            }}
+          >
+            <Touchable onPress={addAttachment}>
+              <Ionicons
+                style={{
+                  color: "#9a9a9a",
+                  transform: isRTL ? [{ rotate: "180deg" }] : undefined,
+                }}
+                name="attach"
+                size={25}
+              />
+            </Touchable>
+            <TextInput
+              multiline
+              returnKeyType="send"
+              value={content}
+              onChangeText={setContent}
+              style={{ flex: 1, fontSize: 14, marginHorizontal: 15 }}
+              placeholder={t("say_something") + "..."}
+              textAlign={isRTL ? "right" : undefined}
+              onSubmitEditing={submit}
             />
-          </Touchable>
+            <Touchable disabled={disabled} onPress={submit}>
+              <Ionicons
+                style={{ color: disabled ? "#9a9a9a" : "#a18cd1", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
+                name={`send${disabled ? "-outline" : ""}` as any}
+                size={20}
+              />
+            </Touchable>
+          </View>
         </View>
       </KeyboardAvoidingView>
       <View height={bottom} />
@@ -161,16 +217,19 @@ const MessageList = memo(
   })
 );
 
-function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
+const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
   const { me } = useMe();
   const { t } = useTrans();
-  const isMe = msg.owner?.id === me?.id;
+  const isMe = msg.owner.id === me?.id;
+
+  const hasImage = msg.attachment && mime.lookup(msg.attachment) && mime.lookup(msg.attachment).startsWith("image");
+  const [visible, setVisible] = useState(false);
 
   return (
     <View row>
       {!isMe ? (
         <Image
-          source={{ uri: `http://localhost:9000/root/${msg.owner?.image}` }}
+          source={{ uri: `http://localhost:9000/root/${msg.owner.image}` }}
           style={{ backgroundColor: "#f2f2f2", marginRight: 15 }}
           borderRadius={16}
           width={60}
@@ -191,13 +250,37 @@ function MessageItem({ msg }: { msg: DeepPartial<Message> }) {
         <View row spread style={{ paddingBottom: 5 }}>
           {
             <KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: isMe ? "#fff" : "#383838" }}>
-              {isMe ? t("you") : msg.owner?.name}
+              {isMe ? t("you") : msg.owner.name}
             </KText>
           }
           <KText style={{ color: isMe ? "#f3f3f3" : "#5f5f5f", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
         </View>
+        {hasImage ? (
+          <>
+            <TouchableOpacity
+              onPress={() => {
+                setVisible(true);
+              }}
+            >
+              <Image
+                source={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
+                height={200}
+                width={200}
+                borderRadius={16}
+                style={{ alignSelf: "center", marginBottom: msg.content ? 5 : undefined, backgroundColor: "#f2f2f2" }}
+                loadingIndicatorSource={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
+              />
+            </TouchableOpacity>
+            <ImageView
+              images={[{ uri: `http://localhost:9000/root/${msg.attachment}` }]}
+              imageIndex={0}
+              visible={visible}
+              onRequestClose={() => setVisible(false)}
+            />
+          </>
+        ) : null}
         <KText style={{ color: isMe ? "white" : "#383838" }}>{msg?.content}</KText>
       </LinearGradient>
     </View>
   );
-}
+});
