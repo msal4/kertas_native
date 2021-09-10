@@ -100,7 +100,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <HomeIcon width={28} height={28} stroke="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 0 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>{t("home")}</Text>
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 0 ? "#a18cd1" : "#9a9a9a", fontSize: 12 }}>{t("home")}</Text>
           </View>
         </Touchable>
       </View>
@@ -116,7 +116,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <ChatIcon width={28} height={28} fill="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 1 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>{t("chat")}</Text>
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 1 ? "#a18cd1" : "#9a9a9a", fontSize: 12 }}>{t("chat")}</Text>
           </View>
         </Touchable>
       </View>
@@ -132,7 +132,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <NotificationIcon width={28} height={28} fill="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 2 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 2 ? "#a18cd1" : "#9a9a9a", fontSize: 12 }}>
               {t("notifications")}
             </Text>
           </View>
@@ -150,7 +150,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <ProfileIcon width={28} height={28} fill="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 3 ? "#a18cd1" : "#9a9a9a", fontSize: 14 }}>
+            <Text style={{ fontFamily: "Dubai-Bold", color: state.index === 3 ? "#a18cd1" : "#9a9a9a", fontSize: 12 }}>
               {t("my_profile")}
             </Text>
           </View>
@@ -213,6 +213,11 @@ function BottomTabNavigator() {
         options={{
           title: t("my_profile"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          header: () => (
+          <View row style={{ paddingTop: top, paddingRight: right + 20, paddingLeft: left + 20 }}>
+            <KText style={{ fontSize: 23, color: "#393939" }}>{t("my_profile")}</KText>
+          </View>
+          ),
         }}
       />
     </BottomTab.Navigator>

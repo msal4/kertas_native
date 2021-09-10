@@ -1,0 +1,21 @@
+query Profile {
+    me {
+        image
+        name
+      	school {
+			name
+        }
+        stage {
+            name
+          	tuitionAmount
+            payments {
+              edges {
+                node {
+                    paidAmount
+                    year
+                }
+              }
+            }
+        }
+    }
+}

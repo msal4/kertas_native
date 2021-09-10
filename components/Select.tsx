@@ -6,7 +6,7 @@ import { Touchable } from "./Touchable";
 type Item = { name: string; value: number };
 
 interface SelectModalProps {
-  selected: number;
+  selected: number | string;
   data: Array<Item>;
   onSelect: (data: Item) => void;
   height?: string | number;

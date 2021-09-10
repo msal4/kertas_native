@@ -125,7 +125,7 @@ export type Assignment = Node & {
 
 export type AssignmentSubmissionsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentSubmissionOrder>;
@@ -498,7 +498,7 @@ export type Class = Node & {
 
 export type ClassAssignmentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentOrder>;
@@ -508,7 +508,7 @@ export type ClassAssignmentsArgs = {
 
 export type ClassAttendancesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AttendanceOrder>;
@@ -518,7 +518,7 @@ export type ClassAttendancesArgs = {
 
 export type ClassSchedulesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ScheduleOrder>;
@@ -528,7 +528,7 @@ export type ClassSchedulesArgs = {
 
 export type ClassCourseGradesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<CourseGradeOrder>;
@@ -875,7 +875,7 @@ export type Group = Node & {
 
 export type GroupMessagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<MessageOrder>;
@@ -1433,7 +1433,7 @@ export type QuerySchoolArgs = {
 
 export type QuerySchoolsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<SchoolOrder>;
@@ -1448,7 +1448,7 @@ export type QueryUserArgs = {
 
 export type QueryUsersArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<UserOrder>;
@@ -1463,7 +1463,7 @@ export type QueryStageArgs = {
 
 export type QueryStagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<StageOrder>;
@@ -1474,7 +1474,7 @@ export type QueryStagesArgs = {
 export type QueryMessagesArgs = {
   groupID: Scalars['ID'];
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<MessageOrder>;
@@ -1490,7 +1490,7 @@ export type QueryGroupArgs = {
 export type QueryGroupsArgs = {
   userID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<GroupOrder>;
@@ -1508,7 +1508,7 @@ export type QueryClassesArgs = {
   stageID?: Maybe<Scalars['ID']>;
   schoolID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ClassOrder>;
@@ -1526,7 +1526,7 @@ export type QueryAssignmentsArgs = {
   stageID?: Maybe<Scalars['ID']>;
   schoolID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentOrder>;
@@ -1537,7 +1537,7 @@ export type QueryAssignmentsArgs = {
 export type QueryAssignmentSubmissionsArgs = {
   assignmentID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentSubmissionOrder>;
@@ -1556,7 +1556,7 @@ export type QueryCourseGradesArgs = {
   stageID?: Maybe<Scalars['ID']>;
   classID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<CourseGradeOrder>;
@@ -1568,7 +1568,7 @@ export type QueryTuitionPaymentsArgs = {
   studentID?: Maybe<Scalars['ID']>;
   stageID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<TuitionPaymentOrder>;
@@ -1580,7 +1580,7 @@ export type QueryAttendancesArgs = {
   studentID?: Maybe<Scalars['ID']>;
   classID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AttendanceOrder>;
@@ -1693,7 +1693,7 @@ export type School = Node & {
 
 export type SchoolUsersArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<UserOrder>;
@@ -1703,7 +1703,7 @@ export type SchoolUsersArgs = {
 
 export type SchoolStagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<StageOrder>;
@@ -1851,7 +1851,7 @@ export type Stage = Node & {
 
 export type StageClassesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ClassOrder>;
@@ -1861,7 +1861,7 @@ export type StageClassesArgs = {
 
 export type StagePaymentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<TuitionPaymentOrder>;
@@ -1871,7 +1871,7 @@ export type StagePaymentsArgs = {
 
 export type StageStudentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<UserOrder>;
@@ -2220,7 +2220,7 @@ export type User = Node & {
 
 export type UserMessagesArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<MessageOrder>;
@@ -2230,7 +2230,7 @@ export type UserMessagesArgs = {
 
 export type UserGroupsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<GroupOrder>;
@@ -2241,7 +2241,7 @@ export type UserGroupsArgs = {
 export type UserClassesArgs = {
   stageID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<ClassOrder>;
@@ -2251,7 +2251,7 @@ export type UserClassesArgs = {
 
 export type UserAssignmentSubmissionsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<AssignmentSubmissionOrder>;
@@ -2261,7 +2261,7 @@ export type UserAssignmentSubmissionsArgs = {
 
 export type UserPaymentsArgs = {
   after?: Maybe<Scalars['Cursor']>;
-  first?: Scalars['Int'];
+  first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
   last?: Maybe<Scalars['Int']>;
   orderBy?: Maybe<TuitionPaymentOrder>;
@@ -2529,6 +2529,11 @@ export type MessagesQueryVariables = Exact<{
 
 export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', cursor: any, node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> } };
 
+export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', image: string, name: string, school?: Maybe<{ __typename?: 'School', name: string }>, stage?: Maybe<{ __typename?: 'Stage', name: string, tuitionAmount: number, payments?: Maybe<{ __typename?: 'TuitionPaymentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'TuitionPaymentEdge', node?: Maybe<{ __typename?: 'TuitionPayment', paidAmount: number, year: string }> }>>> }> }> } };
+
 export type ScheduleQueryVariables = Exact<{
   weekday?: Maybe<Scalars['Weekday']>;
   stageID?: Maybe<Scalars['ID']>;
@@ -2757,6 +2762,33 @@ export const MessagesDocument = gql`
 
 export function useMessagesQuery(options: Omit<Urql.UseQueryArgs<MessagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MessagesQuery>({ query: MessagesDocument, ...options });
+};
+export const ProfileDocument = gql`
+    query Profile {
+  me {
+    image
+    name
+    school {
+      name
+    }
+    stage {
+      name
+      tuitionAmount
+      payments {
+        edges {
+          node {
+            paidAmount
+            year
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+export function useProfileQuery(options: Omit<Urql.UseQueryArgs<ProfileQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ProfileQuery>({ query: ProfileDocument, ...options });
 };
 export const ScheduleDocument = gql`
     query Schedule($weekday: Weekday, $stageID: ID) {
