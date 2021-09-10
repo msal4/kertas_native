@@ -1,5 +1,5 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, TextInput, TouchableOpacity } from "react-native";
+import { FlatList, KeyboardAvoidingView, TextInput, TouchableHighlight, TouchableOpacity } from "react-native";
 
 import {
   GroupType,
@@ -27,6 +27,8 @@ import { ReactNativeFile } from "extract-files";
 import * as ImagePicker from "expo-image-picker";
 import * as mime from "react-native-mime-types";
 import ImageView from "react-native-image-viewing";
+import * as Clipboard from "expo-clipboard";
+import Toast from "react-native-root-toast";
 
 function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
   if (!res?.messagePosted) return messages;
@@ -217,6 +219,18 @@ const MessageList = memo(
   })
 );
 
+function showToast(msg: string, { duration = Toast.durations.SHORT, position = Toast.positions.BOTTOM } = {}) {
+  Toast.show(msg, {
+    duration: duration,
+    position: position,
+    animation: true,
+    hideOnPress: true,
+    shadow: false,
+    backgroundColor: "#383838",
+    delay: 0,
+  });
+}
+
 const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
   const { me } = useMe();
   const { t } = useTrans();
@@ -236,51 +250,70 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
           height={60}
         />
       ) : null}
-      <LinearGradient
-        start={{ x: 0, y: 0 }}
-        colors={isMe ? ["#a7a6cb", "#8989ba"] : ["#e6e9f0", "#eef1f5"]}
-        style={{
-          padding: 10,
-          borderRadius: 16,
-          marginLeft: isMe ? "auto" : undefined,
-          flexGrow: 0,
-          flexShrink: 1,
+      <TouchableHighlight
+        style={{ borderRadius: 16 }}
+        onLongPress={() => {
+          if (msg.content) {
+            Clipboard.setString(msg.content);
+            showToast(t("message_copied"));
+          } else if (msg.attachment) {
+            Clipboard.setString(msg.attachment);
+            showToast(t("attachment_copied"));
+          }
         }}
       >
-        <View row spread style={{ paddingBottom: 5 }}>
-          {
-            <KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: isMe ? "#fff" : "#383838" }}>
-              {isMe ? t("you") : msg.owner.name}
-            </KText>
-          }
-          <KText style={{ color: isMe ? "#f3f3f3" : "#5f5f5f", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
-        </View>
-        {hasImage ? (
-          <>
-            <TouchableOpacity
-              onPress={() => {
-                setVisible(true);
-              }}
-            >
-              <Image
-                source={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
-                height={200}
-                width={200}
-                borderRadius={16}
-                style={{ alignSelf: "center", marginBottom: msg.content ? 5 : undefined, backgroundColor: "#f2f2f2" }}
-                loadingIndicatorSource={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
+        <LinearGradient
+          start={{ x: 0, y: 0 }}
+          colors={isMe ? ["#a7a6cb", "#8989ba"] : ["#e6e9f0", "#eef1f5"]}
+          style={{
+            padding: 10,
+            borderRadius: 16,
+            marginLeft: isMe ? "auto" : undefined,
+            flexGrow: 0,
+            flexShrink: 1,
+          }}
+        >
+          <View row spread style={{ paddingBottom: 5 }}>
+            {
+              <KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: isMe ? "#fff" : "#383838" }}>
+                {isMe ? t("you") : msg.owner.name}
+              </KText>
+            }
+            <KText style={{ color: isMe ? "#f3f3f3" : "#5f5f5f", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
+          </View>
+
+          {hasImage ? (
+            <>
+              <TouchableOpacity
+                onPress={() => {
+                  setVisible(true);
+                }}
+                onLongPress={() => {
+                  Clipboard.setString(msg.attachment);
+                  showToast(t("attachment_copied"));
+                }}
+              >
+                <Image
+                  source={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
+                  height={200}
+                  width={200}
+                  borderRadius={16}
+                  style={{ alignSelf: "center", marginBottom: msg.content ? 5 : undefined, backgroundColor: "#f2f2f2" }}
+                  loadingIndicatorSource={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
+                />
+              </TouchableOpacity>
+              <ImageView
+                images={[{ uri: `http://localhost:9000/root/${msg.attachment}` }]}
+                imageIndex={0}
+                visible={visible}
+                onRequestClose={() => setVisible(false)}
               />
-            </TouchableOpacity>
-            <ImageView
-              images={[{ uri: `http://localhost:9000/root/${msg.attachment}` }]}
-              imageIndex={0}
-              visible={visible}
-              onRequestClose={() => setVisible(false)}
-            />
-          </>
-        ) : null}
-        <KText style={{ color: isMe ? "white" : "#383838" }}>{msg?.content}</KText>
-      </LinearGradient>
+            </>
+          ) : null}
+
+          <KText style={{ color: isMe ? "white" : "#383838" }}>{msg?.content}</KText>
+        </LinearGradient>
+      </TouchableHighlight>
     </View>
   );
 });

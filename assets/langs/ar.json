@@ -7,5 +7,7 @@
   "say_something": "قل شيئاً",
   "all": "الكل",
   "groups": "المجموعات",
-  "private": "المحادثات الخاصة"
+  "private": "المحادثات الخاصة",
+  "message_copied": "تم نسخ الرسالة",
+  "attachment_copied": "تم نسخ المرفق"
 }
