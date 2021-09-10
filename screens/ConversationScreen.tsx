@@ -251,7 +251,7 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
         />
       ) : null}
       <TouchableHighlight
-        style={{ borderRadius: 16 }}
+        style={{ borderRadius: 16, overflow: "hidden", marginLeft: isMe ? "auto" : undefined, flexGrow: 0, flexShrink: 1 }}
         onLongPress={() => {
           if (msg.content) {
             Clipboard.setString(msg.content);
@@ -267,10 +267,6 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
           colors={isMe ? ["#a7a6cb", "#8989ba"] : ["#e6e9f0", "#eef1f5"]}
           style={{
             padding: 10,
-            borderRadius: 16,
-            marginLeft: isMe ? "auto" : undefined,
-            flexGrow: 0,
-            flexShrink: 1,
           }}
         >
           <View row spread style={{ paddingBottom: 5 }}>
