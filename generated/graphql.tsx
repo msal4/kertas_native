@@ -2531,6 +2531,11 @@ export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'Me
 
 export type MessageFragment = { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } };
 
+export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', image: string, name: string, school?: Maybe<{ __typename?: 'School', name: string }>, stage?: Maybe<{ __typename?: 'Stage', name: string, tuitionAmount: number, payments?: Maybe<{ __typename?: 'TuitionPaymentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'TuitionPaymentEdge', node?: Maybe<{ __typename?: 'TuitionPayment', paidAmount: number, year: string }> }>>> }> }> } };
+
 export type ScheduleQueryVariables = Exact<{
   weekday?: Maybe<Scalars['Weekday']>;
   stageID?: Maybe<Scalars['ID']>;
@@ -2761,6 +2766,33 @@ export const MessagesDocument = gql`
 
 export function useMessagesQuery(options: Omit<Urql.UseQueryArgs<MessagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MessagesQuery>({ query: MessagesDocument, ...options });
+};
+export const ProfileDocument = gql`
+    query Profile {
+  me {
+    image
+    name
+    school {
+      name
+    }
+    stage {
+      name
+      tuitionAmount
+      payments {
+        edges {
+          node {
+            paidAmount
+            year
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+export function useProfileQuery(options: Omit<Urql.UseQueryArgs<ProfileQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ProfileQuery>({ query: ProfileDocument, ...options });
 };
 export const ScheduleDocument = gql`
     query Schedule($weekday: Weekday, $stageID: ID) {
