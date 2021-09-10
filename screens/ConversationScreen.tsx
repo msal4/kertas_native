@@ -30,6 +30,7 @@ import ImageView from "react-native-image-viewing";
 import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-root-toast";
 import { cdnURL } from "../constants/Config";
+import { isAndroid, isIOS } from "../constants/platform";
 
 function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
   if (!res?.messagePosted) return messages;
@@ -203,8 +204,9 @@ const MessageList = memo(
         {queryResponse.data?.messages ? (
           <FlatList
             ref={ref as any}
+            inverted={isIOS}
             ItemSeparatorComponent={() => <View height={15} />}
-            inverted
+            style={{ scaleY: isAndroid ? -1 : undefined }}
             contentContainerStyle={{ padding: 10 }}
             data={[...(subscriptionResponse.data ?? []), ...(queryResponse.data.messages?.edges?.map((e) => e?.node) ?? [])]}
             renderItem={({ item }) => <MessageItem msg={item} />}
@@ -244,7 +246,7 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
   const [visible, setVisible] = useState(false);
 
   return (
-    <View row>
+    <View row style={{ scaleY: isAndroid ? -1 : undefined }}>
       {!isMe ? (
         <Image
           source={{ uri: `${cdnURL}/${msg.owner.image}` }}
