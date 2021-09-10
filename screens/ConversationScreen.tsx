@@ -1,5 +1,5 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, TextInput, TouchableHighlight, TouchableOpacity } from "react-native";
+import { FlatList, KeyboardAvoidingView, Platform, TextInput, TouchableHighlight, TouchableOpacity } from "react-native";
 
 import {
   GroupType,
@@ -119,7 +119,10 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
         <KText style={{ marginLeft: 5, fontSize: 17, color: "#fff", fontFamily: "Dubai-Medium" }}>{info?.name}</KText>
       </LinearGradient>
 
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1, paddingLeft: left, paddingRight: right }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1, paddingLeft: left, paddingRight: right }}
+      >
         <MessageList ref={list} groupID={groupID} />
 
         <View>
