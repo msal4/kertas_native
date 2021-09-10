@@ -36,6 +36,8 @@ function handleSubscription(messages: any = [], res?: MessagePostedSubscription)
   return [res.messagePosted, ...messages];
 }
 
+const chatBackground = require("../assets/images/chat_background.jpg");
+
 export function ConversationScreen({ route, navigation }: RootStackScreenProps<"Conversation">) {
   const { groupID } = route.params;
   const [, postMessage] = usePostMessageMutation();
@@ -90,9 +92,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
 
   return (
     <>
-      <StatusBar style="light" />
-
-      <LinearGradient
+      <View
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -101,8 +101,6 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
           paddingLeft: left + 10,
           paddingBottom: 10,
         }}
-        start={{ x: 0, y: 0 }}
-        colors={group?.groupType === GroupType.Private ? ["#fecfef", "#ff9a9e"] : ["#fbc2eb", "#a18cd1"]}
       >
         <TouchableOpacity
           style={{ paddingRight: 5 }}
@@ -110,7 +108,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             navigation.pop();
           }}
         >
-          <Ionicons color="white" name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} style={{ padding: 5 }} size={30} />
+          <Ionicons color="#9a9a9a" name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} style={{ padding: 5 }} size={30} />
         </TouchableOpacity>
         <Image
           source={{ uri: `${cdnURL}/${info?.image}` }}
@@ -119,14 +117,19 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
           style={{ marginLeft: 10, backgroundColor: "#f2f2f2", marginRight: 10 }}
           borderRadius={8}
         />
-        <KText style={{ marginLeft: 5, fontSize: 17, color: "#fff", fontFamily: "Dubai-Medium" }}>{info?.name}</KText>
-      </LinearGradient>
+        <KText style={{ marginLeft: 5, fontSize: 17, color: "#9a9a9a", fontFamily: "Dubai-Medium" }}>{info?.name}</KText>
+      </View>
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        style={{ height: 4 }}
+        colors={group?.groupType === GroupType.Private ? ["#fecfef", "#ff9a9e"] : ["#fbc2eb", "#a18cd1"]}
+      />
 
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1, paddingLeft: left, paddingRight: right }}
       >
-        <ImageBackground source={require("../assets/images/chat_background.jpg")} style={{ flex: 1 }} imageStyle={{ opacity: 0.1 }}>
+        <ImageBackground source={chatBackground} style={{ flex: 1 }} imageStyle={{ opacity: 0.1 }}>
           <MessageList ref={list} groupID={groupID} />
         </ImageBackground>
 
