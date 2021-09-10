@@ -9,5 +9,10 @@
   "groups": "Groups",
   "private": "Private",
   "message_copied": "Copied message to clipboard",
-  "attachment_copied": "Copied attachment to clipboard"
+  "attachment_copied": "Copied attachment to clipboard",
+  "my_marks": "My Marks",
+  "payments": "Payments",
+  "language": "Language",
+  "logout": "Logout",
+  "logout_msg": "Are you sure you want to log out from this account?"
 }

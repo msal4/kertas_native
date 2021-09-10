@@ -76,11 +76,12 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
       <ScrollBottomSheet<string>
         componentType="ScrollView"
         snapPoints={[
-          windowHeight - 568 + (Platform.OS == "ios" ? getStatusBarHeight() : 0),
-          windowHeight - 270 + (Platform.OS == "ios" ? getStatusBarHeight() : 0),
+          windowHeight - 577 + (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
+          windowHeight - 270 + (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
         ]}
         initialSnapIndex={1}
         renderHandle={() => null}
+        showsVerticalScrollIndicator={false}
       >
         <View style={{ backgroundColor: "#fff", flex: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: "hidden" }}>
           <View style={{ flexDirection: "row" }}>

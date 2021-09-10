@@ -10,7 +10,7 @@ import { replace } from "../navigation/navigationRef";
 import { useProfileQuery } from "../generated/graphql";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
-import { View } from "react-native";
+import { View, Alert } from "react-native";
 import { KText } from "../components/KText";
 import { Image } from "react-native-ui-lib";
 import Icon from "react-native-vector-icons/Ionicons";
@@ -47,7 +47,7 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
             source={{ uri: `http://localhost:9000/root/${res.data?.me.image}` }}
             width={60}
             height={60}
-            style={{ backgroundColor: "#6A90CC", marginRight: 10 }}
+            style={{ backgroundColor: "#6A90CC", marginRight: 10, width: 60, height: 60 }}
             borderRadius={100}
           />
           <View>
@@ -58,13 +58,13 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
         <Touchable style={{ borderBottomWidth: 1, borderBottomColor: '#e5e5e5' }}>
           <View style={{ padding: 20, flexDirection: 'row', alignItems: 'center' }}>
             <Icon name="ios-checkmark-done-circle-outline" size={22} color="#777" />
-            <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>درجاتي</KText>
+            <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>{t("my_marks")}</KText>
           </View>
         </Touchable>
         <Touchable style={{ borderBottomWidth: 1, borderBottomColor: '#e5e5e5' }}>
           <View style={{ padding: 20, flexDirection: 'row', alignItems: 'center' }}>
             <Icon name="card-outline" size={22} color="#777" />
-            <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>الاقساط المدفوعة</KText>
+            <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>{t("payments")}</KText>
           </View>
         </Touchable>
         <View style={{ borderBottomWidth: 1, borderBottomColor: '#e5e5e5' }}>
@@ -81,7 +81,7 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
               <View style={{ padding: 20, flexDirection: 'row', alignItems: 'center' }}>
                 <Icon name="ios-globe-outline" size={22} color="#777" />
                 <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>اللغة</KText>
+                  <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>{t("language")}</KText>
                   <KText style={{ textAlign: 'left', color: '#aaa', paddingHorizontal: 20 }}>{locale === 'ar'? 'العربية': 'English'}</KText>
                 </View>
               </View>
@@ -91,17 +91,26 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
           />
         </View>
         <Touchable
-          onPress={async () => {
-            await clearTokens();
-            await saveCurrentUser(null);
-            setIsAuthenticated(false);
-            replace("Login");
+          onPress={() => {
+            Alert.alert(
+              t('logout'),
+              t('logout_msg'),
+              [
+                {text: t('No')},
+                {text: t('Yes'), onPress: async () => {
+                  await clearTokens();
+                  await saveCurrentUser(null);
+                  setIsAuthenticated(false);
+                  replace("Login");
+                }},
+              ]
+            );
           }}
           style={{ borderBottomWidth: 1, borderBottomColor: '#e5e5e5' }}
         >
           <View style={{ padding: 20, flexDirection: 'row', alignItems: 'center' }}>
             <Icon name="log-out-outline" size={22} color="#777" />
-            <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>تسجيل خروج</KText>
+            <KText style={{ textAlign: 'left', color: '#000', paddingHorizontal: 20 }}>{t("logout")}</KText>
           </View>
         </Touchable>
       </View>

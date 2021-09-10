@@ -67,6 +67,7 @@ export default function SelectModal(props: SelectModalProps) {
             renderItem={renderItem}
             initialNumToRender={props.initialNumToRender ? props.initialNumToRender : 10}
             showsVerticalScrollIndicator={false}
+            bounces={false}
           />
         </View>
       </Modal>
