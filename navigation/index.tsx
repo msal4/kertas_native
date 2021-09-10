@@ -214,9 +214,9 @@ function BottomTabNavigator() {
           title: t("my_profile"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           header: () => (
-          <View row style={{ paddingTop: top, paddingRight: right + 20, paddingLeft: left + 20 }}>
-            <KText style={{ fontSize: 23, color: "#393939" }}>{t("my_profile")}</KText>
-          </View>
+            <View row style={{ paddingTop: top, paddingRight: right + 20, paddingLeft: left + 20 }}>
+              <KText style={{ fontSize: 23, color: "#393939" }}>{t("my_profile")}</KText>
+            </View>
           ),
         }}
       />

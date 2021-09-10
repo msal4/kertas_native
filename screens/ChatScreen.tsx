@@ -22,8 +22,8 @@ export function ChatScreen() {
   const { t } = useTrans();
 
   useEffect(() => {
-    //const handler = setInterval(() => !res.fetching && refetch(), 1000);
-    //return () => clearInterval(handler);
+    const handler = setInterval(() => !res.fetching && refetch(), 1000);
+    return () => clearInterval(handler);
   }, [res.fetching]);
 
   return (

@@ -1,6 +1,5 @@
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import { StatusBar } from "expo-status-bar";
 import React, { useMemo } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as GraphQLProvider } from "urql";
@@ -15,6 +14,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ar-iq";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { AuthProvider, useAuth } from "./context/auth";
+import { StatusBar } from "react-native";
 
 dayjs.extend(relativeTime);
 
@@ -60,13 +60,15 @@ function _App() {
   }
 
   return (
-    <TransProvider locale={locale}>
-      <GraphQLProvider value={client}>
-        <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </SafeAreaProvider>
-      </GraphQLProvider>
-    </TransProvider>
+    <>
+      <StatusBar barStyle="dark-content" />
+      <TransProvider locale={locale}>
+        <GraphQLProvider value={client}>
+          <SafeAreaProvider>
+            <Navigation colorScheme={colorScheme} />
+          </SafeAreaProvider>
+        </GraphQLProvider>
+      </TransProvider>
+    </>
   );
 }
