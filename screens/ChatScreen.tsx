@@ -12,6 +12,7 @@ import { useMe } from "../hooks/useMe";
 import { getGroupInfo as getGroupInfo } from "../util/group";
 import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
+import { cdnURL } from "../constants/Config";
 
 export function ChatScreen() {
   const [groupType, setGroupType] = useState<GroupType>();
@@ -108,7 +109,7 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
     >
       <View row centerV style={{ padding: 10 }}>
         <Image
-          source={{ uri: `http://localhost:9000/root/${info?.image}` }}
+          source={{ uri: `${cdnURL}/${info?.image ?? ""}` }}
           width={60}
           height={60}
           style={{ backgroundColor: "#f2f2f2", marginRight: 10 }}

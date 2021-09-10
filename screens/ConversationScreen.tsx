@@ -29,6 +29,7 @@ import * as mime from "react-native-mime-types";
 import ImageView from "react-native-image-viewing";
 import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-root-toast";
+import { cdnURL } from "../constants/Config";
 
 function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
   if (!res?.messagePosted) return messages;
@@ -109,7 +110,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
           <Ionicons color="white" name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} style={{ padding: 5 }} size={30} />
         </Touchable>
         <Image
-          source={{ uri: `http://localhost:9000/root/${info?.image}` }}
+          source={{ uri: `${cdnURL}/${info?.image}` }}
           width={40}
           height={40}
           style={{ marginLeft: 10, backgroundColor: "#f2f2f2", marginRight: 10 }}
@@ -243,7 +244,7 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
     <View row>
       {!isMe ? (
         <Image
-          source={{ uri: `http://localhost:9000/root/${msg.owner.image}` }}
+          source={{ uri: `${cdnURL}/${msg.owner.image}` }}
           style={{ backgroundColor: "#f2f2f2", marginRight: 15 }}
           borderRadius={16}
           width={60}
@@ -290,16 +291,15 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
                 }}
               >
                 <Image
-                  source={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
+                  source={{ uri: `${cdnURL}/${msg.attachment}` }}
                   height={200}
                   width={200}
                   borderRadius={16}
                   style={{ alignSelf: "center", marginBottom: msg.content ? 5 : undefined, backgroundColor: "#f2f2f2" }}
-                  loadingIndicatorSource={{ uri: `http://localhost:9000/root/${msg.attachment}` }}
                 />
               </TouchableOpacity>
               <ImageView
-                images={[{ uri: `http://localhost:9000/root/${msg.attachment}` }]}
+                images={[{ uri: `${cdnURL}/${msg.attachment}` }]}
                 imageIndex={0}
                 visible={visible}
                 onRequestClose={() => setVisible(false)}
