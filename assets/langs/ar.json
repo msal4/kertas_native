@@ -9,5 +9,10 @@
   "groups": "المجموعات",
   "private": "المحادثات الخاصة",
   "message_copied": "تم نسخ الرسالة",
-  "attachment_copied": "تم نسخ المرفق"
+  "attachment_copied": "تم نسخ المرفق",
+  "my_marks": "درجاتي",
+  "payments": "الاقساط المدفوعة",
+  "language": "اللغة",
+  "logout": "تسجيل خروج",
+  "logout_msg": "هل أنت متأكد أنك تريد تسجيل الخروج من هذا الحساب؟"
 }
