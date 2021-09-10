@@ -302,7 +302,15 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
                   height={200}
                   width={200}
                   borderRadius={16}
-                  style={{ alignSelf: "center", marginBottom: msg.content ? 5 : undefined, backgroundColor: "#f2f2f2" }}
+                  style={{
+                    alignSelf: "center",
+                    marginBottom: msg.content ? 5 : undefined,
+                    backgroundColor: "#f2f2f2",
+                    minWidth: 200,
+                    minHeight: 200,
+                    width: 200,
+                    height: 200,
+                  }}
                 />
               </TouchableOpacity>
               <ImageView
