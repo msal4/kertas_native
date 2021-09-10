@@ -12,6 +12,7 @@ import { useMe } from "../hooks/useMe";
 import { getGroupInfo as getGroupInfo } from "../util/group";
 import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
+import { cdnURL } from "../constants/Config";
 
 export function ChatScreen() {
   const [groupType, setGroupType] = useState<GroupType>();
@@ -21,9 +22,8 @@ export function ChatScreen() {
   const { t } = useTrans();
 
   useEffect(() => {
-    const handler = setInterval(() => !res.fetching && refetch(), 1000);
-
-    return () => clearInterval(handler);
+    //const handler = setInterval(() => !res.fetching && refetch(), 1000);
+    //return () => clearInterval(handler);
   }, [res.fetching]);
 
   return (
@@ -31,7 +31,7 @@ export function ChatScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <View row style={{ paddingTop: 10, backgroundColor: "#f4f4f4" }}>
           <Touchable
-            style={{ marginRight: 15, borderBottomColor: "#6A90CC", borderBottomWidth: !groupType ? 3 : 0, minWidth: 80 }}
+            style={{ marginRight: 15, borderBottomColor: "#a18cd1", borderBottomWidth: !groupType ? 3 : 0, minWidth: 80 }}
             onPress={() => {
               setGroupType(undefined);
             }}
@@ -41,7 +41,7 @@ export function ChatScreen() {
           <Touchable
             style={{
               marginRight: 15,
-              borderBottomColor: "#6A90CC",
+              borderBottomColor: "#a18cd1",
               borderBottomWidth: groupType === GroupType.Shared ? 3 : 0,
               minWidth: 80,
             }}
@@ -53,7 +53,7 @@ export function ChatScreen() {
           </Touchable>
           <Touchable
             style={{
-              borderBottomColor: "#6A90CC",
+              borderBottomColor: "#a18cd1",
               borderBottomWidth: groupType === GroupType.Private ? 3 : 0,
               minWidth: 80,
             }}
@@ -109,10 +109,10 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
     >
       <View row centerV style={{ padding: 10 }}>
         <Image
-          source={{ uri: `http://localhost:9000/root/${info?.image}` }}
+          source={{ uri: `${cdnURL}/${info?.image ?? ""}` }}
           width={60}
           height={60}
-          style={{ backgroundColor: "#6A90CC", marginRight: 10 }}
+          style={{ backgroundColor: "#f2f2f2", marginRight: 10 }}
           borderRadius={16}
         />
         <View style={{ flex: 1 }}>

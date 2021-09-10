@@ -4,11 +4,12 @@ import { cacheExchange } from "@urql/exchange-graphcache";
 import { relayPagination } from "@urql/exchange-graphcache/extras";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import jwtDecode, { JwtPayload } from "jwt-decode";
-import { Platform } from "react-native";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { Operation, createClient, dedupExchange, errorExchange, makeOperation, subscriptionExchange } from "urql";
 import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDocument } from "../generated/graphql";
 import { replace } from "../navigation/navigationRef";
+import { devtoolsExchange } from "@urql/devtools";
+import { graphqlURL } from "../constants/Config";
 
 const accessTokenExpKey = "access_token_exp";
 const accessTokenKey = "access_token";
@@ -56,19 +57,18 @@ const isOperationLoginOrRefresh = (operation: Operation) => {
   );
 };
 
-const url = Platform.select({ ios: "http://localhost:3000/graphql", android: "http://10.0.2.2:3000/graphql" })!;
-
-const subscriptionClient = new SubscriptionClient(url.replace("http", "ws"), {
+const subscriptionClient = new SubscriptionClient(graphqlURL.replace("http", "ws"), {
   reconnect: true,
   connectionParams: async () => ({ authorization: await getAccessToken() }),
 });
 
 export const createAuthClient = () =>
   createClient({
-    url,
+    url: graphqlURL,
     // TODO: update to cache-and-network
     requestPolicy: "network-only",
     exchanges: [
+      devtoolsExchange,
       dedupExchange,
       cacheExchange({
         resolvers: {

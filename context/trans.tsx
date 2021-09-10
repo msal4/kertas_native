@@ -26,7 +26,7 @@ export const TransProvider: FC<{ locale: Locale }> = ({ locale: l, children }) =
   const [locale, setLocale] = useState<Locale>(l);
 
   useEffect(() => {
-    dayjs.locale(locale);
+    dayjs.locale(locale === "ar" ? "ar-iq" : "en");
 
     if (locale === "ar" && !I18nManager.isRTL) {
       I18nManager.forceRTL(true);

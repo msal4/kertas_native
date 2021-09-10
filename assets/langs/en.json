@@ -7,5 +7,7 @@
   "say_something": "Say something",
   "all": "All",
   "groups": "Groups",
-  "private": "Private"
+  "private": "Private",
+  "message_copied": "Copied message to clipboard",
+  "attachment_copied": "Copied attachment to clipboard"
 }

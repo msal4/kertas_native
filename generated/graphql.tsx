@@ -2476,7 +2476,7 @@ export type PostMessageMutationVariables = Exact<{
 }>;
 
 
-export type PostMessageMutation = { __typename?: 'Mutation', postMessage: { __typename?: 'Message', id: string, content: string } };
+export type PostMessageMutation = { __typename?: 'Mutation', postMessage: { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any } };
 
 export type RefreshTokensMutationVariables = Exact<{
   refreshToken: Scalars['String'];
@@ -2510,9 +2510,9 @@ export type GroupsQueryVariables = Exact<{
 }>;
 
 
-export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string } }> }>>> }> }> }>>> } };
+export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }> }> }>>> } };
 
-export type GroupDetailFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string } }> }>>> }> };
+export type GroupDetailFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2527,7 +2527,9 @@ export type MessagesQueryVariables = Exact<{
 }>;
 
 
-export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', cursor: any, node?: Maybe<{ __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> } };
+export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', cursor: any, node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> } };
+
+export type MessageFragment = { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } };
 
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2552,7 +2554,7 @@ export type MessagePostedSubscriptionVariables = Exact<{
 }>;
 
 
-export type MessagePostedSubscription = { __typename?: 'Subscription', messagePosted: { __typename?: 'Message', id: string, content: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } } };
+export type MessagePostedSubscription = { __typename?: 'Subscription', messagePosted: { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } } };
 
 export const GroupFragmentDoc = gql`
     fragment Group on Group {
@@ -2564,6 +2566,19 @@ export const GroupFragmentDoc = gql`
     name
     image
   }
+}
+    `;
+export const MessageFragmentDoc = gql`
+    fragment Message on Message {
+  id
+  content
+  attachment
+  owner {
+    id
+    name
+    image
+  }
+  createdAt
 }
     `;
 export const GroupDetailFragmentDoc = gql`
@@ -2579,18 +2594,12 @@ export const GroupDetailFragmentDoc = gql`
   messages(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
     edges {
       node {
-        id
-        content
-        createdAt
-        owner {
-          id
-          name
-        }
+        ...Message
       }
     }
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 export const CurrentUserFragmentDoc = gql`
     fragment CurrentUser on User {
   id
@@ -2623,6 +2632,8 @@ export const PostMessageDocument = gql`
   postMessage(input: $input) {
     id
     content
+    attachment
+    createdAt
   }
 }
     `;
@@ -2746,19 +2757,12 @@ export const MessagesDocument = gql`
     edges {
       cursor
       node {
-        id
-        content
-        owner {
-          id
-          name
-          image
-        }
-        createdAt
+        ...Message
       }
     }
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 export function useMessagesQuery(options: Omit<Urql.UseQueryArgs<MessagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MessagesQuery>({ query: MessagesDocument, ...options });
@@ -2829,17 +2833,10 @@ export function useStagesQuery(options: Omit<Urql.UseQueryArgs<StagesQueryVariab
 export const MessagePostedDocument = gql`
     subscription MessagePosted($groupID: ID!) {
   messagePosted(groupID: $groupID) {
-    id
-    content
-    owner {
-      id
-      name
-      image
-    }
-    createdAt
+    ...Message
   }
 }
-    `;
+    ${MessageFragmentDoc}`;
 
 export function useMessagePostedSubscription<TData = MessagePostedSubscription>(options: Omit<Urql.UseSubscriptionArgs<MessagePostedSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<MessagePostedSubscription, TData>) {
   return Urql.useSubscription<MessagePostedSubscription, TData, MessagePostedSubscriptionVariables>({ query: MessagePostedDocument, ...options }, handler);
