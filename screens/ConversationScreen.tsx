@@ -13,7 +13,6 @@ import {
 import { RootStackScreenProps } from "../types";
 import { Error } from "../components/Error";
 import { KText } from "../components/KText";
-import { Touchable } from "../components/Touchable";
 import { View, Image } from "react-native-ui-lib";
 import { useMe } from "../hooks/useMe";
 import dayjs from "dayjs";
@@ -56,14 +55,17 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
 
   const submit = async () => {
     if (disabled) return;
+
+    const input = { content: _cnt, groupID, attachment };
+    setContent("");
+    setAttachment(undefined);
+
     list.current?.scrollToOffset({ offset: 0, animated: true });
-    const res = await postMessage({ input: { content: _cnt, groupID, attachment } });
+    const res = await postMessage({ input });
     if (res.error) {
       console.log(res.error);
       return;
     }
-    setContent("");
-    setAttachment(undefined);
   };
 
   const addAttachment = async () => {
@@ -102,14 +104,14 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
         start={{ x: 0, y: 0 }}
         colors={group?.groupType === GroupType.Private ? ["#fecfef", "#ff9a9e"] : ["#fbc2eb", "#a18cd1"]}
       >
-        <Touchable
+        <TouchableOpacity
           style={{ paddingRight: 5 }}
           onPress={() => {
             navigation.pop();
           }}
         >
           <Ionicons color="white" name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} style={{ padding: 5 }} size={30} />
-        </Touchable>
+        </TouchableOpacity>
         <Image
           source={{ uri: `${cdnURL}/${info?.image}` }}
           width={40}
@@ -129,15 +131,15 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
         <View>
           {attachment && (
             <View row centerV style={{ paddingHorizontal: 15, borderTopColor: "#9a9a9a11", borderTopWidth: 2 }}>
-              <Touchable
+              <TouchableOpacity
                 style={{ paddingRight: 10 }}
                 onPress={() => {
                   setAttachment(undefined);
                 }}
               >
-                <Ionicons name="close" />
-              </Touchable>
-              <KText numberOfLines={1} style={{ flex: 1 }}>
+                <Ionicons name="close" size={20} />
+              </TouchableOpacity>
+              <KText numberOfLines={1} style={{ flex: 1, color: "#9a9a9a" }}>
                 {attachment?.name}
               </KText>
             </View>
@@ -146,40 +148,40 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             row
             centerV
             style={{
-              paddingHorizontal: 15,
               paddingVertical: 15,
               borderTopColor: "#9a9a9a11",
               minHeight: 50,
               borderTopWidth: 2,
             }}
           >
-            <Touchable onPress={addAttachment}>
+            <TouchableOpacity onPress={addAttachment}>
               <Ionicons
                 style={{
-                  color: "#9a9a9a",
+                  paddingHorizontal: 15,
+                  color: attachment ? "#a18cd1" : "#9a9a9a",
                   transform: isRTL ? [{ rotate: "180deg" }] : undefined,
                 }}
                 name="attach"
                 size={25}
               />
-            </Touchable>
+            </TouchableOpacity>
             <TextInput
               multiline
               returnKeyType="send"
               value={content}
               onChangeText={setContent}
-              style={{ flex: 1, fontSize: 14, marginHorizontal: 15 }}
+              style={{ flex: 1, fontSize: 14 }}
               placeholder={t("say_something") + "..."}
               textAlign={isRTL ? "right" : undefined}
               onSubmitEditing={submit}
             />
-            <Touchable disabled={disabled} onPress={submit}>
+            <TouchableOpacity style={{ paddingHorizontal: 15 }} disabled={disabled} onPress={submit}>
               <Ionicons
                 style={{ color: disabled ? "#9a9a9a" : "#a18cd1", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
                 name={`send${disabled ? "-outline" : ""}` as any}
                 size={20}
               />
-            </Touchable>
+            </TouchableOpacity>
           </View>
         </View>
       </KeyboardAvoidingView>
