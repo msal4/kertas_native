@@ -14,5 +14,7 @@
   "payments": "Payments",
   "language": "Language",
   "logout": "Logout",
-  "logout_msg": "Are you sure you want to log out from this account?"
+  "logout_msg": "Are you sure you want to log out from this account?",
+  "yes": "Yes",
+  "no": "No"
 }
