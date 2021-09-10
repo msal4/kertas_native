@@ -1,5 +1,5 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, KeyboardAvoidingView, Platform, TextInput, TouchableHighlight, TouchableOpacity } from "react-native";
+import { FlatList, ImageBackground, KeyboardAvoidingView, Platform, TextInput, TouchableHighlight, TouchableOpacity } from "react-native";
 
 import {
   GroupType,
@@ -126,7 +126,9 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1, paddingLeft: left, paddingRight: right }}
       >
-        <MessageList ref={list} groupID={groupID} />
+        <ImageBackground source={require("../assets/images/chat_background.jpg")} style={{ flex: 1 }} imageStyle={{ opacity: 0.1 }}>
+          <MessageList ref={list} groupID={groupID} />
+        </ImageBackground>
 
         <View>
           {attachment && (
