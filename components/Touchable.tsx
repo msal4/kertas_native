@@ -7,7 +7,7 @@ export const Touchable: FC<TouchableOpacityProps & TouchableNativeFeedbackProps>
   return Platform.OS === "android" ? (
     <TouchableNativeFeedback
       disabled={props.disabled == undefined ? false : props.disabled}
-      background={TouchableNativeFeedback.Ripple("rgba(0,0,0,0.1)", true)}
+      background={TouchableNativeFeedback.Ripple("rgba(0,0,0,0.1)", false)}
       {...props}
     >
       {props.children}
