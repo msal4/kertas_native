@@ -61,7 +61,7 @@ function _App() {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" translucent animated backgroundColor="transparent" />
       <TransProvider locale={locale}>
         <GraphQLProvider value={client}>
           <SafeAreaProvider>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, SafeAreaView } from "react-native";
+import { FlatList, SafeAreaView, TouchableOpacity } from "react-native";
 import { View, Image } from "react-native-ui-lib";
 import { Error } from "../components/Error";
 import Loading from "../components/Loading";
@@ -30,15 +30,15 @@ export function ChatScreen() {
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <SafeAreaView style={{ flex: 1 }}>
         <View row style={{ paddingTop: 10, backgroundColor: "#f4f4f4" }}>
-          <Touchable
+          <TouchableOpacity
             style={{ marginRight: 15, borderBottomColor: "#a18cd1", borderBottomWidth: !groupType ? 3 : 0, minWidth: 80 }}
             onPress={() => {
               setGroupType(undefined);
             }}
           >
             <KText style={{ textAlign: "center" }}>{t("all")}</KText>
-          </Touchable>
-          <Touchable
+          </TouchableOpacity>
+          <TouchableOpacity
             style={{
               marginRight: 15,
               borderBottomColor: "#a18cd1",
@@ -50,8 +50,8 @@ export function ChatScreen() {
             }}
           >
             <KText style={{ textAlign: "center" }}>{t("groups")}</KText>
-          </Touchable>
-          <Touchable
+          </TouchableOpacity>
+          <TouchableOpacity
             style={{
               borderBottomColor: "#a18cd1",
               borderBottomWidth: groupType === GroupType.Private ? 3 : 0,
@@ -62,7 +62,7 @@ export function ChatScreen() {
             }}
           >
             <KText style={{ textAlign: "center" }}>{t("private")}</KText>
-          </Touchable>
+          </TouchableOpacity>
         </View>
         {res.data?.groups && (
           <FlatList
