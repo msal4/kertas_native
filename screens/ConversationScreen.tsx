@@ -127,7 +127,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1, paddingLeft: left, paddingRight: right }}
       >
-        <ImageBackground source={chatBackground} style={{ flex: 1 }} imageStyle={{ opacity: 0.15 }}>
+        <ImageBackground source={chatBackground} style={{ flex: 1 }} imageStyle={{ opacity: 0.1 }}>
           <MessageList ref={list} groupID={groupID} />
         </ImageBackground>
 
