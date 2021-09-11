@@ -7,15 +7,20 @@ query Messages($groupID: ID!, $after: Cursor) {
     edges {
       cursor
       node {
-        id
-        content
-        owner {
-          id
-          name
-          image
-        }
-        createdAt
+        ...Message
       }
     }
   }
+}
+
+fragment Message on Message {
+  id
+  content
+  attachment
+  owner {
+    id
+    name
+    image
+  }
+  createdAt
 }

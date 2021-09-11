@@ -13,7 +13,7 @@ import { Error } from "../components/Error";
 
 import { RootStackScreenProps } from "../types";
 import { useScheduleQuery } from "../generated/graphql";
-import { weekdays } from "dayjs/locale/ar";
+import { weekdays } from "dayjs/locale/ar-iq";
 import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
 
@@ -21,11 +21,8 @@ const windowHeight = Dimensions.get("screen").height;
 
 export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
-  const { locale } = useTrans();
 
-  const currDate = dayjs()
-    .locale(locale)
-    .add(selectedWeekday - dayjs().day(), "day");
+  const currDate = dayjs().add(selectedWeekday - dayjs().day(), "day");
 
   return (
     <SafeAreaView style={{ backgroundColor: "#919191", flex: 1 }}>
@@ -78,11 +75,12 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
       <ScrollBottomSheet<string>
         componentType="ScrollView"
         snapPoints={[
-          windowHeight - 568 + (Platform.OS == "ios" ? getStatusBarHeight() : 0),
-          windowHeight - 270 + (Platform.OS == "ios" ? getStatusBarHeight() : 0),
+          windowHeight - 577 + (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
+          windowHeight - 270 + (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
         ]}
         initialSnapIndex={1}
         renderHandle={() => null}
+        showsVerticalScrollIndicator={false}
       >
         <View style={{ backgroundColor: "#fff", flex: 1, borderTopLeftRadius: 20, borderTopRightRadius: 20, overflow: "hidden" }}>
           <View style={{ flexDirection: "row" }}>

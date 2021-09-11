@@ -1,12 +1,5 @@
 subscription MessagePosted($groupID: ID!) {
   messagePosted(groupID: $groupID) {
-    id
-    content
-    owner {
-      id
-      name
-      image
-    }
-    createdAt
+    ...Message
   }
 }
