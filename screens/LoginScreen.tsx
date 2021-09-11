@@ -81,7 +81,6 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
 async function registerForPushNotificationsAsync() {
   let token;
   if (Constants.default.isDevice) {
-    console.log("isDevice: true");
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== "granted") {
@@ -93,7 +92,6 @@ async function registerForPushNotificationsAsync() {
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
   } else {
     alert("Must use physical device for Push Notifications");
   }
