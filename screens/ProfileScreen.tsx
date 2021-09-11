@@ -9,11 +9,13 @@ import { replace } from "../navigation/navigationRef";
 import { useProfileQuery } from "../generated/graphql";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
-import { View, Alert } from "react-native";
+import { View, Alert, ScrollView } from "react-native";
 import { KText } from "../components/KText";
 import { Image } from "react-native-ui-lib";
-import Icon from "react-native-vector-icons/Ionicons";
 import SelectModal from "../components/Select";
+import { Ionicons } from "@expo/vector-icons";
+import { cdnURL } from "../constants/Config";
+import { Locale } from "../hooks/useLocale";
 
 export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
   const { t, locale, setLocale } = useTrans();
@@ -28,91 +30,104 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
         }}
         isError
         height={500}
-        color={"#fff"}
+        color={"#393939"}
         msg={t("حدث خطأ يرجى اعادة المحاولة")}
         btnText={t("اعد المحاولة")}
       />
     );
   }
 
+  const stageName = res.data?.me.stage?.name;
+
   return (
     <>
       {!res.fetching ? (
-        <View>
-          <View style={{ flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderBottomColor: "#e5e5e5", padding: 20 }}>
+        <View style={{ flex: 1, backgroundColor: "#fff" }}>
+          <View
+            style={{
+              backgroundColor: "#f4f4f4",
+              flexDirection: "row",
+              alignItems: "center",
+              borderBottomWidth: 1,
+              borderBottomColor: "#e5e5e5",
+              padding: 20,
+            }}
+          >
             <Image
-              source={{ uri: `http://localhost:9000/root/${res.data?.me.image}` }}
+              source={{ uri: `${cdnURL}/${res.data?.me.image}` }}
               width={60}
               height={60}
-              style={{ backgroundColor: "#6A90CC", marginRight: 10, width: 60, height: 60 }}
+              style={{ backgroundColor: "#a18cd1", marginRight: 10, width: 60, height: 60 }}
               borderRadius={100}
             />
             <View>
               <KText style={{ color: "#000", textAlign: "left" }}>{res.data?.me.name}</KText>
               <KText style={{ color: "#393939", textAlign: "left" }}>
-                {res.data?.me.school?.name} - {res.data?.me.stage?.name}
+                {res.data?.me.school?.name} {stageName ? "-" : ""} {stageName}
               </KText>
             </View>
           </View>
-          <Touchable style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
-            <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
-              <Icon name="ios-checkmark-done-circle-outline" size={22} color="#777" />
-              <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("my_marks")}</KText>
-            </View>
-          </Touchable>
-          <Touchable style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
-            <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
-              <Icon name="card-outline" size={22} color="#777" />
-              <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("payments")}</KText>
-            </View>
-          </Touchable>
-          <View style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
-            <SelectModal
-              data={[
-                { name: "العربية", value: "ar" },
-                { name: "English", value: "en" },
-              ]}
-              onSelect={({ value }) => {
-                setLocale(value);
-              }}
-              selected={locale}
-              renderBtn={() => (
-                <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
-                  <Icon name="ios-globe-outline" size={22} color="#777" />
-                  <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-                    <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("language")}</KText>
-                    <KText style={{ textAlign: "left", color: "#aaa", paddingHorizontal: 20 }}>
-                      {locale === "ar" ? "العربية" : "English"}
-                    </KText>
+          <ScrollView>
+            <Touchable style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
+              <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
+                <Ionicons name="ios-checkmark-done-circle-outline" size={22} color="#777" />
+                <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("my_marks")}</KText>
+              </View>
+            </Touchable>
+            <Touchable style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
+              <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
+                <Ionicons name="card-outline" size={22} color="#777" />
+                <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("payments")}</KText>
+              </View>
+            </Touchable>
+            <View style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
+              <SelectModal
+                data={[
+                  { name: "العربية", value: "ar" },
+                  { name: "English", value: "en" },
+                ]}
+                onSelect={({ value }) => {
+                  setLocale(value as Locale);
+                }}
+                selected={locale}
+                renderBtn={() => (
+                  <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
+                    <Ionicons name="ios-globe-outline" size={22} color="#777" />
+                    <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
+                      <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("language")}</KText>
+                      <KText style={{ textAlign: "left", color: "#aaa", paddingHorizontal: 20 }}>
+                        {locale === "ar" ? "العربية" : "English"}
+                      </KText>
+                    </View>
                   </View>
-                </View>
-              )}
-              initialNumToRender={7}
-              height={600}
-            />
-          </View>
-          <Touchable
-            onPress={() => {
-              Alert.alert(t("logout"), t("logout_msg"), [
-                { text: t("no") },
-                {
-                  text: t("yes"),
-                  onPress: async () => {
-                    await clearTokens();
-                    await saveCurrentUser(null);
-                    setIsAuthenticated(false);
-                    replace("Login");
-                  },
-                },
-              ]);
-            }}
-            style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
-          >
-            <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
-              <Icon name="log-out-outline" size={22} color="#777" />
-              <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("logout")}</KText>
+                )}
+                initialNumToRender={7}
+                height={600}
+              />
             </View>
-          </Touchable>
+            <Touchable
+              onPress={() => {
+                Alert.alert(t("logout"), t("logout_msg"), [
+                  { text: t("no") },
+                  {
+                    text: t("yes"),
+                    onPress: async () => {
+                      await clearTokens();
+                      await saveCurrentUser(null);
+                      setIsAuthenticated(false);
+                      replace("Login");
+                    },
+                  },
+                ]);
+              }}
+              style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
+            >
+              <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
+                <Ionicons name="log-out-outline" size={22} color="#777" />
+                <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("logout")}</KText>
+              </View>
+            </Touchable>
+          </ScrollView>
         </View>
       ) : null}
       <Loading isLoading={res.fetching} height={500} color={"#fff"} />

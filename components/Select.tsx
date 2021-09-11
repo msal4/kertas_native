@@ -1,9 +1,9 @@
-import React, { Component, useState, useEffect, ReactNode } from "react";
-import { View, Text, FlatList, TouchableNativeFeedback, ListRenderItemInfo } from "react-native";
+import React, { useState, useEffect, ReactNode } from "react";
+import { View, Text, FlatList, ListRenderItemInfo } from "react-native";
 import Modal from "react-native-modal";
 import { Touchable } from "./Touchable";
 
-type Item = { name: string; value: number };
+type Item = { name: string; value: number | string };
 
 interface SelectModalProps {
   selected: number | string;
@@ -36,7 +36,7 @@ export default function SelectModal(props: SelectModalProps) {
             props.onSelect(item);
           }}
         >
-          <View style={{ flexDirection: "row", padding: 15, backgroundColor: props.selected === item.value ? "#919191" : "#e4e4e4" }}>
+          <View style={{ flexDirection: "row", padding: 15, backgroundColor: props.selected === item.value ? "#a18cd1" : "#fff" }}>
             <Text style={{ fontFamily: "Dubai-Bold", color: props.selected === item.value ? "#fff" : "#919191" }}>{item.name}</Text>
           </View>
         </Touchable>

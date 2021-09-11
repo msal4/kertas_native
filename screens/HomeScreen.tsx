@@ -21,7 +21,6 @@ const windowHeight = Dimensions.get("screen").height;
 
 export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
-  const { locale } = useTrans();
 
   const currDate = dayjs().add(selectedWeekday - dayjs().day(), "day");
 

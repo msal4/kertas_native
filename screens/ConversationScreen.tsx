@@ -19,7 +19,6 @@ import dayjs from "dayjs";
 import { Ionicons } from "@expo/vector-icons";
 import { useTrans } from "../context/trans";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { StatusBar } from "expo-status-bar";
 import { getGroupInfo } from "../util/group";
 import { LinearGradient } from "expo-linear-gradient";
 import { ReactNativeFile } from "extract-files";
@@ -30,13 +29,12 @@ import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-root-toast";
 import { cdnURL } from "../constants/Config";
 import { isAndroid, isIOS } from "../constants/platform";
+import chatBackground from "../assets/images/chat_background.jpg";
 
 function handleSubscription(messages: any = [], res?: MessagePostedSubscription) {
   if (!res?.messagePosted) return messages;
   return [res.messagePosted, ...messages];
 }
-
-const chatBackground = require("../assets/images/chat_background.jpg");
 
 export function ConversationScreen({ route, navigation }: RootStackScreenProps<"Conversation">) {
   const { groupID } = route.params;
@@ -129,7 +127,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1, paddingLeft: left, paddingRight: right }}
       >
-        <ImageBackground source={chatBackground} style={{ flex: 1 }} imageStyle={{ opacity: 0.1 }}>
+        <ImageBackground source={chatBackground} style={{ flex: 1 }} imageStyle={{ opacity: 0.15 }}>
           <MessageList ref={list} groupID={groupID} />
         </ImageBackground>
 
