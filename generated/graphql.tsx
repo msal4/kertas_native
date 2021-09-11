@@ -995,6 +995,7 @@ export type GroupWhereInput = {
 export type LoginInput = {
   username: Scalars['String'];
   password: Scalars['String'];
+  pushToken?: Maybe<Scalars['String']>;
 };
 
 export type Message = Node & {
@@ -2466,6 +2467,7 @@ export type UserWhereInput = {
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
+  pushToken?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -2616,8 +2618,10 @@ export const CurrentUserFragmentDoc = gql`
 }
     `;
 export const LoginDocument = gql`
-    mutation Login($username: String!, $password: String!) {
-  loginUser(input: {username: $username, password: $password}) {
+    mutation Login($username: String!, $password: String!, $pushToken: String) {
+  loginUser(
+    input: {username: $username, password: $password, pushToken: $pushToken}
+  ) {
     accessToken
     refreshToken
   }
