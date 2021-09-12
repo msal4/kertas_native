@@ -36,8 +36,15 @@ export default function SelectModal(props: SelectModalProps) {
             props.onSelect(item);
           }}
         >
-          <View style={{ flexDirection: "row", padding: 15, backgroundColor: props.selected === item.value ? "#a18cd1" : "#fff" }}>
-            <Text style={{ fontFamily: "Dubai-Bold", color: props.selected === item.value ? "#fff" : "#919191" }}>{item.name}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              paddingHorizontal: 25,
+              paddingVertical: 15,
+              backgroundColor: props.selected === item.value ? "#a18cd1" : "#fff",
+            }}
+          >
+            <Text style={{ fontFamily: "Dubai-Regular", color: props.selected === item.value ? "#fff" : "#919191" }}>{item.name}</Text>
           </View>
         </Touchable>
       </View>
