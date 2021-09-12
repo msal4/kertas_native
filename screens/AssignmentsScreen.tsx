@@ -41,10 +41,9 @@ export default function AssignmentsScreen({ navigation, screenProps, route }: an
         style={{
           backgroundColor: "#f4f4f4",
           paddingTop: 20 + top,
-          paddingBottom: 0,
         }}
       >
-        <View style={{ paddingHorizontal: 20, flexDirection: "row", alignItems: "center" }}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row" }}>
               <Touchable
@@ -121,6 +120,7 @@ export default function AssignmentsScreen({ navigation, screenProps, route }: an
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
+                marginRight: 20,
               }}
             >
               <Ionicons name="calendar-outline" size={28} color="#a18cd1" />
