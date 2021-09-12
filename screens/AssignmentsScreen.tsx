@@ -114,7 +114,7 @@ export default function AssignmentsScreen({ navigation, screenProps, route }: an
           >
             <View
               style={{
-                backgroundColor: "#bcbcbc",
+                backgroundColor: "#fff",
                 borderRadius: 100,
                 width: 50,
                 height: 50,
@@ -123,7 +123,7 @@ export default function AssignmentsScreen({ navigation, screenProps, route }: an
                 alignItems: "center",
               }}
             >
-              <CalendarIcon color="#fff" width={28} height={28} />
+              <Ionicons name="calendar-outline" size={28} color="#a18cd1" />
             </View>
           </Touchable>
         </View>
