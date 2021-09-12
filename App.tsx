@@ -1,6 +1,6 @@
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider as GraphQLProvider } from "urql";
 import useCachedResources from "./hooks/useCachedResources";
@@ -15,6 +15,8 @@ import "dayjs/locale/ar-iq";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { AuthProvider, useAuth } from "./context/auth";
 import { StatusBar } from "react-native";
+import { DEFAULT_ACTION_IDENTIFIER, useLastNotificationResponse } from "expo-notifications";
+import { navigate } from "./navigation/navigationRef";
 
 dayjs.extend(relativeTime);
 
@@ -54,6 +56,22 @@ function _App() {
   const { locale, loading: localeLoading } = useLocale();
   const { isAuthenticated } = useAuth();
   const client = useMemo(createAuthClient, [isAuthenticated]);
+
+  const lastNotificationResponse = useLastNotificationResponse();
+
+  useEffect(() => {
+    if (
+      lastNotificationResponse &&
+      lastNotificationResponse.notification.request.content.data.route &&
+      lastNotificationResponse.actionIdentifier === DEFAULT_ACTION_IDENTIFIER
+    ) {
+      const route = lastNotificationResponse.notification.request.content.data.route as string;
+      const parts = route.split("/");
+      if (parts[0] === "chat" && parts[1]) {
+        navigate("Conversation", { groupID: parts[1] });
+      }
+    }
+  }, [lastNotificationResponse, isAuthenticated]);
 
   if (!isLoadingComplete || !fontsLoaded || localeLoading) {
     return <AppLoading />;

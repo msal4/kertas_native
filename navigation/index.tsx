@@ -16,7 +16,7 @@ import LoginScreen from "../screens/LoginScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import AssignmentsScreen from "../screens/AssignmentsScreen";
 import HomeScreen from "../screens/HomeScreen";
-import { RootStackParamList, RootTabParamList } from "../types";
+import { RootStackParamList, RootStackScreenProps, RootTabParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
@@ -57,7 +57,7 @@ function RootNavigator() {
     <Stack.Navigator initialRouteName="Start">
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Root" component={RootScreen} options={{ headerShown: false }} />
       <Stack.Screen
         name="Conversation"
         component={ConversationScreen}
@@ -160,7 +160,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
   );
 }
 
-function BottomTabNavigator() {
+function RootScreen({}: RootStackScreenProps<"Root">) {
   const colorScheme = useColorScheme();
   const { t } = useTrans();
   const { top, right, left } = useSafeAreaInsets();
