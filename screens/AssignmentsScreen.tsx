@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { Text, View, FlatList, StatusBar, Platform } from "react-native";
+import { View, FlatList, StatusBar, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 import Moment from "moment";
@@ -13,96 +13,123 @@ import DatePicker from "../components/DatePicker";
 import CalendarIcon from "../assets/icons/Calendar.svg";
 import FilesIcon from "../assets/icons/Files.svg";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
+import * as mime from "react-native-mime-types";
+import { ReactNativeFile } from "extract-files";
+import * as ImagePicker from "expo-image-picker";
+import { Ionicons } from "@expo/vector-icons";
 
-import { useAssignmentsQuery, useAssignmentsSubmissionQuery, useUpdateAssignmentSubmissionMutation } from "../generated/graphql";
+import { useAssignmentsQuery, useAssignmentsSubmissionQuery, useUpdateAssignmentSubmissionMutation, useAddAssignmentSubmissionMutation } from "../generated/graphql";
 import { useTrans } from "../context/trans";
+import { KText } from "../components/KText";
 
-export default function AssignmentsScreen({ navigation, screenProps }: any) {
+export default function AssignmentsScreen({ navigation, screenProps, route }: any) {
   const [showDate, setShowDate] = useState(false);
+  const [isExam, setIsExam] = useState(route.params.isExam);
   const { top, bottom, right, left } = useSafeAreaInsets();
   const [selectedDate, setSelectedDate] = useState(null);
-  const { t, locale } = useTrans();
+  const { t, locale, isRTL } = useTrans();
 
   return (
     <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
       <View
         style={{
-          backgroundColor: "#919191",
+          backgroundColor: "#f4f4f4",
           paddingTop: 20 + top,
-          paddingBottom: 10,
-          paddingHorizontal: 20,
-          flexDirection: "row",
-          alignItems: "center",
+          paddingBottom: 0
         }}
       >
-        <View style={{ flex: 1 }}>
-          <View style={{ flexDirection: "row" }}>
-            <Touchable
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
-              <View
-                style={{
-                  borderRadius: 100,
-                  width: 50,
-                  height: 50,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
+        <View style={{ paddingHorizontal: 20, flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: "row" }}>
+              <Touchable
+                onPress={() => {
+                  navigation.goBack();
                 }}
               >
-                <Icon name={locale === "ar" ? "chevron-right" : "chevron-left"} size={24} color="#fff" />
-              </View>
-            </Touchable>
-            <View style={{ flex: 1 }}>
-              <Text style={{ fontFamily: "Dubai-Medium", color: "#fff", fontSize: 28, textAlign: "left", marginHorizontal: 10 }}>
-                {t("assignments")}
-              </Text>
-              <View style={{ flexDirection: "row", opacity: selectedDate ? 1 : 0 }}>
                 <View
-                  style={{ flexDirection: "row", borderRadius: 100, overflow: "hidden", backgroundColor: "#bcbcbc", alignItems: "center" }}
+                  style={{
+                    borderRadius: 100,
+                    width: 50,
+                    height: 50,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  <Text style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left", paddingHorizontal: 10 }}>
-                    {selectedDate ? dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY") : ""}
-                  </Text>
-                  <View style={{ borderRadius: 100, overflow: "hidden" }}>
-                    <Touchable
-                      onPress={() => {
-                        setSelectedDate(null);
-                      }}
-                    >
-                      <View style={{ width: 30, height: 30, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                        <Icon name={"times"} size={12} color="#fff" />
-                      </View>
-                    </Touchable>
+                  <Ionicons name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#393939" />
+                </View>
+              </Touchable>
+              <View style={{ flex: 1 }}>
+                <KText style={{ fontFamily: "Dubai-Medium", color: "#393939", fontSize: 20, textAlign: "left", marginHorizontal: 10, paddingTop: 10 }}>
+                  {isExam? t("exams"): t("assignments")}
+                </KText>
+                <View style={{ flexDirection: "row", opacity: selectedDate ? 1 : 0 }}>
+                  <View
+                    style={{ flexDirection: "row", borderRadius: 100, overflow: "hidden", backgroundColor: "#bcbcbc", alignItems: "center" }}
+                  >
+                    <KText style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left", paddingHorizontal: 10 }}>
+                      {selectedDate ? dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY") : ""}
+                    </KText>
+                    <View style={{ borderRadius: 100, overflow: "hidden" }}>
+                      <Touchable
+                        onPress={() => {
+                          setSelectedDate(null);
+                        }}
+                      >
+                        <View style={{ width: 30, height: 30, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                          <Icon name={"times"} size={12} color="#fff" />
+                        </View>
+                      </Touchable>
+                    </View>
                   </View>
                 </View>
               </View>
             </View>
           </View>
-        </View>
-        <Touchable
-          onPress={() => {
-            setShowDate(true);
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#bcbcbc",
-              borderRadius: 100,
-              width: 50,
-              height: 50,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
+          <Touchable
+            onPress={() => {
+              setShowDate(true);
             }}
           >
-            <CalendarIcon color="#fff" width={28} height={28} />
-          </View>
-        </Touchable>
+            <View
+              style={{
+                backgroundColor: "#bcbcbc",
+                borderRadius: 100,
+                width: 50,
+                height: 50,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <CalendarIcon color="#fff" width={28} height={28} />
+            </View>
+          </Touchable>
+        </View>
+        <View style={{ paddingTop: 10, flexDirection: 'row' }}>
+          <Touchable
+            style={{ marginRight: 15, borderBottomColor: "#a18cd1", borderBottomWidth: !isExam ? 3 : 0, minWidth: 80 }}
+            onPress={() => {
+              setIsExam(false);
+            }}
+          >
+            <KText style={{ textAlign: "center" }}>{t("assignments")}</KText>
+          </Touchable>
+          <Touchable
+            style={{
+              marginRight: 15,
+              borderBottomColor: "#a18cd1",
+              borderBottomWidth: isExam ? 3 : 0,
+              minWidth: 80,
+            }}
+            onPress={() => {
+              setIsExam(true);
+            }}
+          >
+            <KText style={{ textAlign: "center" }}>{t("exams")}</KText>
+          </Touchable>
+        </View>
       </View>
 
       <DatePicker
@@ -117,13 +144,13 @@ export default function AssignmentsScreen({ navigation, screenProps }: any) {
       />
 
       <View style={{ backgroundColor: "#fff", flex: 1 }}>
-        <Assignment selectedDate={selectedDate} />
+        <Assignment selectedDate={selectedDate} isExam={isExam} />
       </View>
     </View>
   );
 }
 
-function Assignment({ selectedDate }: { selectedDate: Date }) {
+function Assignment({ selectedDate, isExam }: { selectedDate: Date, isExam: boolean }) {
   const [curDate] = useState(new Date());
   const [res, refetch] = useAssignmentsQuery({
     variables: {
@@ -134,6 +161,7 @@ function Assignment({ selectedDate }: { selectedDate: Date }) {
           .set("second", 0)
           .toDate(),
         dueDateLT: selectedDate ? dayjs(selectedDate).add(1, "day").set("hour", 3).set("minute", 0).set("second", 0).toDate() : null,
+        isExam: isExam
       },
     },
   });
@@ -175,14 +203,14 @@ function Assignment({ selectedDate }: { selectedDate: Date }) {
             >
               <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
+                  <KText style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
                     {item?.node?.class.name} - {item?.node.name}
-                  </Text>
-                  <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+                  </KText>
+                  <KText style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
                     {item?.node?.description}
-                  </Text>
+                  </KText>
                 </View>
-                <Text style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(item?.node?.dueDate).format("Y-MM-DD")}</Text>
+                <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(item?.node?.dueDate).format("Y-MM-DD")}</KText>
               </View>
             </Touchable>
           )}
@@ -201,6 +229,9 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
     },
   });
   const [, updateSubmission] = useUpdateAssignmentSubmissionMutation();
+  const [, addSubmission] = useAddAssignmentSubmissionMutation();
+
+  const [fileTypeDialog, setFileTypeDialog] = useState(false);
 
   if (res.error) {
     return (
@@ -227,6 +258,58 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
 
     return "";
   };
+  
+  const uploadImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+
+    const doc = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    });
+
+    if (doc.cancelled) return;
+
+    const filetype = mime.lookup(doc.uri) || "image";
+
+    if(res.data?.assignmentSubmissions.edges[0]?.node?.files) {
+      const ures = await updateSubmission({
+        id: res.data?.assignmentSubmissions.edges[0]?.node?.id,
+        input: {
+          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
+        },
+      });
+    }else{
+      const ures = await addSubmission({
+        input: {
+          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
+        },
+      });
+    }
+  }
+  
+  const uploadFile = async () => {
+    const doc = await DocumentPicker.getDocumentAsync();
+
+    const filetype = mime.lookup(doc.uri) || "image";
+
+    if(res.data?.assignmentSubmissions.edges[0]?.node?.files) {
+      const ures = await updateSubmission({
+        id: res.data?.assignmentSubmissions.edges[0]?.node?.id,
+        input: {
+          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
+        },
+      });
+    }else{
+      const ures = await addSubmission({
+        input: {
+          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
+        },
+      });
+    }
+  }
 
   return (
     <Dialog
@@ -243,86 +326,97 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
       <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10 }}>
         <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
           <View style={{ flex: 1 }}>
-            <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
+            <KText style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
               {item?.node?.class.name} - {item?.node.name}
-            </Text>
-            <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+            </KText>
+            <KText style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
               {item?.node?.description}
-            </Text>
+            </KText>
+            <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
+              {t("updated_at")} {dayjs(item?.node?.updatedAt).fromNow()}
+            </KText>
           </View>
-          <Text style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(item?.node?.dueDate).format("Y-MM-DD")}</Text>
+          <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(item?.node?.dueDate).format("Y-MM-DD")}</KText>
         </View>
 
-        {res.data?.assignmentSubmissions.edges ? (
+        {res.data?.assignmentSubmissions.edges[0]?.node?.files ? (
           <FlatList
-            data={res.data?.assignmentSubmissions.edges}
+            data={res.data?.assignmentSubmissions.edges[0]?.node?.files}
             keyExtractor={(item, index) => index + "a"}
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) =>
-              item?.node?.files.map((item, index) => (
-                <Touchable onPress={() => {}} key={index}>
-                  <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
-                    <View
-                      style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 100,
-                        backgroundColor: "#bcbcbc",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <FilesIcon color="#fff" width={28} height={28} />
-                    </View>
-                    <View style={{ flex: 1, paddingHorizontal: 10 }}>
-                      <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }} numberOfLines={1}>
-                        {getFileNameFromUrl(item)}
-                      </Text>
-                      <Text style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
-                        {Moment(item?.node?.submittedAt).format("Y-MM-DD")}
-                      </Text>
-                    </View>
+              <Touchable onPress={() => {}}>
+                <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+                  <View
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 100,
+                      backgroundColor: "#f4f4f4",
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <FilesIcon fill="#a18cd1" width={28} height={28} />
                   </View>
-                </Touchable>
-              ))
+                  <View style={{ flex: 1, paddingHorizontal: 10 }}>
+                    <KText style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }} numberOfLines={1}>
+                      {getFileNameFromUrl(item)}
+                    </KText>
+                  </View>
+                </View>
+              </Touchable>
             }
           />
         ) : null}
 
         <Loading isLoading={res.fetching} height={"100%"} color={"#919191"} />
 
+        <Dialog
+          migrate
+          useSafeArea
+          bottom={true}
+          height={100}
+          panDirection={"UP"}
+          visible={fileTypeDialog}
+          onDismiss={() => {
+            setFileTypeDialog(false);
+          }}
+        >
+          <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10, flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ borderRadius: 20, overflow: 'hidden' }}>
+                <Touchable onPress={uploadFile}>
+                  <View style={{ padding: 20, justifyContent: 'center', alignItems: 'center' }}>
+                    <Ionicons name="document-outline" size={28} color="#777" />
+                    <KText style={{ color: '#000' }}>{t("file")}</KText>
+                  </View>
+                </Touchable>
+              </View>
+            </View>
+            <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ borderRadius: 20, overflow: 'hidden' }}>
+                <Touchable onPress={uploadImage}>
+                  <View style={{ padding: 20, justifyContent: 'center', alignItems: 'center' }}>
+                    <Ionicons name="image-outline" size={28} color="#777" />
+                    <KText style={{ color: '#000' }}>{t("image")}</KText>
+                  </View>
+                </Touchable>
+              </View>
+            </View>
+          </View>
+        </Dialog>
+
         <View style={{ borderRadius: 5, overflow: "hidden", marginTop: 10 }}>
           <Touchable
-            onPress={async () => {
-              const doc = await DocumentPicker.getDocumentAsync();
-
-              const fileStr = await FileSystem.readAsStringAsync((doc as any).uri, { encoding: FileSystem.EncodingType.Base64 });
-
-              try {
-                const fileRes = await fetch("data:application/pdf;base64," + fileStr);
-
-                // list submission == 0
-                //(item as any).node.id,
-                // TODO: check if submission exists
-                // add...
-                const res = await updateSubmission({
-                  id: (item as any).node.id,
-                  input: {
-                    files: [await fileRes.blob()],
-                  },
-                });
-                console.log(res.error?.graphQLErrors);
-                console.log(res.error);
-                console.log(res.data);
-              } catch (err) {
-                console.log(err);
-              }
+            onPress={() => {
+              setFileTypeDialog(true);
             }}
           >
-            <View style={{ backgroundColor: "#d5d5d5", padding: 10 }}>
-              <Text style={{ fontFamily: "Dubai-Regular", textAlign: "center" }}>{t("upload_assignment_file")}</Text>
+            <View style={{ backgroundColor: "#a18cd1", padding: 10 }}>
+              <KText style={{ fontFamily: "Dubai-Regular", textAlign: "center", color: '#fff' }}>{t("upload_assignment_file")}</KText>
             </View>
           </Touchable>
         </View>

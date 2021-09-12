@@ -4,6 +4,9 @@ query AssignmentsSubmission ($assignmentID: ID) {
             node {
                 files
                 submittedAt
+                id
+                updatedAt
+                createdAt
             }
         }
     }

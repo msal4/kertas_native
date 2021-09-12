@@ -15,6 +15,7 @@ import useColorScheme from "../hooks/useColorScheme";
 import LoginScreen from "../screens/LoginScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import AssignmentsScreen from "../screens/AssignmentsScreen";
+import CourseGradesScreen from "../screens/CourseGradesScreen";
 import HomeScreen from "../screens/HomeScreen";
 import { RootStackParamList, RootTabParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
@@ -64,6 +65,7 @@ function RootNavigator() {
         options={{ headerShown: false, contentStyle: { backgroundColor: "white" } }}
       />
       <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
+      <Stack.Screen name="CourseGrades" options={{ headerShown: false }} component={CourseGradesScreen} />
     </Stack.Navigator>
   );
 }

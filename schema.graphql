@@ -38,6 +38,7 @@ input AddCourseGradeInput {
   studentID: ID!
   stageID: ID!
   classID: ID!
+  course: Course!
   activityFirst: Int
   activitySecond: Int
   writtenFirst: Int
@@ -546,8 +547,14 @@ input ClassWhereInput {
   hasCourseGradesWith: [CourseGradeWhereInput!]
 }
 
+enum Course {
+  FIRST
+  SECOND
+}
+
 type CourseGrade implements Node {
   id: ID!
+  course: Course!
   activityFirst: Int
   activitySecond: Int
   writtenFirst: Int
@@ -608,6 +615,10 @@ input CourseGradeWhereInput {
   updatedAtGTE: Time
   updatedAtLT: Time
   updatedAtLTE: Time
+  course: Course
+  courseNEQ: Course
+  courseIn: [Course!]
+  courseNotIn: [Course!]
   activityFirst: Int
   activityFirstNEQ: Int
   activityFirstIn: [Int!]
@@ -1497,13 +1508,6 @@ input StageWhereInput {
   hasStudentsWith: [UserWhereInput!]
   hasCourseGrades: Boolean
   hasCourseGradesWith: [CourseGradeWhereInput!]
-}
-
-enum State {
-  PRESENT
-  ABSENT
-  EXCUSED_ABSENT
-  SICK
 }
 
 type Subscription {

@@ -4,7 +4,11 @@
   "notifications": "الاشعارات",
   "my_profile": "معلوماتي",
   "assignments": "الواجبات",
+  "exams": "الامتحانات",
   "upload_assignment_file": "رفع ملف الواجب",
+  "file": "مستند",
+  "image": "صورة",
+  "updated_at": "تم التحديث",
   "you": "انت",
   "say_something": "قل شيئاً",
   "all": "الكل",
@@ -18,5 +22,14 @@
   "logout": "تسجيل خروج",
   "logout_msg": "هل أنت متأكد أنك تريد تسجيل الخروج من هذا الحساب؟",
   "yes": "نعم",
-  "no": "لا"
+  "no": "لا",
+  "iqd": "د.ع",
+  "schoolـyear": "العام الدراسي",
+  "first_course": "الكورس الاول",
+  "second_course": "الكورس الثاني",
+  "a": "ن",
+  "w": "ت",
+  "s": "م",
+  "course_final": "نهاية الكورس",
+  "attendance": "الحضور"
 }
