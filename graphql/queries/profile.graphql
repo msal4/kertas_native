@@ -3,16 +3,28 @@ query Profile {
         image
         name
       	school {
-			name
+			    name
         }
         stage {
             name
           	tuitionAmount
+            classes {
+              edges {
+                node {
+                  id
+                  name
+                  teacher {
+                    name
+                  }
+                }
+              }
+            }
             payments {
               edges {
                 node {
                     paidAmount
                     year
+                    createdAt
                 }
               }
             }

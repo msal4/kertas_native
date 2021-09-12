@@ -30,6 +30,7 @@ export function Error({
         justifyContent: "center",
         alignItems: "center",
         height,
+        flex: height === '100%'? 1: 'none'
       }}
     >
       <Text style={{ fontFamily: "Dubai-Regular", color }}>{msg}</Text>

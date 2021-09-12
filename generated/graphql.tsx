@@ -54,6 +54,7 @@ export type AddCourseGradeInput = {
   studentID: Scalars['ID'];
   stageID: Scalars['ID'];
   classID: Scalars['ID'];
+  course: Course;
   activityFirst?: Maybe<Scalars['Int']>;
   activitySecond?: Maybe<Scalars['Int']>;
   writtenFirst?: Maybe<Scalars['Int']>;
@@ -645,9 +646,15 @@ export type ClassWhereInput = {
   hasCourseGradesWith?: Maybe<Array<CourseGradeWhereInput>>;
 };
 
+export enum Course {
+  First = 'FIRST',
+  Second = 'SECOND'
+}
+
 export type CourseGrade = Node & {
   __typename?: 'CourseGrade';
   id: Scalars['ID'];
+  course: Course;
   activityFirst?: Maybe<Scalars['Int']>;
   activitySecond?: Maybe<Scalars['Int']>;
   writtenFirst?: Maybe<Scalars['Int']>;
@@ -716,6 +723,11 @@ export type CourseGradeWhereInput = {
   updatedAtGTE?: Maybe<Scalars['Time']>;
   updatedAtLT?: Maybe<Scalars['Time']>;
   updatedAtLTE?: Maybe<Scalars['Time']>;
+  /** course field predicates */
+  course?: Maybe<Course>;
+  courseNEQ?: Maybe<Course>;
+  courseIn?: Maybe<Array<Course>>;
+  courseNotIn?: Maybe<Array<Course>>;
   /** activity_first field predicates */
   activityFirst?: Maybe<Scalars['Int']>;
   activityFirstNEQ?: Maybe<Scalars['Int']>;
@@ -2006,13 +2018,6 @@ export type StageWhereInput = {
   hasCourseGradesWith?: Maybe<Array<CourseGradeWhereInput>>;
 };
 
-export enum State {
-  Present = 'PRESENT',
-  Absent = 'ABSENT',
-  ExcusedAbsent = 'EXCUSED_ABSENT',
-  Sick = 'SICK'
-}
-
 export type Subscription = {
   __typename?: 'Subscription';
   messagePosted: Message;
@@ -2464,6 +2469,21 @@ export type UserWhereInput = {
 };
 
 
+export type AddAssignmentSubmissionMutationVariables = Exact<{
+  input: AddAssignmentSubmissionInput;
+}>;
+
+
+export type AddAssignmentSubmissionMutation = { __typename?: 'Mutation', addAssignmentSubmission: { __typename?: 'AssignmentSubmission', files: Array<string>, submittedAt?: Maybe<any>, id: string, updatedAt: any, createdAt: any } };
+
+export type UpdateAssignmentSubmissionMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: UpdateAssignmentSubmissionInput;
+}>;
+
+
+export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any> } };
+
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
   password: Scalars['String'];
@@ -2487,15 +2507,31 @@ export type RefreshTokensMutationVariables = Exact<{
 
 export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthData', accessToken: string, refreshToken: string } };
 
-export type AssignmentsQueryVariables = Exact<{ [key: string]: never; }>;
+export type AssignmentsQueryVariables = Exact<{
+  where?: Maybe<AssignmentWhereInput>;
+}>;
 
 
-export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', name: string, description?: Maybe<string>, dueDate: any, class: { __typename?: 'Class', name: string } }> }>>> } };
+export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, class: { __typename?: 'Class', name: string } }> }>>> } };
+
+export type AssignmentsSubmissionQueryVariables = Exact<{
+  assignmentID?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type AssignmentsSubmissionQuery = { __typename?: 'Query', assignmentSubmissions: { __typename?: 'AssignmentSubmissionConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentSubmissionEdge', node?: Maybe<{ __typename?: 'AssignmentSubmission', files: Array<string>, submittedAt?: Maybe<any>, id: string, updatedAt: any, createdAt: any }> }>>> } };
 
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', cursor: any, node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean } } };
+export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', cursor: any, node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean } } };
+
+export type CourseGradesQueryVariables = Exact<{
+  classID?: Maybe<Scalars['ID']>;
+}>;
+
+
+export type CourseGradesQuery = { __typename?: 'Query', courseGrades: { __typename?: 'CourseGradeConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'CourseGradeEdge', node?: Maybe<{ __typename?: 'CourseGrade', id: string, activityFirst?: Maybe<number>, activitySecond?: Maybe<number>, writtenFirst?: Maybe<number>, writtenSecond?: Maybe<number>, courseFinal?: Maybe<number>, course: Course }> }>>> } };
 
 export type GroupQueryVariables = Exact<{
   groupID: Scalars['ID'];
@@ -2536,7 +2572,7 @@ export type MessageFragment = { __typename?: 'Message', id: string, content: str
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', image: string, name: string, school?: Maybe<{ __typename?: 'School', name: string }>, stage?: Maybe<{ __typename?: 'Stage', name: string, tuitionAmount: number, payments?: Maybe<{ __typename?: 'TuitionPaymentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'TuitionPaymentEdge', node?: Maybe<{ __typename?: 'TuitionPayment', paidAmount: number, year: string }> }>>> }> }> } };
+export type ProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', image: string, name: string, school?: Maybe<{ __typename?: 'School', name: string }>, stage?: Maybe<{ __typename?: 'Stage', name: string, tuitionAmount: number, classes?: Maybe<{ __typename?: 'ClassConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', node?: Maybe<{ __typename?: 'Class', id: string, name: string, teacher: { __typename?: 'User', name: string } }> }>>> }>, payments?: Maybe<{ __typename?: 'TuitionPaymentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'TuitionPaymentEdge', node?: Maybe<{ __typename?: 'TuitionPayment', paidAmount: number, year: string, createdAt: any }> }>>> }> }> } };
 
 export type ScheduleQueryVariables = Exact<{
   weekday?: Maybe<Scalars['Weekday']>;
@@ -2617,6 +2653,34 @@ export const CurrentUserFragmentDoc = gql`
   role
 }
     `;
+export const AddAssignmentSubmissionDocument = gql`
+    mutation AddAssignmentSubmission($input: AddAssignmentSubmissionInput!) {
+  addAssignmentSubmission(input: $input) {
+    files
+    submittedAt
+    id
+    updatedAt
+    createdAt
+  }
+}
+    `;
+
+export function useAddAssignmentSubmissionMutation() {
+  return Urql.useMutation<AddAssignmentSubmissionMutation, AddAssignmentSubmissionMutationVariables>(AddAssignmentSubmissionDocument);
+};
+export const UpdateAssignmentSubmissionDocument = gql`
+    mutation UpdateAssignmentSubmission($id: ID!, $input: UpdateAssignmentSubmissionInput!) {
+  updateAssignmentSubmission(id: $id, input: $input) {
+    id
+    files
+    submittedAt
+  }
+}
+    `;
+
+export function useUpdateAssignmentSubmissionMutation() {
+  return Urql.useMutation<UpdateAssignmentSubmissionMutation, UpdateAssignmentSubmissionMutationVariables>(UpdateAssignmentSubmissionDocument);
+};
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!, $pushToken: String) {
   loginUser(
@@ -2658,16 +2722,19 @@ export function useRefreshTokensMutation() {
   return Urql.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument);
 };
 export const AssignmentsDocument = gql`
-    query Assignments {
-  assignments {
+    query Assignments($where: AssignmentWhereInput) {
+  assignments(where: $where) {
     edges {
       node {
+        id
         name
         description
         dueDate
         class {
           name
         }
+        isExam
+        duration
       }
     }
   }
@@ -2676,6 +2743,25 @@ export const AssignmentsDocument = gql`
 
 export function useAssignmentsQuery(options: Omit<Urql.UseQueryArgs<AssignmentsQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AssignmentsQuery>({ query: AssignmentsDocument, ...options });
+};
+export const AssignmentsSubmissionDocument = gql`
+    query AssignmentsSubmission($assignmentID: ID) {
+  assignmentSubmissions(assignmentID: $assignmentID) {
+    edges {
+      node {
+        files
+        submittedAt
+        id
+        updatedAt
+        createdAt
+      }
+    }
+  }
+}
+    `;
+
+export function useAssignmentsSubmissionQuery(options: Omit<Urql.UseQueryArgs<AssignmentsSubmissionQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AssignmentsSubmissionQuery>({ query: AssignmentsSubmissionDocument, ...options });
 };
 export const ClassesDocument = gql`
     query Classes {
@@ -2688,6 +2774,9 @@ export const ClassesDocument = gql`
         active
         createdAt
         updatedAt
+        teacher {
+          name
+        }
       }
     }
     pageInfo {
@@ -2701,6 +2790,27 @@ export const ClassesDocument = gql`
 
 export function useClassesQuery(options: Omit<Urql.UseQueryArgs<ClassesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ClassesQuery>({ query: ClassesDocument, ...options });
+};
+export const CourseGradesDocument = gql`
+    query CourseGrades($classID: ID) {
+  courseGrades(classID: $classID) {
+    edges {
+      node {
+        id
+        activityFirst
+        activitySecond
+        writtenFirst
+        writtenSecond
+        courseFinal
+        course
+      }
+    }
+  }
+}
+    `;
+
+export function useCourseGradesQuery(options: Omit<Urql.UseQueryArgs<CourseGradesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<CourseGradesQuery>({ query: CourseGradesDocument, ...options });
 };
 export const GroupDocument = gql`
     query Group($groupID: ID!) {
@@ -2782,11 +2892,23 @@ export const ProfileDocument = gql`
     stage {
       name
       tuitionAmount
+      classes {
+        edges {
+          node {
+            id
+            name
+            teacher {
+              name
+            }
+          }
+        }
+      }
       payments {
         edges {
           node {
             paidAmount
             year
+            createdAt
           }
         }
       }

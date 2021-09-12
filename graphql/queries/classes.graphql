@@ -8,6 +8,9 @@ query Classes {
                 active
                 createdAt
                 updatedAt
+                teacher {
+                    name
+                }
             }
         }
         pageInfo {
