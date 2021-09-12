@@ -69,7 +69,7 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
                   <View style={{ flex: 1 }}>
                     <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>{item?.node?.year}</Text>
                     <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
-                      {numberWithCommas(item?.node?.paidAmount)}
+                      {numberWithCommas(item?.node?.paidAmount ?? 0)}
                     </Text>
                   </View>
                 </View>
@@ -78,7 +78,6 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
           ) : null}
         </View>
       </Dialog>
-
       {!res.fetching ? (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
           <View

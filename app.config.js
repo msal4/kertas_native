@@ -1,6 +1,6 @@
 export default {
-  name: "native",
-  slug: "native",
+  name: "Kertas",
+  slug: "kertas-school",
   version: "1.0.0",
   orientation: "portrait",
   icon: "./assets/images/icon.png",
@@ -16,10 +16,14 @@ export default {
   },
   assetBundlePatterns: ["**/*"],
   ios: {
+    bundleIdentifier: "me.kertas.school",
+    buildNumber: "1.0.0",
     supportsTablet: true,
     usesIcloudStorage: true,
   },
   android: {
+    package: "me.kertas.school",
+    versionCode: 1,
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",
       backgroundColor: "#ffffff",

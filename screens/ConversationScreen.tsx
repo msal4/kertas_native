@@ -151,10 +151,10 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             row
             centerV
             style={{
-              paddingVertical: 15,
               borderTopColor: "#9a9a9a11",
               minHeight: 50,
               borderTopWidth: 2,
+              paddingVertical: 15,
             }}
           >
             <TouchableOpacity onPress={addAttachment}>
@@ -170,19 +170,17 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             </TouchableOpacity>
             <TextInput
               multiline
-              returnKeyType="send"
               value={content}
               onChangeText={setContent}
               style={{ flex: 1, fontSize: 14 }}
               placeholder={t("say_something") + "..."}
               textAlign={isRTL ? "right" : undefined}
-              onSubmitEditing={submit}
             />
             <TouchableOpacity style={{ paddingHorizontal: 15 }} disabled={disabled} onPress={submit}>
               <Ionicons
                 style={{ color: disabled ? "#9a9a9a" : "#a18cd1", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
                 name={`send${disabled ? "-outline" : ""}` as any}
-                size={20}
+                size={22}
               />
             </TouchableOpacity>
           </View>
