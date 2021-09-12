@@ -21,8 +21,8 @@ import { useTrans } from "../context/trans";
 
 const dayjs_locals = {
   en: dayjs_en,
-  ar: dayjs_ar
-}
+  ar: dayjs_ar,
+};
 
 const windowHeight = Dimensions.get("screen").height;
 
@@ -77,8 +77,8 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
           height={600}
         />
       </View>
-      
-      <View style={{ flex: 1, backgroundColor: '#f4f4f4' }}>
+
+      <View style={{ flex: 1, backgroundColor: "#f4f4f4" }}>
         <Schedule weekday={selectedWeekday} />
       </View>
 
@@ -242,9 +242,10 @@ function Schedule({ weekday }: { weekday: number }) {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 140, paddingBottom: 250 }}
           showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
           renderItem={({ item }) => (
-            <View style={{ borderRadius: 20, overflow: "hidden", marginBottom: 15 }}>
-              <View style={{ flexDirection: "row", padding: 15, backgroundColor: "#fff", alignItems: 'center' }}>
+            <View style={{ borderRadius: 20, overflow: "hidden" }}>
+              <View style={{ flexDirection: "row", padding: 15, backgroundColor: "#fff", alignItems: "center" }}>
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", paddingRight: 10 }}>
                   <View
                     style={{
@@ -257,7 +258,9 @@ function Schedule({ weekday }: { weekday: number }) {
                 </View>
                 <KText style={{ fontFamily: "Dubai-Medium", color: "#393939" }}>{item.class.name}</KText>
                 <View style={{ width: 1, backgroundColor: "#777", marginHorizontal: 10, height: 15 }}></View>
-                <KText style={{ fontFamily: "Dubai-Regular", color: "#777", flex: 1, textAlign: "left", fontSize: 12 }} numberOfLines={1}>{item.class.teacher.name}</KText>
+                <KText style={{ fontFamily: "Dubai-Regular", color: "#777", flex: 1, textAlign: "left", fontSize: 12 }} numberOfLines={1}>
+                  {item.class.teacher.name}
+                </KText>
                 <KText style={{ fontFamily: "Dubai-Regular", color: "#393939", fontSize: 12 }}>
                   {getClassTime(item).timeFrom} - {getClassTime(item).timeTo}
                 </KText>
