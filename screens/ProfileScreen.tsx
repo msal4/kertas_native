@@ -5,7 +5,7 @@ import { clearTokens } from "../util/auth";
 import { RootTabScreenProps } from "../types";
 import { saveCurrentUser } from "../hooks/useMe";
 import { useAuth } from "../context/auth";
-import { replace } from "../navigation/navigationRef";
+import { replace, navigationRef } from "../navigation/navigationRef";
 import { useProfileQuery } from "../generated/graphql";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { cdnURL } from "../constants/Config";
 import { Locale } from "../hooks/useLocale";
 
-export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
+export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => {
   const { t, locale, setLocale } = useTrans();
   const { setIsAuthenticated } = useAuth();
   const [res, refetch] = useProfileQuery();
@@ -106,7 +106,12 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
             </View>
           </View>
           <ScrollView>
-            <Touchable style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
+            <Touchable
+              style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
+              onPress={() => {
+                navigation.navigate("CourseGrades");
+              }}
+            >
               <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
                 <Ionicons name="ios-checkmark-done-circle-outline" size={22} color="#777" />
                 <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("my_marks")}</KText>
