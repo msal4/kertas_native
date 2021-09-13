@@ -88,7 +88,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
           windowHeight - 427 + (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
           windowHeight - 270 + (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
         ]}
-        initialSnapIndex={1}
+        initialSnapIndex={0}
         renderHandle={() => null}
         showsVerticalScrollIndicator={false}
       >
