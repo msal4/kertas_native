@@ -65,7 +65,6 @@ const subscriptionClient = new SubscriptionClient(graphqlURL.replace("http", "ws
 export const createAuthClient = () =>
   createClient({
     url: graphqlURL,
-    // TODO: update to cache-and-network
     requestPolicy: "network-only",
     exchanges: [
       devtoolsExchange,
@@ -74,6 +73,7 @@ export const createAuthClient = () =>
         resolvers: {
           Query: {
             messages: relayPagination(),
+            groups: relayPagination(),
           },
         },
       }),

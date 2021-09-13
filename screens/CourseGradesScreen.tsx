@@ -137,8 +137,8 @@ function Grades(props) {
   return (
     <View style={{ backgroundColor: "#fff", marginTop: 10 }}>
       {res.data?.courseGrades.edges
-        ? res.data?.courseGrades.edges?.map((item, index) => (
-            <View>
+        ? res.data?.courseGrades.edges?.map((item) => (
+            <View key={item?.node?.id}>
               <KText style={{ color: "#919191", textAlign: "left" }}>
                 {item?.node?.course === "FIRST" ? t("first_course") : t("second_course")}
               </KText>
@@ -276,4 +276,3 @@ function Grades(props) {
     </View>
   );
 }
-

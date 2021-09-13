@@ -70,10 +70,10 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
               renderItem={({ item }) => (
                 <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
+                    <Text style={{ fontFamily: "Dubai-Medium", color: "#000", textAlign: "left" }}>
                       {t("schoolـyear")} {item?.node?.year}
                     </Text>
-                    <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+                    <Text style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }} numberOfLines={1}>
                       {numberWithCommas(item?.node?.paidAmount)} {t("iqd")} -{" "}
                       {dayjs(item?.node?.createdAt).locale(locale).format("D - MMMM - YYYY")}
                     </Text>
@@ -83,20 +83,6 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
             />
           ) : null}
         </View>
-      </Dialog>
-
-      <Dialog
-        migrate
-        useSafeArea
-        bottom={true}
-        height={500}
-        panDirection={"UP"}
-        visible={showClassesDialog}
-        onDismiss={() => {
-          setShowClassesDialog(false);
-        }}
-      >
-        <Mymarks res={res} />
       </Dialog>
 
       {!res.fetching ? (
@@ -199,28 +185,3 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
     </>
   );
 };
-
-function Mymarks({ res }) {
-  return (
-    <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10 }}>
-      {res.data?.me.stage?.classes?.edges && res.data?.me.stage?.classes?.edges?.length > 0 ? (
-        <FlatList
-          data={res.data?.me.stage?.classes?.edges}
-          keyExtractor={(item, index) => index + "a"}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>{item?.node?.name}</Text>
-                <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
-                  {item?.node?.teacher.name}
-                </Text>
-              </View>
-            </View>
-          )}
-        />
-      ) : null}
-    </View>
-  );
-}
