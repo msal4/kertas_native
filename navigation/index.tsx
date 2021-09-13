@@ -13,7 +13,6 @@ import { ColorSchemeName, Text, Platform } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import LoginScreen from "../screens/LoginScreen";
-import TabTwoScreen from "../screens/TabTwoScreen";
 import AssignmentsScreen from "../screens/AssignmentsScreen";
 import CourseGradesScreen from "../screens/CourseGradesScreen";
 import HomeScreen from "../screens/HomeScreen";
@@ -39,6 +38,7 @@ import NotificationActiveIcon from "../assets/icons/Notification-Active.svg";
 import ProfileIcon from "../assets/icons/Profile.svg";
 import ProfileActiveIcon from "../assets/icons/Profile-Active.svg";
 import { NotificationsScreen } from "../screens/NotificationsScreen";
+import { isIOS } from "../constants/platform";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -85,10 +85,8 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
       style={{
         backgroundColor: "#f4f4f4",
         flexDirection: "row",
-        paddingBottom: Platform.OS == "ios" ? 15 : 0,
+        paddingBottom: isIOS ? 15 : 0,
         height: 80,
-        borderTopWidth: 2,
-        borderTopColor: "#9a9a9a11",
       }}
     >
       <View style={{ flex: 1 }}>
