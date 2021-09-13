@@ -6,16 +6,16 @@ query Me {
 
 
 fragment CurrentUser on User {
+  id
+  name
+  school {
     id
     name
-    school {
-      id
-      name
-    }
-    stage {
-      id
-      name
-    }
-    role
+  }
+  stage {
+    id
+    name
+  }
+  role
 }
 

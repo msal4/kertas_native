@@ -25,8 +25,6 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
   const [showDialog, setShowDialog] = useState(false);
   const [showClassesDialog, setShowClassesDialog] = useState(false);
 
-  console.log(res);
-
   const numberWithCommas = (x: number) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };

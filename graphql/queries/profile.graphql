@@ -1,33 +1,38 @@
 query Profile {
-    me {
-        image
-        name
-      	school {
-			    name
-        }
-        stage {
-            name
-          	tuitionAmount
-            classes {
-              edges {
-                node {
-                  id
-                  name
-                  teacher {
-                    name
-                  }
-                }
-              }
-            }
-            payments {
-              edges {
-                node {
-                    paidAmount
-                    year
-                    createdAt
-                }
-              }
-            }
-        }
+  me {
+    id
+    image
+    name
+    school {
+      id
+      name
     }
+    stage {
+      id
+      name
+      tuitionAmount
+      classes {
+        edges {
+          node {
+            id
+            name
+            teacher {
+              id
+              name
+            }
+          }
+        }
+      }
+      payments {
+        edges {
+          node {
+            id
+            paidAmount
+            year
+            createdAt
+          }
+        }
+      }
+    }
+  }
 }

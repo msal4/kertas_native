@@ -5,12 +5,12 @@ query Group($groupID: ID!) {
 }
 
 fragment Group on Group {
+  id
+  name
+  groupType
+  users {
     id
     name
-    groupType
-    users {
-      id
-      name
-      image
-    }
+    image
+  }
 }

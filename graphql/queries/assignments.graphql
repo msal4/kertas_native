@@ -1,17 +1,18 @@
 query Assignments ($where: AssignmentWhereInput) {
-    assignments (where: $where) {
-        edges {
-            node {
-                id
-                name
-                description
-                dueDate
-                class {
-                    name
-                }
-                isExam
-                duration
-            }
+  assignments (where: $where) {
+    edges {
+      node {
+        id
+        name
+        description
+        dueDate
+        class {
+          id
+          name
         }
+        isExam
+        duration
+      }
     }
+  }
 }

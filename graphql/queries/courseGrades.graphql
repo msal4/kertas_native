@@ -1,15 +1,15 @@
 query CourseGrades ($classID: ID) {
-    courseGrades (classID: $classID) {
-        edges {
-            node {
-                id
-                activityFirst
-                activitySecond
-                writtenFirst
-                writtenSecond
-                courseFinal
-                course
-            }
-        }
+  courseGrades (classID: $classID) {
+    edges {
+      node {
+        id
+        activityFirst
+        activitySecond
+        writtenFirst
+        writtenSecond
+        courseFinal
+        course
+      }
     }
+  }
 }

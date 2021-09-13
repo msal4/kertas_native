@@ -1,0 +1,18 @@
+query Notifications($after: Cursor) {
+  notifications(after: $after) {
+    pageInfo {
+      endCursor
+    }
+    edges {
+      node {
+        id
+        title
+        body
+        route
+        image
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}

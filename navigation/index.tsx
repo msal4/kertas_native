@@ -38,6 +38,7 @@ import NotificationIcon from "../assets/icons/Notification.svg";
 import NotificationActiveIcon from "../assets/icons/Notification-Active.svg";
 import ProfileIcon from "../assets/icons/Profile.svg";
 import ProfileActiveIcon from "../assets/icons/Profile-Active.svg";
+import { NotificationsScreen } from "../screens/NotificationsScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -203,10 +204,15 @@ function RootScreen({}: RootStackScreenProps<"Root">) {
       />
       <BottomTab.Screen
         name="Notifications"
-        component={TabTwoScreen}
+        component={NotificationsScreen}
         options={{
           title: t("notifications"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          header: () => (
+            <View row style={{ paddingTop: top, paddingRight: right + 20, paddingLeft: left + 20 }}>
+              <KText style={{ fontSize: 23, color: "#393939" }}>{t("notifications")}</KText>
+            </View>
+          ),
         }}
       />
       <BottomTab.Screen
