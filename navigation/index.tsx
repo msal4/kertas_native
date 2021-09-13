@@ -15,8 +15,9 @@ import useColorScheme from "../hooks/useColorScheme";
 import LoginScreen from "../screens/LoginScreen";
 import TabTwoScreen from "../screens/TabTwoScreen";
 import AssignmentsScreen from "../screens/AssignmentsScreen";
+import CourseGradesScreen from "../screens/CourseGradesScreen";
 import HomeScreen from "../screens/HomeScreen";
-import { RootStackParamList, RootTabParamList } from "../types";
+import { RootStackParamList, RootStackScreenProps, RootTabParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import { StartScreen } from "../screens/StartScreen";
 import { navigationRef } from "./navigationRef";
@@ -37,6 +38,7 @@ import NotificationIcon from "../assets/icons/Notification.svg";
 import NotificationActiveIcon from "../assets/icons/Notification-Active.svg";
 import ProfileIcon from "../assets/icons/Profile.svg";
 import ProfileActiveIcon from "../assets/icons/Profile-Active.svg";
+import { NotificationsScreen } from "../screens/NotificationsScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -57,13 +59,14 @@ function RootNavigator() {
     <Stack.Navigator initialRouteName="Start">
       <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
+      <Stack.Screen name="Root" component={RootScreen} options={{ headerShown: false }} />
       <Stack.Screen
         name="Conversation"
         component={ConversationScreen}
         options={{ headerShown: false, contentStyle: { backgroundColor: "white" } }}
       />
       <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
+      <Stack.Screen name="CourseGrades" options={{ headerShown: false }} component={CourseGradesScreen} />
     </Stack.Navigator>
   );
 }
@@ -160,7 +163,7 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
   );
 }
 
-function BottomTabNavigator() {
+function RootScreen({}: RootStackScreenProps<"Root">) {
   const colorScheme = useColorScheme();
   const { t } = useTrans();
   const { top, right, left } = useSafeAreaInsets();
@@ -201,10 +204,15 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="Notifications"
-        component={TabTwoScreen}
+        component={NotificationsScreen}
         options={{
           title: t("notifications"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          header: () => (
+            <View row style={{ paddingTop: top, paddingRight: right + 20, paddingLeft: left + 20 }}>
+              <KText style={{ fontSize: 23, color: "#393939" }}>{t("notifications")}</KText>
+            </View>
+          ),
         }}
       />
       <BottomTab.Screen

@@ -1,0 +1,22 @@
+query Notifications($after: Cursor) {
+  notifications(after: $after, orderBy: {field: CREATED_AT, direction: DESC}) {
+    pageInfo {
+      endCursor
+    }
+    edges {
+      node {
+        ...Notification
+      }
+    }
+  }
+}
+
+fragment Notification on Notification {
+  id
+  title
+  body
+  route
+  image
+  createdAt
+  updatedAt
+}

@@ -63,7 +63,6 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
     list.current?.scrollToOffset({ offset: 0, animated: true });
     const res = await postMessage({ input });
     if (res.error) {
-      console.log(res.error);
       return;
     }
   };

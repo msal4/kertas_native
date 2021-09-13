@@ -1,5 +1,5 @@
-mutation Login($username: String!, $password: String!) {
-    loginUser(input: {username: $username, password: $password}) {
+mutation Login($username: String!, $password: String!, $pushToken: String) {
+    loginUser(input: {username: $username, password: $password, pushToken: $pushToken}) {
         accessToken
         refreshToken
     }

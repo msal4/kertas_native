@@ -7,6 +7,9 @@ import { Button, TextField, Toast, View } from "react-native-ui-lib";
 import { useLoginMutation } from "../generated/graphql";
 import { setTokens } from "../util/auth";
 import { useAuth } from "../context/auth";
+import * as Notifications from "expo-notifications";
+import { isAndroid } from "../constants/platform";
+import * as Constants from "expo-constants";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
   const [, login] = useLoginMutation();
@@ -34,6 +37,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
         title={"Username"}
         autoCorrect={false}
       />
+
       <TextField
         value={password}
         onChangeText={setPassword}
@@ -44,9 +48,11 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
         title={"Password"}
         secureTextEntry
       />
+
       <Button
         onPress={async () => {
-          const res = await login({ username, password });
+          const pushToken = await registerForPushNotificationsAsync();
+          const res = await login({ username, password, pushToken });
 
           if (res.error) {
             showErrToast("Invalid user");
@@ -55,6 +61,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
 
           await setTokens(res.data?.loginUser);
           setIsAuthenticated(true);
+
           navigation.navigate("Start");
         }}
         label={"LOGIN"}
@@ -69,6 +76,36 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
       />
     </View>
   );
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.default.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      alert("Failed to get push token for push notification!");
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+  } else {
+    alert("Must use physical device for Push Notifications");
+  }
+
+  if (isAndroid) {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+
+  return token;
 }
 
 const styles = StyleSheet.create({

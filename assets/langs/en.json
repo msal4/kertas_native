@@ -3,6 +3,12 @@
   "chat": "Chat",
   "notifications": "Notifications",
   "my_profile": "My Profile",
+  "assignments": "Assignments",
+  "exams": "Exams",
+  "upload_assignment_file": "Upload Assignment File",
+  "file": "File",
+  "image": "Image",
+  "updated": "Updated",
   "you": "You",
   "say_something": "Say something",
   "all": "All",
@@ -16,5 +22,14 @@
   "logout": "Logout",
   "logout_msg": "Are you sure you want to log out from this account?",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "iqd": "IQD",
+  "schoolـyear": "School Year",
+  "first_course": "First course",
+  "second_course": "Second course",
+  "a": "a",
+  "w": "w",
+  "s": "s",
+  "course_final": "Course final",
+  "attendance": "Attendance"
 }

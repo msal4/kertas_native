@@ -16,16 +16,18 @@ import SelectModal from "../components/Select";
 import { Ionicons } from "@expo/vector-icons";
 import { cdnURL } from "../constants/Config";
 import { Locale } from "../hooks/useLocale";
+import dayjs from "dayjs";
 
-export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
+export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => {
   const { t, locale, setLocale } = useTrans();
   const { setIsAuthenticated } = useAuth();
   const [res, refetch] = useProfileQuery();
   const [showDialog, setShowDialog] = useState(false);
-  
+  const [showClassesDialog, setShowClassesDialog] = useState(false);
+
   const numberWithCommas = (x: number) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  };
 
   if (res.error) {
     return (
@@ -58,29 +60,45 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
         }}
       >
         <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10 }}>
-          {res.data?.me.stage?.payments?.edges && res.data?.me.stage?.payments?.edges?.length > 0?
-          <FlatList
-            data={res.data?.me.stage?.payments?.edges}
-            keyExtractor={(item, index) => index + "a"}
-            contentContainerStyle={{ paddingBottom: 20 }}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
-                    {item?.node?.year}
-                  </Text>
-                  <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
-                    {numberWithCommas(item?.node?.paidAmount)}
-                  </Text>
+          <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("payments")}</KText>
+          {res.data?.me.stage?.payments?.edges && res.data?.me.stage?.payments?.edges?.length > 0 ? (
+            <FlatList
+              data={res.data?.me.stage?.payments?.edges}
+              keyExtractor={(item, index) => index + "a"}
+              contentContainerStyle={{ paddingBottom: 20 }}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>
+                      {t("schoolـyear")} {item?.node?.year}
+                    </Text>
+                    <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+                      {numberWithCommas(item?.node?.paidAmount)} {t("iqd")} -{" "}
+                      {dayjs(item?.node?.createdAt).locale(locale).format("D - MMMM - YYYY")}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            )}
-          />
-          : null}
+              )}
+            />
+          ) : null}
         </View>
       </Dialog>
-      
+
+      <Dialog
+        migrate
+        useSafeArea
+        bottom={true}
+        height={500}
+        panDirection={"UP"}
+        visible={showClassesDialog}
+        onDismiss={() => {
+          setShowClassesDialog(false);
+        }}
+      >
+        <Mymarks res={res} />
+      </Dialog>
+
       {!res.fetching ? (
         <View style={{ flex: 1, backgroundColor: "#fff" }}>
           <View
@@ -88,8 +106,6 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
               backgroundColor: "#f4f4f4",
               flexDirection: "row",
               alignItems: "center",
-              borderBottomWidth: 1,
-              borderBottomColor: "#e5e5e5",
               padding: 20,
             }}
           >
@@ -108,7 +124,12 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
             </View>
           </View>
           <ScrollView>
-            <Touchable style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
+            <Touchable
+              style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
+              onPress={() => {
+                navigation.navigate("CourseGrades");
+              }}
+            >
               <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
                 <Ionicons name="ios-checkmark-done-circle-outline" size={22} color="#777" />
                 <KText style={{ textAlign: "left", color: "#000", paddingHorizontal: 20 }}>{t("my_marks")}</KText>
@@ -165,7 +186,6 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
                   },
                 ]);
               }}
-              style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
             >
               <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
                 <Ionicons name="log-out-outline" size={22} color="#777" />
@@ -179,3 +199,28 @@ export const ProfileScreen = ({}: RootTabScreenProps<"Profile">) => {
     </>
   );
 };
+
+function Mymarks({ res }) {
+  return (
+    <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10 }}>
+      {res.data?.me.stage?.classes?.edges && res.data?.me.stage?.classes?.edges?.length > 0 ? (
+        <FlatList
+          data={res.data?.me.stage?.classes?.edges}
+          keyExtractor={(item, index) => index + "a"}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+              <View style={{ flex: 1 }}>
+                <Text style={{ fontFamily: "Dubai-Bold", color: "#000", textAlign: "left" }}>{item?.node?.name}</Text>
+                <Text style={{ fontFamily: "Dubai-Bold", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+                  {item?.node?.teacher.name}
+                </Text>
+              </View>
+            </View>
+          )}
+        />
+      ) : null}
+    </View>
+  );
+}
