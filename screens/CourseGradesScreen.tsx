@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useState } from "react";
-import { View, FlatList, StatusBar, Platform } from "react-native";
+import { View, FlatList, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons as Icon, Ionicons } from "@expo/vector-icons";
-import Moment from "moment";
 import { Touchable } from "../components/Touchable";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
@@ -12,7 +11,7 @@ import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
 import { useCourseGradesQuery, useClassesQuery } from "../generated/graphql";
 
-export default function CourseGradesScreen({ navigation, screenProps, route }: any) {
+export default function CourseGradesScreen({ navigation }: any) {
   const { top, bottom, right, left } = useSafeAreaInsets();
   const { t, isRTL } = useTrans();
   const [res, refetch] = useClassesQuery();
@@ -23,10 +22,10 @@ export default function CourseGradesScreen({ navigation, screenProps, route }: a
       <View
         style={{
           backgroundColor: "#f4f4f4",
-          paddingTop: 20 + top,
+          paddingTop: 10 + top,
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", paddingBottom: 20 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", paddingBottom: 10 }}>
           <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Touchable
@@ -44,13 +43,11 @@ export default function CourseGradesScreen({ navigation, screenProps, route }: a
                     alignItems: "center",
                   }}
                 >
-                  <Icon name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#393939" />
+                  <Icon name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#9a9a9a" />
                 </View>
               </Touchable>
               <View style={{ flex: 1 }}>
-                <KText style={{ fontFamily: "Dubai-Medium", color: "#393939", fontSize: 20, textAlign: "left", marginHorizontal: 10 }}>
-                  {t("my_marks")}
-                </KText>
+                <KText style={{ color: "#393939", fontSize: 23 }}>{t("my_marks")}</KText>
               </View>
             </View>
           </View>
@@ -98,7 +95,7 @@ function ClassItem({ item }) {
     >
       <View style={{ padding: 20 }}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-          <KText style={{ fontFamily: "Dubai-Medium", color: "#000", textAlign: "left", marginRight: 10 }}>{item?.node?.name}</KText>
+          <KText style={{ color: "#000", textAlign: "left", marginRight: 10 }}>{item?.node?.name}</KText>
           <KText style={{ color: "#919191", textAlign: "left", fontSize: 13 }} numberOfLines={1}>
             {item?.node?.teacher.name}
           </KText>
@@ -135,10 +132,10 @@ function Grades(props) {
   }
 
   return (
-    <View style={{ backgroundColor: "#fff", marginTop: 10 }}>
+    <View>
       {res.data?.courseGrades.edges
         ? res.data?.courseGrades.edges?.map((item) => (
-            <View key={item?.node?.id}>
+            <View key={item?.node?.id} style={{ marginTop: 10 }}>
               <KText style={{ color: "#919191", textAlign: "left" }}>
                 {item?.node?.course === "FIRST" ? t("first_course") : t("second_course")}
               </KText>
@@ -271,8 +268,6 @@ function Grades(props) {
             </View>
           ))
         : null}
-
-      <Loading isLoading={res.fetching} height={"100%"} color={"#919191"} />
     </View>
   );
 }

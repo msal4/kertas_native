@@ -111,10 +111,10 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
           source={{ uri: `${cdnURL}/${info?.image}` }}
           width={40}
           height={40}
-          style={{ marginLeft: 10, backgroundColor: "#f2f2f2", marginRight: 10 }}
+          style={{ marginLeft: 10, backgroundColor: "#f2f2f2", marginRight: 15 }}
           borderRadius={8}
         />
-        <KText style={{ marginLeft: 5, fontSize: 17, color: "#9a9a9a", fontFamily: "Dubai-Medium" }}>{info?.name}</KText>
+        <KText style={{ fontSize: 17, color: "#9a9a9a", fontFamily: "Dubai-Medium" }}>{info?.name}</KText>
       </View>
       <LinearGradient
         start={{ x: 0, y: 0 }}
