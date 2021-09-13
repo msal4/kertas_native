@@ -18,6 +18,7 @@ export type RootStackParamList = {
   Home: undefined;
   Conversation: ConversationParams;
   Assignments: undefined;
+  CourseGrades: undefined;
   Start: undefined;
   Login: undefined;
 };
