@@ -2724,6 +2724,15 @@ export type AssignmentsSubmissionQueryVariables = Exact<{
 
 export type AssignmentsSubmissionQuery = { __typename?: 'Query', assignmentSubmissions: { __typename?: 'AssignmentSubmissionConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentSubmissionEdge', node?: Maybe<{ __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any }> }>>> } };
 
+export type AttendancesQueryVariables = Exact<{
+  where?: Maybe<AttendanceWhereInput>;
+}>;
+
+
+export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } }> }>>> } };
+
+export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } };
+
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2806,6 +2815,17 @@ export type MessagePostedSubscriptionVariables = Exact<{
 
 export type MessagePostedSubscription = { __typename?: 'Subscription', messagePosted: { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } } };
 
+export const AttendanceFragmentDoc = gql`
+    fragment Attendance on Attendance {
+  id
+  date
+  state
+  class {
+    id
+    name
+  }
+}
+    `;
 export const GroupFragmentDoc = gql`
     fragment Group on Group {
   id
@@ -2986,6 +3006,21 @@ export const AssignmentsSubmissionDocument = gql`
 
 export function useAssignmentsSubmissionQuery(options: Omit<Urql.UseQueryArgs<AssignmentsSubmissionQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AssignmentsSubmissionQuery>({ query: AssignmentsSubmissionDocument, ...options });
+};
+export const AttendancesDocument = gql`
+    query Attendances($where: AttendanceWhereInput) {
+  attendances(where: $where) {
+    edges {
+      node {
+        ...Attendance
+      }
+    }
+  }
+}
+    ${AttendanceFragmentDoc}`;
+
+export function useAttendancesQuery(options: Omit<Urql.UseQueryArgs<AttendancesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AttendancesQuery>({ query: AttendancesDocument, ...options });
 };
 export const ClassesDocument = gql`
     query Classes {

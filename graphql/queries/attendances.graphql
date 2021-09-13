@@ -1,0 +1,19 @@
+query Attendances ($where: AttendanceWhereInput) {
+  attendances (where: $where) {
+    edges {
+      node {
+      	...Attendance
+      }
+    }
+  }
+}
+
+fragment Attendance on Attendance {
+  id
+  date
+  state
+  class {
+    id
+    name
+  }
+}

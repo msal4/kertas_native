@@ -31,5 +31,8 @@
   "w": "ت",
   "s": "م",
   "course_final": "نهاية الكورس",
-  "attendance": "الحضور"
+  "attendance": "الحضور",
+  "username": "اسم المستخدم",
+  "password": "كلمة المرور",
+  "login": "تسجيل دخول"
 }

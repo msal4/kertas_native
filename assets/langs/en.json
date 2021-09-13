@@ -31,5 +31,8 @@
   "w": "w",
   "s": "s",
   "course_final": "final",
-  "attendance": "Attendance"
+  "attendance": "Attendance",
+  "username": "Username",
+  "password": "Password",
+  "login": "LOGIN"
 }
