@@ -34,5 +34,11 @@
   "attendance": "Attendance",
   "username": "Username",
   "password": "Password",
-  "login": "LOGIN"
+  "login": "LOGIN",
+  "enter_your_username": "Enter your username",
+  "enter_your_password": "Enter your password",
+  "invalid_credentials": "Invalid user credentials, username or password is incorrect",
+  "user_not_found": "No user found, please check your username",
+  "user_not_allowed": "Not allowed to login using the app please try another medium",
+  "something_went_wrong": "Something went wrong! please try again"
 }

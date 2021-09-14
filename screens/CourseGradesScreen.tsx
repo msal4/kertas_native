@@ -43,11 +43,11 @@ export default function CourseGradesScreen({ navigation }: any) {
                     alignItems: "center",
                   }}
                 >
-                  <Icon name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#9a9a9a" />
+                  <Icon name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#383838" />
                 </View>
               </Touchable>
               <View style={{ flex: 1 }}>
-                <KText style={{ color: "#393939", fontSize: 23 }}>{t("my_marks")}</KText>
+                <KText style={{ color: "#393939", textAlign: "left", fontSize: 23 }}>{t("my_marks")}</KText>
               </View>
             </View>
           </View>

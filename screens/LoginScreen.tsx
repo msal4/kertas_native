@@ -1,142 +1,179 @@
 import * as React from "react";
 import { useState } from "react";
-import { StyleSheet, TextInput } from "react-native";
+import { Image, Keyboard, KeyboardAvoidingView, SafeAreaView, TextInput, TouchableWithoutFeedback } from "react-native";
 
 import { RootStackScreenProps } from "../types";
-import { Button, TextField, Toast, View } from "react-native-ui-lib";
+import { View } from "react-native-ui-lib";
 import { useLoginMutation } from "../generated/graphql";
 import { setTokens } from "../util/auth";
 import { useAuth } from "../context/auth";
 import * as Notifications from "expo-notifications";
-import { isAndroid } from "../constants/platform";
+import { isAndroid, isIOS } from "../constants/platform";
 import * as Constants from "expo-constants";
 
 import { Touchable } from "../components/Touchable";
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Toast from "react-native-root-toast";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
   const [, login] = useLoginMutation();
-  const [errToastVisible, setErrToastVisible] = useState(false);
-  const [errToastMsg, setErrToastMsg] = useState("failed");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [userFocus, setUserFocus] = useState(false);
   const [passFocus, setPassFocus] = useState(false);
   const { setIsAuthenticated } = useAuth();
-  const { t, locale, isRTL } = useTrans();
+  const { t, isRTL } = useTrans();
+  const passwordInput = React.useRef<TextInput>();
+  const { top, right, bottom, left } = useSafeAreaInsets();
+  const [fetching, setFetching] = useState(false);
 
-  const showErrToast = (msg?: string) => {
-    if (msg) {
-      setErrToastMsg(msg);
-    }
-    setErrToastVisible(true);
-  };
-
-  let userPassInput = null;
-
-  const loginUser =  async () => {
+  const loginUser = async () => {
+    setFetching(true);
     const pushToken = await registerForPushNotificationsAsync();
     const res = await login({ username, password, pushToken });
 
     if (res.error) {
-      showErrToast("Invalid user");
+      setFetching(false);
+      let err = t("something_went_wrong");
+      if (res.error?.graphQLErrors?.some((e) => e.extensions?.code === "INVALID_CREDS")) {
+        err = t("invalid_credentials");
+      } else if (res.error?.graphQLErrors?.some((e) => e.extensions?.code === "NOT_FOUND")) {
+        err = t("user_not_found");
+      } else if (res.error?.graphQLErrors?.some((e) => e.extensions?.code === "NOT_ALLOWED")) {
+        err = t("user_not_allowed");
+      }
+
+      Toast.show(err, {
+        shadow: false,
+        delay: 0,
+        backgroundColor: "#E05D5D",
+        duration: Toast.durations.LONG,
+        position: Toast.positions.BOTTOM,
+        containerStyle: { borderRadius: 100, paddingHorizontal: 30 },
+      });
+
       return;
     }
 
     await setTokens(res.data?.loginUser);
     setIsAuthenticated(true);
+    setFetching(false);
 
     navigation.navigate("Start");
-  }
+  };
 
   return (
-    <View style={{
-      backgroundColor: '#f4f4f4',
-      flex: 1,
-      justifyContent: 'center',
-      padding: 30
-    }}>
-
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 30 }}>
-        <View style={{ width: 150, height: 150, borderRadius: 500, backgroundColor: '#fff', borderWidth: 1, borderColor: '#a18cd1', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <KText style={{ fontFamily: 'Dubai-Bold', color: '#a18cd1' }}>LOGO</KText>
-        </View>
-      </View>
-
-      <KText style={{ paddingHorizontal: 20, marginBottom: 5, textAlign: 'left' }}>{t("username")}</KText>
-      <TextInput
-        value={username}
-        onChangeText={setUsername}
-        textContentType="username"
-        autoCompleteType="username"
-        autoCapitalize="none"
-        autoCorrect={false}
-        style={{
-          backgroundColor: '#fff',
-          padding: 15,
-          paddingHorizontal: 20,
-          borderWidth: 2,
-          borderColor: userFocus? '#a18cd1': '#ddd',
-          fontSize: 16,
-          borderRadius: 100,
-          textAlign: isRTL? 'right': 'left',
-          color: '#393939'
-        }}
-        onFocus={() => setUserFocus(true)}
-        onBlur={() => setUserFocus(false)}
-        returnKeyType="next"
-        onSubmitEditing={() => {
-          userPassInput.focus();
-        }}
-      />
-
-      <KText style={{ paddingHorizontal: 20, marginBottom: 5, marginTop: 30, textAlign: 'left' }}>{t("password")}</KText>
-      <TextInput
-        ref={r => userPassInput = r}
-        value={password}
-        onChangeText={setPassword}
-        textContentType="password" // ios
-        autoCompleteType="password" // android
-        autoCapitalize="none"
-        autoCorrect={false}
-        secureTextEntry
-        style={{
-          backgroundColor: '#fff',
-          padding: 15,
-          paddingHorizontal: 20,
-          borderWidth: 2,
-          borderColor: passFocus? '#a18cd1': '#ddd',
-          fontSize: 16,
-          borderRadius: 100,
-          textAlign: isRTL? 'right': 'left',
-          color: '#393939'
-        }}
-        onFocus={() => setPassFocus(true)}
-        onBlur={() => setPassFocus(false)}
-        returnKeyType='go'
-        onSubmitEditing={loginUser}
-      />
-
-      <View style={{ borderRadius: 100, overflow: 'hidden', marginTop: 60 }}>
-        <Touchable
-          onPress={loginUser}
+    <SafeAreaView
+      style={{
+        backgroundColor: "#fff",
+        flex: 1,
+      }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <KeyboardAvoidingView
+          behavior={isIOS ? "padding" : undefined}
+          style={{
+            justifyContent: "center",
+            paddingTop: top,
+            paddingRight: right + 20,
+            paddingBottom: bottom,
+            paddingLeft: left + 20,
+            flex: 1,
+          }}
         >
-          <View style={{ padding: 10, backgroundColor: '#a18cd1' }}>
-            <KText style={{ textAlign: 'center', color: '#fff', fontSize: 18 }}>{t("login")}</KText>
+          <Image
+            style={{ width: 200, height: 200, backgroundColor: "#f4f4f4", borderRadius: 100, alignSelf: "center", marginBottom: 30 }}
+            source={{}}
+          />
+          <View>
+            <KText style={{ paddingHorizontal: 20, marginBottom: 5, textAlign: "left" }}>{t("username")}</KText>
+            <TextInput
+              value={username}
+              onChangeText={setUsername}
+              textContentType="username"
+              autoCompleteType="username"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={{
+                backgroundColor: "#f4f4f4",
+                paddingVertical: 20,
+                paddingHorizontal: 25,
+                borderWidth: 2,
+                borderColor: userFocus ? "#a18cd1" : "#f4f4f4",
+                fontSize: 16,
+                borderRadius: 100,
+                textAlign: isRTL ? "right" : "left",
+                color: "#393939",
+              }}
+              onFocus={() => setUserFocus(true)}
+              onBlur={() => setUserFocus(false)}
+              placeholder={t("enter_your_username")}
+              placeholderTextColor="#39393944"
+              returnKeyType="next"
+              onSubmitEditing={() => {
+                passwordInput.current?.focus();
+              }}
+            />
           </View>
-        </Touchable>
-      </View>
 
-      <Toast
-        visible={errToastVisible}
-        position={"top"}
-        backgroundColor={"red"}
-        message={errToastMsg}
-        onDismiss={() => setErrToastVisible(false)}
-        autoDismiss={3000}
-      />
-    </View>
+          <View>
+            <KText style={{ paddingHorizontal: 20, marginBottom: 5, marginTop: 30, textAlign: "left" }}>{t("password")}</KText>
+            <TextInput
+              ref={passwordInput as any}
+              value={password}
+              onChangeText={setPassword}
+              textContentType="password" // ios
+              autoCompleteType="password" // android
+              autoCapitalize="none"
+              autoCorrect={false}
+              secureTextEntry
+              placeholder={t("enter_your_password")}
+              placeholderTextColor="#39393944"
+              style={{
+                backgroundColor: "#f4f4f4",
+                paddingVertical: 20,
+                paddingHorizontal: 25,
+                borderWidth: 2,
+                borderColor: passFocus ? "#a18cd1" : "#f4f4f4",
+                fontSize: 16,
+                borderRadius: 100,
+                textAlign: isRTL ? "right" : "left",
+                color: "#393939",
+              }}
+              onFocus={() => setPassFocus(true)}
+              onBlur={() => setPassFocus(false)}
+              returnKeyType="join"
+              onSubmitEditing={loginUser}
+            />
+          </View>
+
+          <Touchable
+            style={{
+              borderRadius: 100,
+              overflow: "hidden",
+              marginTop: 60,
+              padding: 10,
+              backgroundColor: fetching ? "#39393944" : "#a18cd1",
+            }}
+            disabled={fetching}
+            onPress={loginUser}
+          >
+            <KText style={{ textAlign: "center", color: "#fff", fontSize: 18 }}>{t("login")}</KText>
+          </Touchable>
+
+          {/*<Toast
+            visible={errToastVisible}
+            position={"top"}
+            backgroundColor={"red"}
+            message={errToastMsg}
+            onDismiss={() => setErrToastVisible(false)}
+            autoDismiss={3000}
+          /> */}
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 }
 

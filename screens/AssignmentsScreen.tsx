@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { View, FlatList, StatusBar, Platform } from "react-native";
+import { View, FlatList, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FontAwesome5 as Icon } from "@expo/vector-icons";
 import Moment from "moment";
@@ -10,11 +10,9 @@ import { Error } from "../components/Error";
 import dayjs from "dayjs";
 import { Dialog } from "react-native-ui-lib";
 import DatePicker from "../components/DatePicker";
-import CalendarIcon from "../assets/icons/Calendar.svg";
 import FilesIcon from "../assets/icons/Files.svg";
 import * as DocumentPicker from "expo-document-picker";
 import * as mime from "react-native-mime-types";
-import { ReactNativeFile } from "extract-files";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -27,7 +25,7 @@ import {
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
 
-export default function AssignmentsScreen({ navigation, screenProps, route }: any) {
+export default function AssignmentsScreen({ navigation, route }: any) {
   const [showDate, setShowDate] = useState(false);
   const [isExam, setIsExam] = useState(route.params.isExam);
   const { top, bottom, right, left } = useSafeAreaInsets();
@@ -40,12 +38,12 @@ export default function AssignmentsScreen({ navigation, screenProps, route }: an
       <View
         style={{
           backgroundColor: "#f4f4f4",
-          paddingTop: 20 + top,
+          paddingTop: 10 + top,
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Touchable
                 onPress={() => {
                   navigation.goBack();
@@ -64,43 +62,39 @@ export default function AssignmentsScreen({ navigation, screenProps, route }: an
                   <Ionicons name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#393939" />
                 </View>
               </Touchable>
-              <View style={{ flex: 1 }}>
-                <KText
+              <KText
+                style={{
+                  color: "#393939",
+                  fontSize: 23,
+                  textAlign: "left",
+                  marginHorizontal: 10,
+                }}
+              >
+                {isExam ? t("exams") : t("assignments")}
+              </KText>
+              <View style={{ flexDirection: "row", opacity: selectedDate ? 1 : 0 }}>
+                <View
                   style={{
-                    fontFamily: "Dubai-Medium",
-                    color: "#393939",
-                    fontSize: 20,
-                    textAlign: "left",
-                    marginHorizontal: 10,
-                    paddingTop: 10,
+                    flexDirection: "row",
+                    borderRadius: 100,
+                    overflow: "hidden",
+                    backgroundColor: "#bcbcbc",
+                    alignItems: "center",
                   }}
                 >
-                  {isExam ? t("exams") : t("assignments")}
-                </KText>
-                <View style={{ flexDirection: "row", opacity: selectedDate ? 1 : 0 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      borderRadius: 100,
-                      overflow: "hidden",
-                      backgroundColor: "#bcbcbc",
-                      alignItems: "center",
-                    }}
-                  >
-                    <KText style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left", paddingHorizontal: 10 }}>
-                      {selectedDate ? dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY") : ""}
-                    </KText>
-                    <View style={{ borderRadius: 100, overflow: "hidden" }}>
-                      <Touchable
-                        onPress={() => {
-                          setSelectedDate(null);
-                        }}
-                      >
-                        <View style={{ width: 30, height: 30, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                          <Icon name={"times"} size={12} color="#fff" />
-                        </View>
-                      </Touchable>
-                    </View>
+                  <KText style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left", paddingHorizontal: 10 }}>
+                    {selectedDate ? dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY") : ""}
+                  </KText>
+                  <View style={{ borderRadius: 100, overflow: "hidden" }}>
+                    <Touchable
+                      onPress={() => {
+                        setSelectedDate(null);
+                      }}
+                    >
+                      <View style={{ width: 30, height: 30, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                        <Icon name={"times"} size={12} color="#fff" />
+                      </View>
+                    </Touchable>
                   </View>
                 </View>
               </View>
@@ -185,7 +179,7 @@ function Assignment({ selectedDate, isExam }: { selectedDate: Date; isExam: bool
       },
     },
   });
-  const { t, locale } = useTrans();
+  const { t } = useTrans();
 
   const [showDialog, setShowDialog] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
@@ -242,14 +236,14 @@ function Assignment({ selectedDate, isExam }: { selectedDate: Date; isExam: bool
 }
 
 function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: object; showDialog: boolean; setShowDialog: Function }) {
-  const { t, locale } = useTrans();
+  const { t } = useTrans();
   const [res, refetch] = useAssignmentsSubmissionQuery({
     variables: {
       assignmentID: item.node.id,
     },
   });
-  const [, updateSubmission] = useUpdateAssignmentSubmissionMutation();
-  const [, addSubmission] = useAddAssignmentSubmissionMutation();
+  const [] = useUpdateAssignmentSubmissionMutation();
+  const [] = useAddAssignmentSubmissionMutation();
 
   const [fileTypeDialog, setFileTypeDialog] = useState(false);
 
@@ -292,42 +286,16 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
 
     if (doc.cancelled) return;
 
-    const filetype = mime.lookup(doc.uri) || "image";
-
     if (res.data?.assignmentSubmissions.edges[0]?.node?.files) {
-      const ures = await updateSubmission({
-        id: res.data?.assignmentSubmissions.edges[0]?.node?.id,
-        input: {
-          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
-        },
-      });
     } else {
-      const ures = await addSubmission({
-        input: {
-          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
-        },
-      });
     }
   };
 
   const uploadFile = async () => {
     const doc = await DocumentPicker.getDocumentAsync();
 
-    const filetype = mime.lookup(doc.uri) || "image";
-
     if (res.data?.assignmentSubmissions.edges[0]?.node?.files) {
-      const ures = await updateSubmission({
-        id: res.data?.assignmentSubmissions.edges[0]?.node?.id,
-        input: {
-          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
-        },
-      });
     } else {
-      const ures = await addSubmission({
-        input: {
-          files: [new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: filetype })],
-        },
-      });
     }
   };
 
