@@ -12,22 +12,3 @@ query Groups ($after: Cursor, $where: GroupWhereInput) {
   }
 }
 
-fragment GroupDetail on Group {
-  id
-  name
-  groupType
-
-  users {
-    id
-    name
-    image
-  }
-
-  messages(first: 1, orderBy: {field: CREATED_AT, direction: DESC}) {
-    edges {
-      node {
-        ...Message
-      }
-    }
-  }
-}

@@ -1,0 +1,7 @@
+fragment AssignmentSubmission on AssignmentSubmission {
+  id
+  files
+  submittedAt
+  updatedAt
+  createdAt
+}

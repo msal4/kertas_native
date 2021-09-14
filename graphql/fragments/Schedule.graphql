@@ -1,0 +1,17 @@
+fragment Schedule on Schedule {
+  id
+  duration
+  weekday
+  startsAt
+  class {
+    id
+    name
+    teacher {
+      id
+      name
+    }
+    group {
+      id
+    }
+  }
+}

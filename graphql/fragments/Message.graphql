@@ -1,0 +1,11 @@
+fragment Message on Message {
+  id
+  content
+  attachment
+  owner {
+    id
+    name
+    image
+  }
+  createdAt
+}

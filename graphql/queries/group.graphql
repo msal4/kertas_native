@@ -3,14 +3,3 @@ query Group($groupID: ID!) {
     ...Group
   }
 }
-
-fragment Group on Group {
-  id
-  name
-  groupType
-  users {
-    id
-    name
-    image
-  }
-}

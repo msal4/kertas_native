@@ -1,23 +1,26 @@
 query Classes {
   classes {
     edges {
-      cursor
       node {
-        id
-        name
-        active
-        createdAt
-        updatedAt
-        teacher {
-          id
-          name
-        }
+        ...Class
       }
     }
     pageInfo {
       hasNextPage
-      hasPreviousPage
+      endCursor
     }
     totalCount
+  }
+}
+
+fragment Class on Class {
+  id
+  name
+  active
+  createdAt
+  updatedAt
+  teacher {
+    id
+    name
   }
 }

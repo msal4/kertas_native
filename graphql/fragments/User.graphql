@@ -1,0 +1,14 @@
+fragment UserDetail on User {
+  id
+  name
+  school {
+    id
+    name
+  }
+  stage {
+    id
+    name
+  }
+  role
+}
+

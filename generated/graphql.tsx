@@ -2672,20 +2672,32 @@ export type UserWhereInput = {
 };
 
 
+export type AssignmentFragment = { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, class: { __typename?: 'Class', id: string, name: string } };
+
+export type AssignmentSubmissionFragment = { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any };
+
+export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } };
+
+export type CourseGradeFragment = { __typename?: 'CourseGrade', id: string, activityFirst?: Maybe<number>, activitySecond?: Maybe<number>, writtenFirst?: Maybe<number>, writtenSecond?: Maybe<number>, courseFinal?: Maybe<number>, course: Course };
+
+export type GroupFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> };
+
+export type GroupDetailFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }> };
+
+export type MessageFragment = { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } };
+
+export type NotificationFragment = { __typename?: 'Notification', id: string, title: string, body: string, route: string, image: string, createdAt: any, updatedAt: any };
+
+export type ScheduleFragment = { __typename?: 'Schedule', id: string, duration: any, weekday: any, startsAt: any, class: { __typename?: 'Class', id: string, name: string, teacher: { __typename?: 'User', id: string, name: string }, group: { __typename?: 'Group', id: string } } };
+
+export type UserDetailFragment = { __typename?: 'User', id: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string }> };
+
 export type AddAssignmentSubmissionMutationVariables = Exact<{
   input: AddAssignmentSubmissionInput;
 }>;
 
 
 export type AddAssignmentSubmissionMutation = { __typename?: 'Mutation', addAssignmentSubmission: { __typename?: 'AssignmentSubmission', files: Array<string>, submittedAt?: Maybe<any>, id: string, updatedAt: any, createdAt: any } };
-
-export type UpdateAssignmentSubmissionMutationVariables = Exact<{
-  id: Scalars['ID'];
-  input: UpdateAssignmentSubmissionInput;
-}>;
-
-
-export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any> } };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
@@ -2710,40 +2722,48 @@ export type RefreshTokensMutationVariables = Exact<{
 
 export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthData', accessToken: string, refreshToken: string } };
 
-export type AssignmentsQueryVariables = Exact<{
-  where?: Maybe<AssignmentWhereInput>;
+export type UpdateAssignmentSubmissionMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: UpdateAssignmentSubmissionInput;
 }>;
 
 
-export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, class: { __typename?: 'Class', id: string, name: string } }> }>>> } };
+export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any> } };
 
 export type AssignmentsSubmissionQueryVariables = Exact<{
   assignmentID?: Maybe<Scalars['ID']>;
 }>;
 
 
-export type AssignmentsSubmissionQuery = { __typename?: 'Query', assignmentSubmissions: { __typename?: 'AssignmentSubmissionConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentSubmissionEdge', node?: Maybe<{ __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any }> }>>> } };
+export type AssignmentsSubmissionQuery = { __typename?: 'Query', assignmentSubmissions: { __typename?: 'AssignmentSubmissionConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentSubmissionEdge', node?: Maybe<{ __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
+
+export type AssignmentsQueryVariables = Exact<{
+  where?: Maybe<AssignmentWhereInput>;
+}>;
+
+
+export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type AttendancesQueryVariables = Exact<{
   where?: Maybe<AttendanceWhereInput>;
 }>;
 
 
-export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } }> }>>> } };
-
-export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } };
+export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', cursor: any, node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, hasPreviousPage: boolean } } };
+export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
+
+export type ClassFragment = { __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', id: string, name: string } };
 
 export type CourseGradesQueryVariables = Exact<{
   classID?: Maybe<Scalars['ID']>;
 }>;
 
 
-export type CourseGradesQuery = { __typename?: 'Query', courseGrades: { __typename?: 'CourseGradeConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'CourseGradeEdge', node?: Maybe<{ __typename?: 'CourseGrade', id: string, activityFirst?: Maybe<number>, activitySecond?: Maybe<number>, writtenFirst?: Maybe<number>, writtenSecond?: Maybe<number>, courseFinal?: Maybe<number>, course: Course }> }>>> } };
+export type CourseGradesQuery = { __typename?: 'Query', courseGrades: { __typename?: 'CourseGradeConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'CourseGradeEdge', node?: Maybe<{ __typename?: 'CourseGrade', id: string, activityFirst?: Maybe<number>, activitySecond?: Maybe<number>, writtenFirst?: Maybe<number>, writtenSecond?: Maybe<number>, courseFinal?: Maybe<number>, course: Course }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type GroupQueryVariables = Exact<{
   groupID: Scalars['ID'];
@@ -2751,8 +2771,6 @@ export type GroupQueryVariables = Exact<{
 
 
 export type GroupQuery = { __typename?: 'Query', group: { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> } };
-
-export type GroupFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> };
 
 export type GroupsQueryVariables = Exact<{
   after?: Maybe<Scalars['Cursor']>;
@@ -2762,14 +2780,10 @@ export type GroupsQueryVariables = Exact<{
 
 export type GroupsQuery = { __typename?: 'Query', groups: { __typename?: 'GroupConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'GroupEdge', node?: Maybe<{ __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }> }> }>>> } };
 
-export type GroupDetailFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>>, messages?: Maybe<{ __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }> };
-
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string }> } };
-
-export type CurrentUserFragment = { __typename?: 'User', id: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string }> };
 
 export type MessagesQueryVariables = Exact<{
   groupID: Scalars['ID'];
@@ -2777,9 +2791,7 @@ export type MessagesQueryVariables = Exact<{
 }>;
 
 
-export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', cursor: any, node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>> } };
-
-export type MessageFragment = { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } };
+export type MessagesQuery = { __typename?: 'Query', messages: { __typename?: 'MessageConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'MessageEdge', cursor: any, node?: Maybe<{ __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type NotificationsQueryVariables = Exact<{
   after?: Maybe<Scalars['Cursor']>;
@@ -2787,8 +2799,6 @@ export type NotificationsQueryVariables = Exact<{
 
 
 export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'NotificationEdge', node?: Maybe<{ __typename?: 'Notification', id: string, title: string, body: string, route: string, image: string, createdAt: any, updatedAt: any }> }>>> } };
-
-export type NotificationFragment = { __typename?: 'Notification', id: string, title: string, body: string, route: string, image: string, createdAt: any, updatedAt: any };
 
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2815,6 +2825,29 @@ export type MessagePostedSubscriptionVariables = Exact<{
 
 export type MessagePostedSubscription = { __typename?: 'Subscription', messagePosted: { __typename?: 'Message', id: string, content: string, attachment: string, createdAt: any, owner: { __typename?: 'User', id: string, name: string, image: string } } };
 
+export const AssignmentFragmentDoc = gql`
+    fragment Assignment on Assignment {
+  id
+  name
+  description
+  dueDate
+  class {
+    id
+    name
+  }
+  isExam
+  duration
+}
+    `;
+export const AssignmentSubmissionFragmentDoc = gql`
+    fragment AssignmentSubmission on AssignmentSubmission {
+  id
+  files
+  submittedAt
+  updatedAt
+  createdAt
+}
+    `;
 export const AttendanceFragmentDoc = gql`
     fragment Attendance on Attendance {
   id
@@ -2824,6 +2857,17 @@ export const AttendanceFragmentDoc = gql`
     id
     name
   }
+}
+    `;
+export const CourseGradeFragmentDoc = gql`
+    fragment CourseGrade on CourseGrade {
+  id
+  activityFirst
+  activitySecond
+  writtenFirst
+  writtenSecond
+  courseFinal
+  course
 }
     `;
 export const GroupFragmentDoc = gql`
@@ -2870,8 +2914,38 @@ export const GroupDetailFragmentDoc = gql`
   }
 }
     ${MessageFragmentDoc}`;
-export const CurrentUserFragmentDoc = gql`
-    fragment CurrentUser on User {
+export const NotificationFragmentDoc = gql`
+    fragment Notification on Notification {
+  id
+  title
+  body
+  route
+  image
+  createdAt
+  updatedAt
+}
+    `;
+export const ScheduleFragmentDoc = gql`
+    fragment Schedule on Schedule {
+  id
+  duration
+  weekday
+  startsAt
+  class {
+    id
+    name
+    teacher {
+      id
+      name
+    }
+    group {
+      id
+    }
+  }
+}
+    `;
+export const UserDetailFragmentDoc = gql`
+    fragment UserDetail on User {
   id
   name
   school {
@@ -2885,15 +2959,17 @@ export const CurrentUserFragmentDoc = gql`
   role
 }
     `;
-export const NotificationFragmentDoc = gql`
-    fragment Notification on Notification {
+export const ClassFragmentDoc = gql`
+    fragment Class on Class {
   id
-  title
-  body
-  route
-  image
+  name
+  active
   createdAt
   updatedAt
+  teacher {
+    id
+    name
+  }
 }
     `;
 export const AddAssignmentSubmissionDocument = gql`
@@ -2910,19 +2986,6 @@ export const AddAssignmentSubmissionDocument = gql`
 
 export function useAddAssignmentSubmissionMutation() {
   return Urql.useMutation<AddAssignmentSubmissionMutation, AddAssignmentSubmissionMutationVariables>(AddAssignmentSubmissionDocument);
-};
-export const UpdateAssignmentSubmissionDocument = gql`
-    mutation UpdateAssignmentSubmission($id: ID!, $input: UpdateAssignmentSubmissionInput!) {
-  updateAssignmentSubmission(id: $id, input: $input) {
-    id
-    files
-    submittedAt
-  }
-}
-    `;
-
-export function useUpdateAssignmentSubmissionMutation() {
-  return Urql.useMutation<UpdateAssignmentSubmissionMutation, UpdateAssignmentSubmissionMutationVariables>(UpdateAssignmentSubmissionDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!, $pushToken: String) {
@@ -2964,48 +3027,58 @@ export const RefreshTokensDocument = gql`
 export function useRefreshTokensMutation() {
   return Urql.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument);
 };
-export const AssignmentsDocument = gql`
-    query Assignments($where: AssignmentWhereInput) {
-  assignments(where: $where) {
-    edges {
-      node {
-        id
-        name
-        description
-        dueDate
-        class {
-          id
-          name
-        }
-        isExam
-        duration
-      }
-    }
+export const UpdateAssignmentSubmissionDocument = gql`
+    mutation UpdateAssignmentSubmission($id: ID!, $input: UpdateAssignmentSubmissionInput!) {
+  updateAssignmentSubmission(id: $id, input: $input) {
+    id
+    files
+    submittedAt
   }
 }
     `;
 
-export function useAssignmentsQuery(options: Omit<Urql.UseQueryArgs<AssignmentsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<AssignmentsQuery>({ query: AssignmentsDocument, ...options });
+export function useUpdateAssignmentSubmissionMutation() {
+  return Urql.useMutation<UpdateAssignmentSubmissionMutation, UpdateAssignmentSubmissionMutationVariables>(UpdateAssignmentSubmissionDocument);
 };
 export const AssignmentsSubmissionDocument = gql`
     query AssignmentsSubmission($assignmentID: ID) {
   assignmentSubmissions(assignmentID: $assignmentID) {
     edges {
       node {
-        id
-        files
-        submittedAt
-        updatedAt
-        createdAt
+        ...AssignmentSubmission
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }
-    `;
+    ${AssignmentSubmissionFragmentDoc}`;
 
 export function useAssignmentsSubmissionQuery(options: Omit<Urql.UseQueryArgs<AssignmentsSubmissionQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AssignmentsSubmissionQuery>({ query: AssignmentsSubmissionDocument, ...options });
+};
+export const AssignmentsDocument = gql`
+    query Assignments($where: AssignmentWhereInput) {
+  assignments(where: $where) {
+    edges {
+      node {
+        ...Assignment
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+    ${AssignmentFragmentDoc}`;
+
+export function useAssignmentsQuery(options: Omit<Urql.UseQueryArgs<AssignmentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AssignmentsQuery>({ query: AssignmentsDocument, ...options });
 };
 export const AttendancesDocument = gql`
     query Attendances($where: AttendanceWhereInput) {
@@ -3015,6 +3088,11 @@ export const AttendancesDocument = gql`
         ...Attendance
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }
     ${AttendanceFragmentDoc}`;
@@ -3026,27 +3104,18 @@ export const ClassesDocument = gql`
     query Classes {
   classes {
     edges {
-      cursor
       node {
-        id
-        name
-        active
-        createdAt
-        updatedAt
-        teacher {
-          id
-          name
-        }
+        ...Class
       }
     }
     pageInfo {
       hasNextPage
-      hasPreviousPage
+      endCursor
     }
     totalCount
   }
 }
-    `;
+    ${ClassFragmentDoc}`;
 
 export function useClassesQuery(options: Omit<Urql.UseQueryArgs<ClassesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ClassesQuery>({ query: ClassesDocument, ...options });
@@ -3056,18 +3125,17 @@ export const CourseGradesDocument = gql`
   courseGrades(classID: $classID) {
     edges {
       node {
-        id
-        activityFirst
-        activitySecond
-        writtenFirst
-        writtenSecond
-        courseFinal
-        course
+        ...CourseGrade
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }
-    `;
+    ${CourseGradeFragmentDoc}`;
 
 export function useCourseGradesQuery(options: Omit<Urql.UseQueryArgs<CourseGradesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<CourseGradesQuery>({ query: CourseGradesDocument, ...options });
@@ -3109,10 +3177,10 @@ export function useGroupsQuery(options: Omit<Urql.UseQueryArgs<GroupsQueryVariab
 export const MeDocument = gql`
     query Me {
   me {
-    ...CurrentUser
+    ...UserDetail
   }
 }
-    ${CurrentUserFragmentDoc}`;
+    ${UserDetailFragmentDoc}`;
 
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
@@ -3124,15 +3192,15 @@ export const MessagesDocument = gql`
     orderBy: {field: CREATED_AT, direction: DESC}
     after: $after
   ) {
-    pageInfo {
-      hasNextPage
-      endCursor
-    }
     edges {
       cursor
       node {
         ...Message
       }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
     }
   }
 }
@@ -3206,24 +3274,10 @@ export function useProfileQuery(options: Omit<Urql.UseQueryArgs<ProfileQueryVari
 export const ScheduleDocument = gql`
     query Schedule($weekday: Weekday, $stageID: ID) {
   schedule(weekday: $weekday, stageID: $stageID) {
-    id
-    duration
-    weekday
-    startsAt
-    class {
-      id
-      name
-      teacher {
-        id
-        name
-      }
-      group {
-        id
-      }
-    }
+    ...Schedule
   }
 }
-    `;
+    ${ScheduleFragmentDoc}`;
 
 export function useScheduleQuery(options: Omit<Urql.UseQueryArgs<ScheduleQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ScheduleQuery>({ query: ScheduleDocument, ...options });

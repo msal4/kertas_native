@@ -1,0 +1,9 @@
+fragment CourseGrade on CourseGrade {
+  id
+  activityFirst
+  activitySecond
+  writtenFirst
+  writtenSecond
+  courseFinal
+  course
+}

@@ -1,0 +1,9 @@
+fragment Notification on Notification {
+  id
+  title
+  body
+  route
+  image
+  createdAt
+  updatedAt
+}

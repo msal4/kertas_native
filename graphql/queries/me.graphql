@@ -1,21 +1,5 @@
 query Me {
   me {
-    ...CurrentUser
+    ...UserDetail
   }
 }
-
-
-fragment CurrentUser on User {
-  id
-  name
-  school {
-    id
-    name
-  }
-  stage {
-    id
-    name
-  }
-  role
-}
-

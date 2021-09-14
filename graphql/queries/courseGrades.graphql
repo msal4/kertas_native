@@ -2,14 +2,13 @@ query CourseGrades ($classID: ID) {
   courseGrades (classID: $classID) {
     edges {
       node {
-        id
-        activityFirst
-        activitySecond
-        writtenFirst
-        writtenSecond
-        courseFinal
-        course
+        ...CourseGrade
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }

@@ -1,0 +1,9 @@
+fragment Attendance on Attendance {
+  id
+  date
+  state
+  class {
+    id
+    name
+  }
+}

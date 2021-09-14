@@ -1,19 +1,5 @@
 query Schedule ($weekday: Weekday, $stageID: ID) {
   schedule (weekday: $weekday, stageID: $stageID) {
-    id
-    duration
-    weekday
-    startsAt
-    class {
-      id
-      name
-      teacher {
-        id
-        name
-      }
-      group {
-        id
-      }
-    }
+    ...Schedule
   }
 }

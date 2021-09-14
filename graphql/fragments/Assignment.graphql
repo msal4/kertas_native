@@ -1,0 +1,12 @@
+fragment Assignment on Assignment {
+  id
+  name
+  description
+  dueDate
+  class {
+    id
+    name
+  }
+  isExam
+  duration
+}

@@ -5,15 +5,10 @@ query Attendances ($where: AttendanceWhereInput) {
       	...Attendance
       }
     }
-  }
-}
-
-fragment Attendance on Attendance {
-  id
-  date
-  state
-  class {
-    id
-    name
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }

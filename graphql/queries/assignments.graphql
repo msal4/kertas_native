@@ -2,17 +2,13 @@ query Assignments ($where: AssignmentWhereInput) {
   assignments (where: $where) {
     edges {
       node {
-        id
-        name
-        description
-        dueDate
-        class {
-          id
-          name
-        }
-        isExam
-        duration
+        ...Assignment
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }

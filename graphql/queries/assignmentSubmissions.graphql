@@ -2,12 +2,13 @@ query AssignmentsSubmission ($assignmentID: ID) {
   assignmentSubmissions (assignmentID: $assignmentID) {
     edges {
       node {
-        id
-        files
-        submittedAt
-        updatedAt
-        createdAt
+        ...AssignmentSubmission
       }
     }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
   }
 }
