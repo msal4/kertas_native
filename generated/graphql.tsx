@@ -2801,7 +2801,7 @@ export type ScheduleQueryVariables = Exact<{
 }>;
 
 
-export type ScheduleQuery = { __typename?: 'Query', schedule: Array<{ __typename?: 'Schedule', id: string, duration: any, weekday: any, startsAt: any, class: { __typename?: 'Class', id: string, name: string, teacher: { __typename?: 'User', id: string, name: string } } }> };
+export type ScheduleQuery = { __typename?: 'Query', schedule: Array<{ __typename?: 'Schedule', id: string, duration: any, weekday: any, startsAt: any, class: { __typename?: 'Class', id: string, name: string, teacher: { __typename?: 'User', id: string, name: string }, group: { __typename?: 'Group', id: string } } }> };
 
 export type StagesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3216,6 +3216,9 @@ export const ScheduleDocument = gql`
       teacher {
         id
         name
+      }
+      group {
+        id
       }
     }
   }

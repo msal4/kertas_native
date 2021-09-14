@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { View, Dimensions, FlatList, Platform } from "react-native";
+import { View, Dimensions, FlatList, Platform, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
@@ -18,6 +18,7 @@ import dayjs_ar from "dayjs/locale/ar-iq";
 import dayjs_en from "dayjs/locale/en";
 import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
+import { useNavigation } from "@react-navigation/native";
 
 const dayjs_locals = {
   en: dayjs_en,
@@ -55,7 +56,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
         <SelectModal
           data={dayjs_locals[locale].weekdays!.map((name, value) => ({ name, value }))}
           onSelect={({ value }) => {
-            setWeekDay(value);
+            setWeekDay(value as number);
           }}
           selected={selectedWeekday}
           renderBtn={() => (
@@ -218,6 +219,7 @@ const getClassTime = (item: any) => {
 function Schedule({ weekday }: { weekday: number }) {
   const [res, refetch] = useScheduleQuery({ variables: { weekday } });
   const { t } = useTrans();
+  const navigation = useNavigation();
 
   if (res.error) {
     return (
@@ -244,7 +246,12 @@ function Schedule({ weekday }: { weekday: number }) {
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
           renderItem={({ item }) => (
-            <View style={{ borderRadius: 20, overflow: "hidden" }}>
+            <TouchableOpacity
+              style={{ borderRadius: 20, overflow: "hidden" }}
+              onPress={() => {
+                navigation.navigate("Conversation", { groupID: item.class.group.id });
+              }}
+            >
               <View style={{ flexDirection: "row", padding: 15, backgroundColor: "#fff", alignItems: "center" }}>
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", paddingRight: 10 }}>
                   <View
@@ -265,7 +272,7 @@ function Schedule({ weekday }: { weekday: number }) {
                   {getClassTime(item).timeFrom} - {getClassTime(item).timeTo}
                 </KText>
               </View>
-            </View>
+            </TouchableOpacity>
           )}
         />
       ) : null}

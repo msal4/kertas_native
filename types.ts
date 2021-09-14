@@ -17,7 +17,7 @@ export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Home: undefined;
   Conversation: ConversationParams;
-  Assignments: undefined;
+  Assignments: { isExam: boolean };
   CourseGrades: undefined;
   Start: undefined;
   Login: undefined;

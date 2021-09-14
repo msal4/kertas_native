@@ -11,6 +11,9 @@ query Schedule ($weekday: Weekday, $stageID: ID) {
         id
         name
       }
+      group {
+        id
+      }
     }
   }
 }
