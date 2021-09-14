@@ -47,24 +47,23 @@ export default function DatePicker(props: any) {
       <View style={{ flexDirection: "row", paddingHorizontal: 20, paddingBottom: 18 }}>
         <View style={{ flex: 1 }} />
         <Touchable
-          style={{ backgroundColor: "#f4f4f4", borderRadius: 5, marginRight: 10, padding: 10 }}
+          style={{ backgroundColor: "#f4f4f4", borderRadius: 5, marginRight: 10, paddingVertical: 10, paddingHorizontal: 20 }}
           onPress={() => {
             props.onDismiss();
           }}
         >
-          <Text>{t("Cancel")}</Text>
+          <Text>{t("cancel")}</Text>
         </Touchable>
         <Touchable
-          style={{ backgroundColor: "#a18cd1", padding: 10, borderRadius: 5 }}
+          style={{ backgroundColor: "#a18cd1", paddingVertical: 10, paddingHorizontal: 35, borderRadius: 5 }}
           onPress={() => {
             props.onChange(selectedDate);
             props.onDismiss();
           }}
         >
-          <Text style={{ color: "white" }}>{t("Confirm")}</Text>
+          <Text style={{ color: "white" }}>{t("confirm")}</Text>
         </Touchable>
       </View>
     </Dialog>
   );
 }
-
