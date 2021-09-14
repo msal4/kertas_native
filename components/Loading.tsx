@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { DotIndicator } from "react-native-indicators";
+import { PacmanIndicator } from "react-native-indicators";
 
 // contract
 interface LoadingProps {
@@ -22,10 +22,10 @@ export default function Loading({ color = "white", isLoading = true, height = "a
         justifyContent: "center",
         alignItems: "center",
         height,
-        flex: height === '100%'? 1: 'none'
+        flex: height === "100%" ? 1 : undefined,
       }}
     >
-      <DotIndicator color={color} count={3} />
+      <PacmanIndicator color={color} /*count={3} */ />
     </View>
   );
 }
