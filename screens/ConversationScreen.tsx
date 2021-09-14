@@ -272,7 +272,7 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
       >
         <LinearGradient
           start={{ x: 0, y: 0 }}
-          colors={isMe ? ["#a7a6cb", "#8989ba"] : ["#e6e9f0", "#eef1f5"]}
+          colors={isMe ? ["#a7a6cb", "#8989ba"] : ["#eef1f5", "#e6e9f0"]}
           style={{
             padding: 10,
           }}

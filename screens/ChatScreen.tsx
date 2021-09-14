@@ -107,7 +107,7 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
         navigate("Conversation", { groupID: group.id });
       }}
     >
-      <View row centerV style={{ padding: 10 }}>
+      <View row style={{ padding: 10 }}>
         <Image
           source={{ uri: `${cdnURL}/${info?.image ?? ""}` }}
           width={60}
@@ -120,9 +120,11 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
             <KText style={{ color: "#393939" }}>{info?.name}</KText>
             <KText style={{ fontSize: 12, fontFamily: "Dubai-Light" }}>{dayjs(msg?.createdAt).fromNow()}</KText>
           </View>
-          <KText key={msg?.id} style={{ fontSize: 12 }} numberOfLines={1}>
-            {msg?.owner?.name}: {msg?.content}
-          </KText>
+          {msg ? (
+            <KText key={msg?.id} style={{ fontSize: 12 }} numberOfLines={1}>
+              {msg.owner?.name}: {msg.content}
+            </KText>
+          ) : null}
         </View>
       </View>
     </Touchable>
