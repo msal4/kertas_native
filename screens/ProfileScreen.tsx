@@ -11,7 +11,7 @@ import Loading from "../components/Loading";
 import { Error } from "../components/Error";
 import { View, Alert, ScrollView, Text, FlatList } from "react-native";
 import { KText } from "../components/KText";
-import { Image, Dialog, PanningDirections, PanningProvider } from "react-native-ui-lib";
+import { Image, Dialog, PanningProvider } from "react-native-ui-lib";
 import SelectModal from "../components/Select";
 import { Ionicons } from "@expo/vector-icons";
 import { cdnURL } from "../constants/Config";
@@ -23,7 +23,7 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
   const { setIsAuthenticated } = useAuth();
   const [res, refetch] = useProfileQuery();
   const [showDialog, setShowDialog] = useState(false);
-  const [showClassesDialog, setShowClassesDialog] = useState(false);
+  const [] = useState(false);
 
   const numberWithCommas = (x: number) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -181,7 +181,7 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
           </ScrollView>
         </View>
       ) : null}
-      <Loading isLoading={res.fetching} height={500} color={"#fff"} />
+      <Loading isLoading={res.fetching} height={500} />
     </>
   );
 };

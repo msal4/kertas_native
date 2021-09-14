@@ -276,7 +276,7 @@ function Schedule({ weekday }: { weekday: number }) {
           )}
         />
       ) : null}
-      <Loading isLoading={res.fetching} height={500} color={"#fff"} />
+      <Loading isLoading={res.fetching} height={500} />
     </>
   );
 }

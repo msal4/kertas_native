@@ -10,7 +10,7 @@ interface LoadingProps {
 }
 
 // <Loading />
-export default function Loading({ color = "white", isLoading = true, height = "auto" }: LoadingProps) {
+export default function Loading({ color = "#9b9b9b", isLoading = true, height = "auto" }: LoadingProps) {
   if (!isLoading) {
     return null;
   }
