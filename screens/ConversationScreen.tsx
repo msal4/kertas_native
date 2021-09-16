@@ -198,11 +198,18 @@ const MessageList = memo(
   forwardRef(function ({ groupID }: MessageListProps, ref) {
     const [after, setAfter] = useState();
     const [queryResponse, refetch] = useMessagesQuery({ variables: { groupID, after } });
-    const [subscriptionResponse] = useMessagePostedSubscription({ variables: { groupID } }, handleSubscription);
+    const [subscriptionResponse, resubscribe] = useMessagePostedSubscription({ variables: { groupID } }, handleSubscription);
+
+    if (subscriptionResponse.error) {
+      console.log(subscriptionResponse.error);
+    }
 
     return (
       <>
-        <Error isError={!!queryResponse.error} onPress={refetch} />
+        <Error
+          isError={!!queryResponse.error || !!subscriptionResponse.error}
+          onPress={() => (queryResponse.error ? refetch() : resubscribe())}
+        />
         {queryResponse.data?.messages ? (
           <FlatList
             ref={ref as any}

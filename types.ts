@@ -19,6 +19,7 @@ export type RootStackParamList = {
   Conversation: ConversationParams;
   Assignments: { isExam: boolean };
   CourseGrades: undefined;
+  Attendance: undefined;
   Start: undefined;
   Login: undefined;
 };

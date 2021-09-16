@@ -42,5 +42,9 @@
   "user_not_allowed": "Not allowed to login using the app please try another medium",
   "something_went_wrong": "Something went wrong! please try again",
   "cancel": "Cancel",
-  "confirm": "Confirm"
+  "confirm": "Confirm",
+  "absent": "Absent",
+  "sick": "Sick",
+  "excused_absent": "Excused Absent",
+  "present": "Present"
 }

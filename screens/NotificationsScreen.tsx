@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { FlatList, SafeAreaView } from "react-native";
 import { View, Image } from "react-native-ui-lib";
 import { Error } from "../components/Error";
 import Loading from "../components/Loading";
@@ -8,19 +8,11 @@ import { KText } from "../components/KText";
 import { Touchable } from "../components/Touchable";
 import { NotificationFragment, useNotificationsQuery } from "../generated/graphql";
 import dayjs from "dayjs";
-import { useTrans } from "../context/trans";
 import { cdnURL } from "../constants/Config";
 
 export function NotificationsScreen() {
   const [after, setAfter] = useState<string>();
   const [res, refetch] = useNotificationsQuery({ variables: { after } });
-
-  const { t } = useTrans();
-
-  useEffect(() => {
-    const handler = setInterval(() => !res.fetching && refetch(), 1000);
-    return () => clearInterval(handler);
-  }, [res.fetching]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>

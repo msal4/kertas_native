@@ -8,7 +8,7 @@ import { BottomTabBarProps, createBottomTabNavigator } from "@react-navigation/b
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Text, Platform } from "react-native";
+import { ColorSchemeName, Text } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -39,6 +39,7 @@ import ProfileIcon from "../assets/icons/Profile.svg";
 import ProfileActiveIcon from "../assets/icons/Profile-Active.svg";
 import { NotificationsScreen } from "../screens/NotificationsScreen";
 import { isIOS } from "../constants/platform";
+import { AttendanceScreen } from "../screens/AttendanceScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -48,10 +49,6 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   );
 }
 
-/**
- * A root stack navigator is often used for displaying modals on top of all other content.
- * https://reactnavigation.org/docs/modal
- */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
@@ -67,6 +64,7 @@ function RootNavigator() {
       />
       <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
       <Stack.Screen name="CourseGrades" options={{ headerShown: false }} component={CourseGradesScreen} />
+      <Stack.Screen name="Attendance" options={{ headerShown: false }} component={AttendanceScreen} />
     </Stack.Navigator>
   );
 }

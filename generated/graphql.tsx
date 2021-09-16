@@ -2676,7 +2676,7 @@ export type AssignmentFragment = { __typename?: 'Assignment', id: string, name: 
 
 export type AssignmentSubmissionFragment = { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any };
 
-export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } };
+export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string, group: { __typename?: 'Group', id: string } } };
 
 export type CourseGradeFragment = { __typename?: 'CourseGrade', id: string, activityFirst?: Maybe<number>, activitySecond?: Maybe<number>, writtenFirst?: Maybe<number>, writtenSecond?: Maybe<number>, courseFinal?: Maybe<number>, course: Course };
 
@@ -2745,11 +2745,12 @@ export type AssignmentsQueryVariables = Exact<{
 export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type AttendancesQueryVariables = Exact<{
+  after?: Maybe<Scalars['Cursor']>;
   where?: Maybe<AttendanceWhereInput>;
 }>;
 
 
-export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
+export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string, group: { __typename?: 'Group', id: string } } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2798,7 +2799,7 @@ export type NotificationsQueryVariables = Exact<{
 }>;
 
 
-export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationConnection', pageInfo: { __typename?: 'PageInfo', endCursor?: Maybe<any> }, edges?: Maybe<Array<Maybe<{ __typename?: 'NotificationEdge', node?: Maybe<{ __typename?: 'Notification', id: string, title: string, body: string, route: string, image: string, createdAt: any, updatedAt: any }> }>>> } };
+export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'NotificationEdge', node?: Maybe<{ __typename?: 'Notification', id: string, title: string, body: string, route: string, image: string, createdAt: any, updatedAt: any }> }>>>, pageInfo: { __typename?: 'PageInfo', endCursor?: Maybe<any>, hasNextPage: boolean } } };
 
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2856,6 +2857,9 @@ export const AttendanceFragmentDoc = gql`
   class {
     id
     name
+    group {
+      id
+    }
   }
 }
     `;
@@ -3081,8 +3085,8 @@ export function useAssignmentsQuery(options: Omit<Urql.UseQueryArgs<AssignmentsQ
   return Urql.useQuery<AssignmentsQuery>({ query: AssignmentsDocument, ...options });
 };
 export const AttendancesDocument = gql`
-    query Attendances($where: AttendanceWhereInput) {
-  attendances(where: $where) {
+    query Attendances($after: Cursor, $where: AttendanceWhereInput) {
+  attendances(after: $after, where: $where) {
     edges {
       node {
         ...Attendance
@@ -3212,14 +3216,16 @@ export function useMessagesQuery(options: Omit<Urql.UseQueryArgs<MessagesQueryVa
 export const NotificationsDocument = gql`
     query Notifications($after: Cursor) {
   notifications(after: $after, orderBy: {field: CREATED_AT, direction: DESC}) {
-    pageInfo {
-      endCursor
-    }
     edges {
       node {
         ...Notification
       }
     }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    totalCount
   }
 }
     ${NotificationFragmentDoc}`;

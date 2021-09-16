@@ -1,13 +1,15 @@
 query Notifications($after: Cursor) {
   notifications(after: $after, orderBy: {field: CREATED_AT, direction: DESC}) {
-    pageInfo {
-      endCursor
-    }
     edges {
       node {
         ...Notification
       }
     }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+    totalCount
   }
 }
 

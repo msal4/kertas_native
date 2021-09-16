@@ -5,5 +5,8 @@ fragment Attendance on Attendance {
   class {
     id
     name
+    group {
+      id
+    }
   }
 }

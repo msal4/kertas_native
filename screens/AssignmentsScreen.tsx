@@ -2,7 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { View, FlatList, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FontAwesome5 as Icon } from "@expo/vector-icons";
+import { Ionicons as Icon } from "@expo/vector-icons";
 import Moment from "moment";
 import { Touchable } from "../components/Touchable";
 import Loading from "../components/Loading";
@@ -11,8 +11,6 @@ import dayjs from "dayjs";
 import { Dialog } from "react-native-ui-lib";
 import DatePicker from "../components/DatePicker";
 import FilesIcon from "../assets/icons/Files.svg";
-import * as DocumentPicker from "expo-document-picker";
-import * as mime from "react-native-mime-types";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -43,7 +41,7 @@ export default function AssignmentsScreen({ navigation, route }: any) {
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={{ flex: 1 }}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", marginRight: 5 }}>
               <Touchable
                 onPress={() => {
                   navigation.goBack();
@@ -67,37 +65,31 @@ export default function AssignmentsScreen({ navigation, route }: any) {
                   color: "#393939",
                   fontSize: 23,
                   textAlign: "left",
-                  marginHorizontal: 10,
                 }}
               >
                 {isExam ? t("exams") : t("assignments")}
               </KText>
-              <View style={{ flexDirection: "row", opacity: selectedDate ? 1 : 0 }}>
-                <View
+              {selectedDate ? (
+                <Touchable
                   style={{
                     flexDirection: "row",
                     borderRadius: 100,
                     overflow: "hidden",
-                    backgroundColor: "#bcbcbc",
+                    backgroundColor: "#a18cd1",
                     alignItems: "center",
+                    paddingHorizontal: 5,
+                    marginLeft: 5,
+                  }}
+                  onPress={() => {
+                    setSelectedDate(null);
                   }}
                 >
-                  <KText style={{ fontFamily: "Dubai-Regular", color: "#fff", textAlign: "left", paddingHorizontal: 10 }}>
+                  <KText style={{ fontSize: 10, color: "#fff", textAlign: "left" }}>
                     {selectedDate ? dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY") : ""}
                   </KText>
-                  <View style={{ borderRadius: 100, overflow: "hidden" }}>
-                    <Touchable
-                      onPress={() => {
-                        setSelectedDate(null);
-                      }}
-                    >
-                      <View style={{ width: 30, height: 30, flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                        <Icon name={"times"} size={12} color="#fff" />
-                      </View>
-                    </Touchable>
-                  </View>
-                </View>
-              </View>
+                  <Icon style={{ paddingLeft: 10 }} name="close" size={12} color="#fff" />
+                </Touchable>
+              ) : null}
             </View>
           </View>
           <Touchable
@@ -292,8 +284,6 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
   };
 
   const uploadFile = async () => {
-    const doc = await DocumentPicker.getDocumentAsync();
-
     if (res.data?.assignmentSubmissions.edges[0]?.node?.files) {
     } else {
     }

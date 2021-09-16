@@ -1,5 +1,5 @@
-query Attendances ($where: AttendanceWhereInput) {
-  attendances (where: $where) {
+query Attendances ($after: Cursor, $where: AttendanceWhereInput) {
+  attendances (after: $after, where: $where) {
     edges {
       node {
       	...Attendance

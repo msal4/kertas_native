@@ -10,6 +10,7 @@ import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDoc
 import { replace } from "../navigation/navigationRef";
 import { devtoolsExchange } from "@urql/devtools";
 import { graphqlURL } from "../constants/Config";
+import { retryExchange } from "@urql/exchange-retry";
 
 const accessTokenExpKey = "access_token_exp";
 const accessTokenKey = "access_token";
@@ -57,13 +58,16 @@ const isOperationLoginOrRefresh = (operation: Operation) => {
   );
 };
 
-const subscriptionClient = new SubscriptionClient(graphqlURL.replace("http", "ws"), {
-  reconnect: true,
-  connectionParams: async () => ({ authorization: await getAccessToken() }),
-});
+const createSubscriptionClient = () =>
+  new SubscriptionClient(graphqlURL.replace("http", "ws"), {
+    reconnect: true,
+    connectionParams: async () => ({ authorization: await getAccessToken() }),
+  });
 
-export const createAuthClient = () =>
-  createClient({
+export const createAuthClient = () => {
+  const subscriptionClient = createSubscriptionClient();
+
+  return createClient({
     url: graphqlURL,
     requestPolicy: "network-only",
     exchanges: [
@@ -77,7 +81,7 @@ export const createAuthClient = () =>
           },
         },
       }),
-      //retryExchange(),
+      retryExchange({}),
       errorExchange({
         onError: async (error) => {
           if (error?.response?.status === 401) {
@@ -164,3 +168,4 @@ export const createAuthClient = () =>
       }),
     ],
   });
+};

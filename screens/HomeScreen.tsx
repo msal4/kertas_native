@@ -170,7 +170,11 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
               </Touchable>
             </View>
             <View style={{ flex: 1 }}>
-              <Touchable>
+              <Touchable
+                onPress={() => {
+                  navigation.navigate("Attendance");
+                }}
+              >
                 <View style={{ backgroundColor: "#fff", justifyContent: "center", alignItems: "center", height: 150 }}>
                   <View
                     style={{
