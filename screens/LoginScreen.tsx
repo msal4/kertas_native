@@ -16,6 +16,7 @@ import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-root-toast";
+import { showErrToast } from "../util/toast";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
   const [, login] = useLoginMutation();
@@ -45,14 +46,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
         err = t("user_not_allowed");
       }
 
-      Toast.show(err, {
-        shadow: false,
-        delay: 0,
-        backgroundColor: "#E05D5D",
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-        containerStyle: { borderRadius: 100, paddingHorizontal: 30 },
-      });
+      showErrToast(err);
 
       return;
     }

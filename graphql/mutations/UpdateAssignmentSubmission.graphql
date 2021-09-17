@@ -1,7 +1,5 @@
 mutation UpdateAssignmentSubmission ($id: ID!, $input: UpdateAssignmentSubmissionInput!) {
-    updateAssignmentSubmission (id: $id, input: $input) {
-      id
-      files
-      submittedAt
-    }
+  updateAssignmentSubmission (id: $id, input: $input) {
+    ...AssignmentSubmission
+  }
 }

@@ -1,6 +1,6 @@
 mutation Login($username: String!, $password: String!, $pushToken: String) {
-    loginUser(input: {username: $username, password: $password, pushToken: $pushToken}) {
-        accessToken
-        refreshToken
-    }
+  loginUser(input: {username: $username, password: $password, pushToken: $pushToken}) {
+    accessToken
+    refreshToken
+  }
 }

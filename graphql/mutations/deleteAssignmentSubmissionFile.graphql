@@ -1,0 +1,5 @@
+mutation DeleteSubmission($id: ID!, index: Int!) {
+  deleteAssignmentSubmissionFile(id: $id, index: $index) {
+    ...AssignmentSubmission
+  }
+}

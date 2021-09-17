@@ -2728,7 +2728,7 @@ export type UpdateAssignmentSubmissionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any> } };
+export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any } };
 
 export type AssignmentsSubmissionQueryVariables = Exact<{
   assignmentID?: Maybe<Scalars['ID']>;
@@ -3035,12 +3035,10 @@ export function useRefreshTokensMutation() {
 export const UpdateAssignmentSubmissionDocument = gql`
     mutation UpdateAssignmentSubmission($id: ID!, $input: UpdateAssignmentSubmissionInput!) {
   updateAssignmentSubmission(id: $id, input: $input) {
-    id
-    files
-    submittedAt
+    ...AssignmentSubmission
   }
 }
-    `;
+    ${AssignmentSubmissionFragmentDoc}`;
 
 export function useUpdateAssignmentSubmissionMutation() {
   return Urql.useMutation<UpdateAssignmentSubmissionMutation, UpdateAssignmentSubmissionMutationVariables>(UpdateAssignmentSubmissionDocument);

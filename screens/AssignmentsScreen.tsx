@@ -11,7 +11,9 @@ import dayjs from "dayjs";
 import { Dialog, PanningProvider } from "react-native-ui-lib";
 import DatePicker from "../components/DatePicker";
 import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 import { Ionicons } from "@expo/vector-icons";
+import * as mime from "react-native-mime-types";
 
 import FilesIcon from "../assets/icons/Files.svg";
 
@@ -25,6 +27,8 @@ import {
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
 import { dateOnlyFormat } from "../constants/time";
+import { ReactNativeFile } from "extract-files";
+import { showErrToast } from "../util/toast";
 
 export default function AssignmentsScreen({ navigation, route }: any) {
   const [showDate, setShowDate] = useState(false);
@@ -236,8 +240,9 @@ interface AssignmentSubmissionProps {
 function AssignmentSubmission({ assignment, showDialog, setShowDialog }: AssignmentSubmissionProps) {
   const { t } = useTrans();
   const [res, refetch] = useAssignmentsSubmissionQuery({ variables: { assignmentID: assignment?.id } });
-  const [] = useUpdateAssignmentSubmissionMutation();
-  const [] = useAddAssignmentSubmissionMutation();
+  const [, updateSubmission] = useUpdateAssignmentSubmissionMutation();
+  const [, addSubmission] = useAddAssignmentSubmissionMutation();
+  const [, deleteSubmission] = useDeleteSubmission();
 
   const [fileTypeDialog, setFileTypeDialog] = useState(false);
 
@@ -267,27 +272,65 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
     return "";
   };
 
-  const uploadImage = async () => {
+  const uploadFile = async (type: "file" | "image" = "file") => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       alert("Sorry, we need camera roll permissions to make this work!");
       return;
     }
 
-    const doc = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    });
+    let files: (ReactNativeFile | File)[] = [];
 
-    if (doc.cancelled) return;
+    if (type === "file") {
+      const docs = await DocumentPicker.getDocumentAsync({ multiple: true });
+      if (docs.type === "cancel" || !docs.output?.length) return;
 
-    if (res.data?.assignmentSubmissions.edges![0]?.node?.files) {
+      for (let i = 0; i < docs.output?.length; i++) {
+        const doc = docs.output.item(i);
+        if (!doc) continue;
+
+        files.push(doc);
+
+        //const name = doc.name.substr(doc.name.lastIndexOf("/") + 1);
+
+        //files.push(new ReactNativeFile({ name, uri: doc.name, type: mime.lookup(doc.type) ?? "image" }));
+      }
+
+      if (!files.length) {
+        return;
+      }
     } else {
+      const doc = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      });
+
+      if (doc.cancelled) return;
+
+      files = [
+        new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: mime.lookup(doc.type) ?? "image" }),
+      ];
     }
-  };
 
-  const uploadFile = async () => {
-    if (res.data?.assignmentSubmissions.edges![0]?.node?.files) {
+    if (!files.length) {
+      return;
+    }
+
+    const submission = res.data?.assignmentSubmissions.edges![0]?.node;
+
+    if (submission) {
+      console.log("there is an assignment");
+      const res = await updateSubmission({
+        id: submission.id,
+        input: { files },
+      });
+      if (res.error) {
+        showErrToast(t("something_went_wrong"));
+      }
     } else {
+      const res = await addSubmission({ input: { assignmentID: assignment.id, files } });
+      if (res.error) {
+        showErrToast(t("something_went_wrong"));
+      }
     }
   };
 
@@ -322,11 +365,12 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
           <FlatList
             data={res.data?.assignmentSubmissions.edges[0]?.node?.files}
             keyExtractor={(file) => file}
-            contentContainerStyle={{ paddingBottom: 20 }}
+            contentContainerStyle={{ padding: 20 }}
             showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={() => <View style={{ marginVertical: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }} />}
             renderItem={({ item }) => (
               <Touchable onPress={() => {}}>
-                <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+                <View style={{ flexDirection: "row" }}>
                   <View
                     style={{
                       width: 50,
@@ -340,11 +384,9 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                   >
                     <FilesIcon fill="#a18cd1" width={28} height={28} />
                   </View>
-                  <View style={{ flex: 1, paddingHorizontal: 10 }}>
-                    <KText style={{ fontFamily: "Dubai-Regular", color: "#393939", textAlign: "left" }} numberOfLines={1}>
-                      {getFileNameFromUrl(item)}
-                    </KText>
-                  </View>
+                  <KText style={{ flex: 1, fontFamily: "Dubai-Regular", color: "#393939", textAlign: "left" }} numberOfLines={1}>
+                    {getFileNameFromUrl(item)}
+                  </KText>
                 </View>
               </Touchable>
             )}
@@ -366,7 +408,7 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
           <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10, flexDirection: "row" }}>
             <View style={{ flexDirection: "row", flex: 1, justifyContent: "center", alignItems: "center" }}>
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
-                <Touchable onPress={uploadFile}>
+                <Touchable onPress={() => uploadFile("file")}>
                   <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
                     <Ionicons name="document-outline" size={28} color="#777" />
                     <KText style={{ color: "#393939" }}>{t("file")}</KText>
@@ -376,7 +418,7 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
             </View>
             <View style={{ flexDirection: "row", flex: 1, justifyContent: "center", alignItems: "center" }}>
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
-                <Touchable onPress={uploadImage}>
+                <Touchable onPress={() => uploadFile("image")}>
                   <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
                     <Ionicons name="image-outline" size={28} color="#777" />
                     <KText style={{ color: "#393939" }}>{t("image")}</KText>
@@ -387,7 +429,7 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
           </View>
         </Dialog>
 
-        <View style={{ borderRadius: 5, overflow: "hidden", marginTop: 10 }}>
+        <View style={{ borderRadius: 5, overflow: "hidden" }}>
           <Touchable
             onPress={() => {
               setFileTypeDialog(true);
