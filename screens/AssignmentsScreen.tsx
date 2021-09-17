@@ -8,7 +8,7 @@ import { Touchable } from "../components/Touchable";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
 import dayjs from "dayjs";
-import { Dialog } from "react-native-ui-lib";
+import { Dialog, PanningProvider } from "react-native-ui-lib";
 import DatePicker from "../components/DatePicker";
 import FilesIcon from "../assets/icons/Files.svg";
 import * as ImagePicker from "expo-image-picker";
@@ -19,6 +19,7 @@ import {
   useAssignmentsSubmissionQuery,
   useUpdateAssignmentSubmissionMutation,
   useAddAssignmentSubmissionMutation,
+  AssignmentFragment,
 } from "../generated/graphql";
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
@@ -144,29 +145,24 @@ export default function AssignmentsScreen({ navigation, route }: any) {
         onDismiss={() => {
           setShowDate(false);
         }}
-        onChange={(date) => {
+        onChange={(date: any) => {
           setSelectedDate(date);
         }}
       />
 
       <View style={{ backgroundColor: "#fff", flex: 1 }}>
-        <Assignment selectedDate={selectedDate} isExam={isExam} />
+        <Assignment date={selectedDate ?? new Date()} isExam={isExam} />
       </View>
     </View>
   );
 }
 
-function Assignment({ selectedDate, isExam }: { selectedDate: Date; isExam: boolean }) {
-  const [curDate] = useState(new Date());
+function Assignment({ date, isExam }: { date: Date; isExam: boolean }) {
   const [res, refetch] = useAssignmentsQuery({
     variables: {
       where: {
-        dueDateGTE: dayjs(selectedDate ?? curDate)
-          .set("hour", 3)
-          .set("minute", 0)
-          .set("second", 0)
-          .toDate(),
-        dueDateLT: selectedDate ? dayjs(selectedDate).add(1, "day").set("hour", 3).set("minute", 0).set("second", 0).toDate() : null,
+        dueDateGTE: dayjs(date).set("hour", 3).set("minute", 0).set("second", 0).toDate(),
+        dueDateLT: date ? dayjs(date).add(1, "day").set("hour", 3).set("minute", 0).set("second", 0).toDate() : null,
         isExam: isExam,
       },
     },
@@ -174,7 +170,7 @@ function Assignment({ selectedDate, isExam }: { selectedDate: Date; isExam: bool
   const { t } = useTrans();
 
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [selectedAssignment, setSelectedAssignment] = useState<AssignmentFragment | null>();
 
   if (res.error) {
     return (
@@ -193,24 +189,26 @@ function Assignment({ selectedDate, isExam }: { selectedDate: Date; isExam: bool
 
   return (
     <>
-      {selectedAssignment ? <AssignmentSubmission showDialog={showDialog} item={selectedAssignment} setShowDialog={setShowDialog} /> : null}
+      {selectedAssignment ? (
+        <AssignmentSubmission showDialog={showDialog} assignment={selectedAssignment} setShowDialog={setShowDialog} />
+      ) : null}
       {res.data?.assignments.edges ? (
         <FlatList
           data={res.data?.assignments.edges}
-          keyExtractor={(item, index) => index + "a"}
+          keyExtractor={(item) => item?.node?.id ?? ""}
           contentContainerStyle={{ paddingBottom: 20 }}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <Touchable
               onPress={() => {
                 setShowDialog(true);
-                setSelectedAssignment(item);
+                setSelectedAssignment(item?.node);
               }}
             >
               <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
                 <View style={{ flex: 1 }}>
                   <KText style={{ fontFamily: "Dubai-Medium", color: "#393939", textAlign: "left" }}>
-                    {item?.node?.class.name} - {item?.node.name}
+                    {item?.node?.class.name} - {item?.node?.name}
                   </KText>
                   <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }} numberOfLines={1}>
                     {item?.node?.description}
@@ -227,13 +225,15 @@ function Assignment({ selectedDate, isExam }: { selectedDate: Date; isExam: bool
   );
 }
 
-function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: object; showDialog: boolean; setShowDialog: Function }) {
+interface AssignmentSubmissionProps {
+  assignment: AssignmentFragment;
+  showDialog: boolean;
+  setShowDialog: Function;
+}
+
+function AssignmentSubmission({ assignment, showDialog, setShowDialog }: AssignmentSubmissionProps) {
   const { t } = useTrans();
-  const [res, refetch] = useAssignmentsSubmissionQuery({
-    variables: {
-      assignmentID: item.node.id,
-    },
-  });
+  const [res, refetch] = useAssignmentsSubmissionQuery({ variables: { assignmentID: assignment?.id } });
   const [] = useUpdateAssignmentSubmissionMutation();
   const [] = useAddAssignmentSubmissionMutation();
 
@@ -248,8 +248,8 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
         isError
         height={500}
         color={"#fff"}
-        msg={t("حدث خطأ يرجى اعادة المحاولة")}
-        btnText={t("اعد المحاولة")}
+        msg={t("something_went_wrong")}
+        btnText={t("retry")}
       />
     );
   }
@@ -278,24 +278,23 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
 
     if (doc.cancelled) return;
 
-    if (res.data?.assignmentSubmissions.edges[0]?.node?.files) {
+    if (res.data?.assignmentSubmissions.edges![0]?.node?.files) {
     } else {
     }
   };
 
   const uploadFile = async () => {
-    if (res.data?.assignmentSubmissions.edges[0]?.node?.files) {
+    if (res.data?.assignmentSubmissions.edges![0]?.node?.files) {
     } else {
     }
   };
 
   return (
     <Dialog
-      migrate
       useSafeArea
       bottom={true}
       height={500}
-      panDirection={"UP"}
+      panDirection={PanningProvider.Directions.DOWN}
       visible={showDialog}
       onDismiss={() => {
         setShowDialog(false);
@@ -305,22 +304,22 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
         <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
           <View style={{ flex: 1 }}>
             <KText style={{ fontFamily: "Dubai-Medium", color: "#393939", textAlign: "left" }}>
-              {item?.node?.class.name} - {item?.node.name}
+              {assignment.class.name} - {assignment.name}
             </KText>
             <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }} numberOfLines={1}>
-              {item?.node?.description}
+              {assignment.description}
             </KText>
             <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
-              {t("updated")} {dayjs(item?.node?.updatedAt).fromNow()}
+              {t("updated")} {dayjs(assignment.updatedAt).fromNow()}
             </KText>
           </View>
-          <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(item?.node?.dueDate).format("Y-MM-DD")}</KText>
+          <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(assignment?.dueDate).format("Y-MM-DD")}</KText>
         </View>
 
-        {res.data?.assignmentSubmissions.edges[0]?.node?.files ? (
+        {res.data?.assignmentSubmissions.edges![0]?.node?.files ? (
           <FlatList
             data={res.data?.assignmentSubmissions.edges[0]?.node?.files}
-            keyExtractor={(item, index) => index + "a"}
+            keyExtractor={(file) => file}
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
@@ -353,11 +352,10 @@ function AssignmentSubmission({ item, showDialog, setShowDialog }: { item: objec
         <Loading isLoading={res.fetching} height={"100%"} color={"#919191"} />
 
         <Dialog
-          migrate
           useSafeArea
           bottom={true}
           height={100}
-          panDirection={"UP"}
+          panDirection={PanningProvider.Directions.DOWN}
           visible={fileTypeDialog}
           onDismiss={() => {
             setFileTypeDialog(false);

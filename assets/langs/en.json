@@ -46,5 +46,6 @@
   "absent": "Absent",
   "sick": "Sick",
   "excused_absent": "Excused Absent",
-  "present": "Present"
+  "present": "Present",
+  "retry": "Retry"
 }

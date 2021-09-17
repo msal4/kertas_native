@@ -2672,7 +2672,7 @@ export type UserWhereInput = {
 };
 
 
-export type AssignmentFragment = { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, class: { __typename?: 'Class', id: string, name: string } };
+export type AssignmentFragment = { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } };
 
 export type AssignmentSubmissionFragment = { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any };
 
@@ -2742,7 +2742,7 @@ export type AssignmentsQueryVariables = Exact<{
 }>;
 
 
-export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
+export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type AttendancesQueryVariables = Exact<{
   after?: Maybe<Scalars['Cursor']>;
@@ -2838,6 +2838,7 @@ export const AssignmentFragmentDoc = gql`
   }
   isExam
   duration
+  updatedAt
 }
     `;
 export const AssignmentSubmissionFragmentDoc = gql`

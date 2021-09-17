@@ -46,5 +46,6 @@
   "absent": "غائب",
   "sick": "اجازة مرضية",
   "excused_absent": "غياب مرخص",
-  "present": "حاضر"
+  "present": "حاضر",
+  "retry": "اعادة المحاولة"
 }

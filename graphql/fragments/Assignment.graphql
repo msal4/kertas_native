@@ -9,4 +9,5 @@ fragment Assignment on Assignment {
   }
   isExam
   duration
+  updatedAt
 }
