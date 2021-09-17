@@ -10,9 +10,10 @@ import { Error } from "../components/Error";
 import dayjs from "dayjs";
 import { Dialog, PanningProvider } from "react-native-ui-lib";
 import DatePicker from "../components/DatePicker";
-import FilesIcon from "../assets/icons/Files.svg";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
+
+import FilesIcon from "../assets/icons/Files.svg";
 
 import {
   useAssignmentsQuery,
@@ -23,6 +24,7 @@ import {
 } from "../generated/graphql";
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
+import { dateOnlyFormat } from "../constants/time";
 
 export default function AssignmentsScreen({ navigation, route }: any) {
   const [showDate, setShowDate] = useState(false);
@@ -151,18 +153,18 @@ export default function AssignmentsScreen({ navigation, route }: any) {
       />
 
       <View style={{ backgroundColor: "#fff", flex: 1 }}>
-        <Assignment date={selectedDate ?? new Date()} isExam={isExam} />
+        <Assignments date={selectedDate ?? new Date()} isExam={isExam} />
       </View>
     </View>
   );
 }
 
-function Assignment({ date, isExam }: { date: Date; isExam: boolean }) {
+function Assignments({ date, isExam }: { date: Date; isExam: boolean }) {
   const [res, refetch] = useAssignmentsQuery({
     variables: {
       where: {
-        dueDateGTE: dayjs(date).set("hour", 3).set("minute", 0).set("second", 0).toDate(),
-        dueDateLT: date ? dayjs(date).add(1, "day").set("hour", 3).set("minute", 0).set("second", 0).toDate() : null,
+        dueDateGTE: dayjs(date).format(dateOnlyFormat),
+        dueDateLT: dayjs(date).add(1, "day").format(dateOnlyFormat),
         isExam: isExam,
       },
     },
@@ -181,8 +183,8 @@ function Assignment({ date, isExam }: { date: Date; isExam: boolean }) {
         isError
         height={500}
         color={"#fff"}
-        msg={t("حدث خطأ يرجى اعادة المحاولة")}
-        btnText={t("اعد المحاولة")}
+        msg={t("something_went_wrong")}
+        btnText={t("retry")}
       />
     );
   }
