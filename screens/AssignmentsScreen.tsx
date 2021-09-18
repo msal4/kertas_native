@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { View, FlatList, StatusBar, TouchableOpacity, Linking, TextProps, TouchableWithoutFeedback, Alert } from "react-native";
+import { View, FlatList, StatusBar, TouchableOpacity, Linking, TextProps, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Moment from "moment";
@@ -30,9 +30,7 @@ import { KText } from "../components/KText";
 import { dateOnlyFormat } from "../constants/time";
 import { ReactNativeFile } from "extract-files";
 import { showErrToast } from "../util/toast";
-import { gql, useMutation } from "urql";
 import { cdnURL } from "../constants/Config";
-import { Link } from "@react-navigation/native";
 
 export default function AssignmentsScreen({ navigation, route }: any) {
   const [showDate, setShowDate] = useState(false);
@@ -126,16 +124,16 @@ export default function AssignmentsScreen({ navigation, route }: any) {
         </View>
         <View style={{ paddingTop: 10, flexDirection: "row" }}>
           <Touchable
-            style={{ marginRight: 15, borderBottomColor: "#a18cd1", borderBottomWidth: !isExam ? 3 : 0, minWidth: 80 }}
+            style={{ paddingHorizontal: 20, borderBottomColor: "#a18cd1", borderBottomWidth: !isExam ? 3 : 0, minWidth: 80 }}
             onPress={() => {
               setIsExam(false);
             }}
           >
-            <KText style={{ paddingHorizontal: 10, textAlign: "center" }}>{t("assignments")}</KText>
+            <KText style={{ textAlign: "center" }}>{t("assignments")}</KText>
           </Touchable>
           <Touchable
             style={{
-              marginRight: 15,
+              paddingHorizontal: 20,
               borderBottomColor: "#a18cd1",
               borderBottomWidth: isExam ? 3 : 0,
               minWidth: 80,
