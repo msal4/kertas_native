@@ -1,0 +1,3 @@
+mutation DeleteAssignmentSubmission ($id: ID!) {
+  deleteAssignmentSubmission(id: $id)
+}

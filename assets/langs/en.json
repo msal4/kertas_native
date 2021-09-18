@@ -16,6 +16,7 @@
   "private": "Private",
   "message_copied": "Copied message to clipboard",
   "attachment_copied": "Copied attachment to clipboard",
+  "assignment_attachment": "assignment attachment",
   "my_marks": "My Marks",
   "payments": "Payments",
   "language": "Language",
@@ -47,5 +48,7 @@
   "sick": "Sick",
   "excused_absent": "Excused Absent",
   "present": "Present",
-  "retry": "Retry"
+  "retry": "Retry",
+  "delete_file": "Delete File",
+  "delete_file_assertion": "Are you sure you want to delete this file?"
 }

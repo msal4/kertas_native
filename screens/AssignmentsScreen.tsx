@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { View, FlatList, StatusBar } from "react-native";
+import { View, FlatList, StatusBar, TouchableOpacity, Linking, TextProps, TouchableWithoutFeedback, Alert } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Moment from "moment";
@@ -23,12 +23,16 @@ import {
   useUpdateAssignmentSubmissionMutation,
   useAddAssignmentSubmissionMutation,
   AssignmentFragment,
+  useDeleteSubmissionFileMutation,
 } from "../generated/graphql";
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
 import { dateOnlyFormat } from "../constants/time";
 import { ReactNativeFile } from "extract-files";
 import { showErrToast } from "../util/toast";
+import { gql, useMutation } from "urql";
+import { cdnURL } from "../constants/Config";
+import { Link } from "@react-navigation/native";
 
 export default function AssignmentsScreen({ navigation, route }: any) {
   const [showDate, setShowDate] = useState(false);
@@ -242,7 +246,7 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
   const [res, refetch] = useAssignmentsSubmissionQuery({ variables: { assignmentID: assignment?.id } });
   const [, updateSubmission] = useUpdateAssignmentSubmissionMutation();
   const [, addSubmission] = useAddAssignmentSubmissionMutation();
-  const [, deleteSubmission] = useDeleteSubmission();
+  const [, deleteSubmissionFile] = useDeleteSubmissionFileMutation();
 
   const [fileTypeDialog, setFileTypeDialog] = useState(false);
 
@@ -261,17 +265,6 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
     );
   }
 
-  const getFileNameFromUrl = (url: string): string => {
-    if (url) {
-      const tmp = url.split("/");
-      const tmpLength = tmp.length;
-
-      return tmpLength ? tmp[tmpLength - 1] : "";
-    }
-
-    return "";
-  };
-
   const uploadFile = async (type: "file" | "image" = "file") => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -282,23 +275,11 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
     let files: (ReactNativeFile | File)[] = [];
 
     if (type === "file") {
-      const docs = await DocumentPicker.getDocumentAsync({ multiple: true });
-      if (docs.type === "cancel" || !docs.output?.length) return;
+      const doc = await DocumentPicker.getDocumentAsync({ multiple: true });
 
-      for (let i = 0; i < docs.output?.length; i++) {
-        const doc = docs.output.item(i);
-        if (!doc) continue;
+      if (doc.type === "cancel") return;
 
-        files.push(doc);
-
-        //const name = doc.name.substr(doc.name.lastIndexOf("/") + 1);
-
-        //files.push(new ReactNativeFile({ name, uri: doc.name, type: mime.lookup(doc.type) ?? "image" }));
-      }
-
-      if (!files.length) {
-        return;
-      }
+      files = [new ReactNativeFile({ uri: doc.uri, name: doc.name, type: mime.lookup(doc.type) ?? "application/octet-stream" })];
     } else {
       const doc = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -318,7 +299,6 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
     const submission = res.data?.assignmentSubmissions.edges![0]?.node;
 
     if (submission) {
-      console.log("there is an assignment");
       const res = await updateSubmission({
         id: submission.id,
         input: { files },
@@ -333,6 +313,8 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
       }
     }
   };
+
+  const submission = res.data?.assignmentSubmissions.edges![0]?.node;
 
   return (
     <Dialog
@@ -351,26 +333,47 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
             <KText style={{ fontFamily: "Dubai-Medium", color: "#393939", textAlign: "left" }}>
               {assignment.class.name} - {assignment.name}
             </KText>
-            <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+            <CollapsableText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
               {assignment.description}
-            </KText>
-            <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
+            </CollapsableText>
+            {assignment.file ? (
+              <TouchableOpacity
+                style={{ flexDirection: "row", alignItems: "center", marginTop: 5, marginBottom: 10 }}
+                onPress={() => {
+                  const url = `${cdnURL}/${assignment.file}`;
+                  if (Linking.canOpenURL(url)) {
+                    Linking.openURL(url);
+                  }
+                }}
+              >
+                <FilesIcon fill="#a18cd1" width={15} height={15} />
+                <KText style={{ fontFamily: "Dubai-Regular", color: "#a18cd1", marginLeft: 10 }}>{t("assignment_attachment")}</KText>
+              </TouchableOpacity>
+            ) : null}
+            <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left", fontSize: 12 }}>
               {t("updated")} {dayjs(assignment.updatedAt).fromNow()}
             </KText>
           </View>
           <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(assignment?.dueDate).format("Y-MM-DD")}</KText>
         </View>
 
-        {res.data?.assignmentSubmissions.edges![0]?.node?.files ? (
+        {submission?.files ? (
           <FlatList
-            data={res.data?.assignmentSubmissions.edges[0]?.node?.files}
+            data={submission.files}
             keyExtractor={(file) => file}
             contentContainerStyle={{ padding: 20 }}
             showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={() => <View style={{ marginVertical: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }} />}
-            renderItem={({ item }) => (
-              <Touchable onPress={() => {}}>
-                <View style={{ flexDirection: "row" }}>
+            renderItem={({ item, index }) => (
+              <Touchable
+                onPress={() => {
+                  const url = `${cdnURL}/${item}`;
+                  if (Linking.canOpenURL(url)) {
+                    Linking.openURL(url);
+                  }
+                }}
+              >
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View
                     style={{
                       width: 50,
@@ -380,13 +383,33 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                       flexDirection: "row",
                       justifyContent: "center",
                       alignItems: "center",
+                      marginRight: 10,
                     }}
                   >
                     <FilesIcon fill="#a18cd1" width={28} height={28} />
                   </View>
-                  <KText style={{ flex: 1, fontFamily: "Dubai-Regular", color: "#393939", textAlign: "left" }} numberOfLines={1}>
-                    {getFileNameFromUrl(item)}
+                  <KText style={{ flex: 1, color: "#393939aa", textAlign: "left" }} ellipsizeMode="head" numberOfLines={1}>
+                    {item}
                   </KText>
+                  <TouchableOpacity
+                    onPress={() => {
+                      Alert.alert(t("delete_file"), t("delete_file_assertion"), [
+                        {
+                          style: "cancel",
+                          text: t("no"),
+                        },
+                        {
+                          text: t("yes"),
+                          style: "destructive",
+                          onPress: () => {
+                            deleteSubmissionFile({ index, id: submission.id });
+                          },
+                        },
+                      ]);
+                    }}
+                  >
+                    <Ionicons style={{ marginLeft: 10 }} name="trash-outline" color="red" size={20} />
+                  </TouchableOpacity>
                 </View>
               </Touchable>
             )}
@@ -408,7 +431,12 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
           <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10, flexDirection: "row" }}>
             <View style={{ flexDirection: "row", flex: 1, justifyContent: "center", alignItems: "center" }}>
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
-                <Touchable onPress={() => uploadFile("file")}>
+                <Touchable
+                  onPress={async () => {
+                    await uploadFile("file");
+                    setFileTypeDialog(false);
+                  }}
+                >
                   <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
                     <Ionicons name="document-outline" size={28} color="#777" />
                     <KText style={{ color: "#393939" }}>{t("file")}</KText>
@@ -418,7 +446,12 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
             </View>
             <View style={{ flexDirection: "row", flex: 1, justifyContent: "center", alignItems: "center" }}>
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
-                <Touchable onPress={() => uploadFile("image")}>
+                <Touchable
+                  onPress={async () => {
+                    await uploadFile("image");
+                    setFileTypeDialog(false);
+                  }}
+                >
                   <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
                     <Ionicons name="image-outline" size={28} color="#777" />
                     <KText style={{ color: "#393939" }}>{t("image")}</KText>
@@ -444,3 +477,12 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
     </Dialog>
   );
 }
+
+const CollapsableText: React.FC<TextProps> = (props) => {
+  const [collapsed, setCollapsed] = useState(true);
+  return (
+    <TouchableOpacity onPress={() => setCollapsed(!collapsed)}>
+      <KText style={{ textAlign: "left" }} numberOfLines={collapsed ? 1 : undefined} {...props} />
+    </TouchableOpacity>
+  );
+};

@@ -16,6 +16,7 @@
   "private": "المحادثات الخاصة",
   "message_copied": "تم نسخ الرسالة",
   "attachment_copied": "تم نسخ المرفق",
+  "assignment_attachment": "مرفق الواجب",
   "my_marks": "درجاتي",
   "payments": "الاقساط المدفوعة",
   "language": "اللغة",
@@ -47,5 +48,7 @@
   "sick": "اجازة مرضية",
   "excused_absent": "غياب مرخص",
   "present": "حاضر",
-  "retry": "اعادة المحاولة"
+  "retry": "اعادة المحاولة",
+  "delete_file": "مسح الملف",
+  "delete_file_assertion": "هل انت متأكد انك تريد مسح الملف؟"
 }

@@ -2672,7 +2672,7 @@ export type UserWhereInput = {
 };
 
 
-export type AssignmentFragment = { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } };
+export type AssignmentFragment = { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, file?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } };
 
 export type AssignmentSubmissionFragment = { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any };
 
@@ -2697,7 +2697,22 @@ export type AddAssignmentSubmissionMutationVariables = Exact<{
 }>;
 
 
-export type AddAssignmentSubmissionMutation = { __typename?: 'Mutation', addAssignmentSubmission: { __typename?: 'AssignmentSubmission', files: Array<string>, submittedAt?: Maybe<any>, id: string, updatedAt: any, createdAt: any } };
+export type AddAssignmentSubmissionMutation = { __typename?: 'Mutation', addAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any } };
+
+export type DeleteAssignmentSubmissionMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type DeleteAssignmentSubmissionMutation = { __typename?: 'Mutation', deleteAssignmentSubmission: boolean };
+
+export type DeleteSubmissionFileMutationVariables = Exact<{
+  id: Scalars['ID'];
+  index: Scalars['Int'];
+}>;
+
+
+export type DeleteSubmissionFileMutation = { __typename?: 'Mutation', deleteAssignmentSubmissionFile: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any } };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
@@ -2742,7 +2757,7 @@ export type AssignmentsQueryVariables = Exact<{
 }>;
 
 
-export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
+export type AssignmentsQuery = { __typename?: 'Query', assignments: { __typename?: 'AssignmentConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentEdge', node?: Maybe<{ __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, file?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type AttendancesQueryVariables = Exact<{
   after?: Maybe<Scalars['Cursor']>;
@@ -2831,6 +2846,7 @@ export const AssignmentFragmentDoc = gql`
   id
   name
   description
+  file
   dueDate
   class {
     id
@@ -2980,17 +2996,33 @@ export const ClassFragmentDoc = gql`
 export const AddAssignmentSubmissionDocument = gql`
     mutation AddAssignmentSubmission($input: AddAssignmentSubmissionInput!) {
   addAssignmentSubmission(input: $input) {
-    files
-    submittedAt
-    id
-    updatedAt
-    createdAt
+    ...AssignmentSubmission
   }
 }
-    `;
+    ${AssignmentSubmissionFragmentDoc}`;
 
 export function useAddAssignmentSubmissionMutation() {
   return Urql.useMutation<AddAssignmentSubmissionMutation, AddAssignmentSubmissionMutationVariables>(AddAssignmentSubmissionDocument);
+};
+export const DeleteAssignmentSubmissionDocument = gql`
+    mutation DeleteAssignmentSubmission($id: ID!) {
+  deleteAssignmentSubmission(id: $id)
+}
+    `;
+
+export function useDeleteAssignmentSubmissionMutation() {
+  return Urql.useMutation<DeleteAssignmentSubmissionMutation, DeleteAssignmentSubmissionMutationVariables>(DeleteAssignmentSubmissionDocument);
+};
+export const DeleteSubmissionFileDocument = gql`
+    mutation DeleteSubmissionFile($id: ID!, $index: Int!) {
+  deleteAssignmentSubmissionFile(id: $id, index: $index) {
+    ...AssignmentSubmission
+  }
+}
+    ${AssignmentSubmissionFragmentDoc}`;
+
+export function useDeleteSubmissionFileMutation() {
+  return Urql.useMutation<DeleteSubmissionFileMutation, DeleteSubmissionFileMutationVariables>(DeleteSubmissionFileDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!, $pushToken: String) {

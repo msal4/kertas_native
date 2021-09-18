@@ -2,6 +2,7 @@ fragment Assignment on Assignment {
   id
   name
   description
+  file
   dueDate
   class {
     id
