@@ -316,6 +316,8 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
 
   const submission = res.data?.assignmentSubmissions.edges![0]?.node;
 
+  const examIsOverdue = assignment.isExam && dayjs(assignment.dueDate).add(assignment.duration, "minutes").isBefore(dayjs());
+
   return (
     <Dialog
       useSafeArea
@@ -392,6 +394,7 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                     {item}
                   </KText>
                   <TouchableOpacity
+                    disabled={examIsOverdue}
                     onPress={() => {
                       Alert.alert(t("delete_file"), t("delete_file_assertion"), [
                         {
@@ -408,7 +411,7 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                       ]);
                     }}
                   >
-                    <Ionicons style={{ marginLeft: 10 }} name="trash-outline" color="red" size={20} />
+                    <Ionicons style={{ marginLeft: 10 }} name="trash-outline" color={examIsOverdue ? "#919191" : "#E05D5D"} size={20} />
                   </TouchableOpacity>
                 </View>
               </Touchable>
@@ -462,17 +465,15 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
           </View>
         </Dialog>
 
-        <View style={{ borderRadius: 5, overflow: "hidden" }}>
-          <Touchable
-            onPress={() => {
-              setFileTypeDialog(true);
-            }}
-          >
-            <View style={{ backgroundColor: "#a18cd1", padding: 10 }}>
-              <KText style={{ fontFamily: "Dubai-Regular", textAlign: "center", color: "#fff" }}>{t("upload_assignment_file")}</KText>
-            </View>
-          </Touchable>
-        </View>
+        <TouchableOpacity
+          disabled={examIsOverdue}
+          style={{ borderRadius: 5, overflow: "hidden", backgroundColor: examIsOverdue ? "#919191" : "#a18cd1", padding: 10 }}
+          onPress={() => {
+            setFileTypeDialog(true);
+          }}
+        >
+          <KText style={{ fontFamily: "Dubai-Regular", textAlign: "center", color: "#fff" }}>{t("upload_assignment_file")}</KText>
+        </TouchableOpacity>
       </View>
     </Dialog>
   );
