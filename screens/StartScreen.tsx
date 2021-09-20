@@ -5,8 +5,10 @@ import { Error } from "../components/Error";
 import { saveCurrentUser } from "../hooks/useMe";
 import { RootStackScreenProps } from "../types";
 import { useAuth } from "../context/auth";
+import { useTrans } from "../context/trans";
 
 export function StartScreen({ navigation }: RootStackScreenProps<"Start">) {
+  const { t } = useTrans();
   const [res, refetch] = useMeQuery();
   const { setIsAuthenticated } = useAuth();
 
@@ -29,7 +31,7 @@ export function StartScreen({ navigation }: RootStackScreenProps<"Start">) {
 
   return (
     <>
-      <Error color="black" onPress={refetch} isError={!!res.error} msg="Something went wrong" height={500} />
+      <Error color="black" onPress={refetch} isError={!!res.error} msg={t("something_went_wrong")} height={500} />
       <Loading color="gray" isLoading={res.fetching} height={500} />
     </>
   );

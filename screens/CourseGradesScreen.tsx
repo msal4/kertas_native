@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { View, FlatList, StatusBar } from "react-native";
+import { StyleSheet, View, StatusBar, TouchableOpacity, Dimensions, TouchableWithoutFeedback } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons as Icon, Ionicons } from "@expo/vector-icons";
 import { Touchable } from "../components/Touchable";
@@ -9,9 +9,195 @@ import { Error } from "../components/Error";
 
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
-import { useCourseGradesQuery, useClassesQuery } from "../generated/graphql";
+import {
+  useCourseGradesQuery,
+  useClassesQuery,
+  Role,
+  ClassMinimalFragment,
+  useAllClassesQuery,
+  useClassStudentsQuery,
+} from "../generated/graphql";
+import { useMe } from "../hooks/useMe";
+import { useNavigation } from "@react-navigation/native";
+import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
+import { FlatList } from "react-native-gesture-handler";
 
-export default function CourseGradesScreen({ navigation }: any) {
+export default function CourseGradesScreen() {
+  const { me } = useMe();
+  if (!me) return null;
+
+  return me?.role === Role.Teacher ? <_TeacherCourseGradesScreen /> : <_StudentCourseGradesScreen />;
+}
+
+const windowHeight = Dimensions.get("window").height;
+
+function _TeacherCourseGradesScreen() {
+  const { left, right, top, bottom } = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const { t, isRTL } = useTrans();
+
+  const [classesRes, refetch] = useAllClassesQuery();
+  const [currentClass, setCurrentClass] = useState<ClassMinimalFragment>();
+
+  const classes = classesRes.data?.classes.edges?.map((c) => c!.node!);
+
+  const bottomSheet = React.useRef<ScrollBottomSheet<ClassMinimalFragment>>();
+
+  React.useEffect(() => {
+    if (!currentClass && classes && classes?.length) {
+      setCurrentClass(classes![0]);
+    }
+  }, [classes]);
+
+  const closeBottomSheet = () => bottomSheet.current?.snapTo(2);
+
+  return (
+    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
+      <StatusBar barStyle="dark-content" />
+      <View
+        style={{
+          backgroundColor: "#f4f4f4",
+          paddingTop: 10 + top,
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", paddingBottom: 10 }}>
+          <View style={{ flex: 1 }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Touchable
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              >
+                <View
+                  style={{
+                    borderRadius: 100,
+                    width: 50,
+                    height: 50,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Icon name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#383838" />
+                </View>
+              </Touchable>
+              <View style={{ paddingRight: 15, flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                <KText style={{ color: "#393939", textAlign: "left", fontSize: 23 }}>{t("marks")}</KText>
+                <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={() => bottomSheet.current?.snapTo(1)}>
+                  <KText style={{ marginRight: 5, color: "#393939" }}>{currentClass?.name}</KText>
+                  <Ionicons name="chevron-down" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {classes ? (
+        <ScrollBottomSheet<ClassMinimalFragment>
+          ref={bottomSheet as any}
+          componentType="FlatList"
+          snapPoints={[top, "50%", windowHeight]}
+          initialSnapIndex={2}
+          renderHandle={() => (
+            <View
+              style={{
+                alignItems: "center",
+                backgroundColor: "#f4f4f4",
+                paddingVertical: 20,
+              }}
+            >
+              <View
+                style={{
+                  width: 40,
+                  height: 4,
+                  backgroundColor: "rgba(0,0,0,0.2)",
+                  borderRadius: 4,
+                }}
+              />
+            </View>
+          )}
+          containerStyle={{
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            paddingBottom: bottom,
+            backgroundColor: "#f4f4f4",
+            overflow: "hidden",
+          }}
+          data={classes}
+          keyExtractor={(c) => c?.id || ""}
+          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+          renderItem={({ item }: any) => {
+            const isSelected = currentClass?.id === item.id;
+            return (
+              <Touchable
+                style={{
+                  flexDirection: "row",
+                  padding: 20,
+                  backgroundColor: isSelected ? "#a18cd1" : "white",
+                  alignItems: "center",
+                  borderRadius: 20,
+                }}
+                onPress={() => {
+                  setCurrentClass(item);
+                  closeBottomSheet();
+                }}
+              >
+                <KText numberOfLines={1} style={{ color: isSelected ? "#fff" : undefined, flex: 1, marginRight: 5 }}>
+                  {item.name}
+                </KText>
+                <KText style={{ color: isSelected ? "#f4f4f4" : "#9a9a9a" }}>{item.stage.name}</KText>
+              </Touchable>
+            );
+          }}
+          contentContainerStyle={styles.contentContainerStyle}
+        />
+      ) : null}
+
+      {currentClass && <StudentList classID={currentClass.id} />}
+    </View>
+  );
+}
+
+function StudentList({ classID }: { classID: string }) {
+  const after = React.useRef<string>();
+  const [res, refetch] = useClassStudentsQuery({ variables: { classID, after: after.current } });
+  const { t } = useTrans();
+
+  const students = res.data?.class.stage.students?.edges?.map((s) => s!.node!);
+
+  if (res.error) {
+    return <Error msg={t("something_went_wrong")} btnText={t("retry")} onPress={refetch} />;
+  }
+
+  if (res.fetching && !res.data) {
+    return <Loading />;
+  }
+
+  return students ? (
+    <FlatList
+      data={students}
+      onEndReached={() => {
+        if (!res.fetching && res.data?.class?.stage.students?.pageInfo.hasNextPage) {
+          after.current = res.data?.class?.stage.students?.pageInfo.endCursor;
+        }
+      }}
+      keyExtractor={(s) => s.id}
+      ItemSeparatorComponent={() => (
+        <View style={{ margin: 5, marginHorizontal: 20, borderBottomColor: "#9a9a9a44", borderBottomWidth: 1 }} />
+      )}
+      renderItem={({ item }) => (
+        <View style={{ padding: 20 }}>
+          <KText>{item.name}</KText>
+        </View>
+      )}
+    />
+  ) : null;
+}
+
+function _StudentCourseGradesScreen() {
+  const navigation = useNavigation();
+
   const { top, bottom, right, left } = useSafeAreaInsets();
   const { t, isRTL } = useTrans();
   const [res, refetch] = useClassesQuery();
@@ -63,8 +249,8 @@ export default function CourseGradesScreen({ navigation }: any) {
             isError
             height={500}
             color={"#fff"}
-            msg={t("حدث خطأ يرجى اعادة المحاولة")}
-            btnText={t("اعد المحاولة")}
+            msg={t("something_went_wrong")}
+            btnText={t("retry")}
           />
         ) : null}
 
@@ -84,7 +270,7 @@ export default function CourseGradesScreen({ navigation }: any) {
   );
 }
 
-function ClassItem({ item }) {
+function ClassItem({ item }: any) {
   const [showGrades, setShowGrades] = useState(false);
 
   return (
@@ -108,7 +294,7 @@ function ClassItem({ item }) {
   );
 }
 
-function Grades(props) {
+function Grades(props: { classID: any }) {
   const { t } = useTrans();
   const [res, refetch] = useCourseGradesQuery({
     variables: {
@@ -125,8 +311,8 @@ function Grades(props) {
         isError
         height={500}
         color={"#fff"}
-        msg={t("حدث خطأ يرجى اعادة المحاولة")}
-        btnText={t("اعد المحاولة")}
+        msg={t("something_went_wrong")}
+        btnText={t("retry")}
       />
     );
   }
@@ -271,3 +457,33 @@ function Grades(props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  contentContainerStyle: {
+    padding: 16,
+    backgroundColor: "#F3F4F9",
+  },
+  header: {
+    alignItems: "center",
+    backgroundColor: "#f4f4f4",
+    paddingVertical: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  panelHandle: {
+    width: 40,
+    height: 2,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    borderRadius: 4,
+  },
+  item: {
+    padding: 20,
+    justifyContent: "center",
+    backgroundColor: "white",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+});

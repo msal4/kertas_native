@@ -1,0 +1,22 @@
+query ClassStudents ($classID: ID!, $after: Cursor) {
+  class(id: $classID) {
+    id
+    name
+    stage {
+      id
+      name
+      students(after: $after) {
+        edges {
+          node {
+            ...User
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        totalCount
+      }
+    }
+  }
+}

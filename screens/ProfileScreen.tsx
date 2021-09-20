@@ -6,7 +6,7 @@ import { RootTabScreenProps } from "../types";
 import { saveCurrentUser } from "../hooks/useMe";
 import { useAuth } from "../context/auth";
 import { replace } from "../navigation/navigationRef";
-import { useProfileQuery } from "../generated/graphql";
+import { Role, useProfileQuery } from "../generated/graphql";
 import Loading from "../components/Loading";
 import { Error } from "../components/Error";
 import { View, Alert, ScrollView, Text, FlatList } from "react-native";
@@ -38,8 +38,8 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
         isError
         height={500}
         color={"#393939"}
-        msg={t("حدث خطأ يرجى اعادة المحاولة")}
-        btnText={t("اعد المحاولة")}
+        msg={t("something_went_wrong")}
+        btnText={t("retry")}
       />
     );
   }
@@ -110,28 +110,32 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
             </View>
           </View>
           <ScrollView>
-            <Touchable
-              style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
-              onPress={() => {
-                navigation.navigate("CourseGrades");
-              }}
-            >
-              <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
-                <Ionicons name="ios-checkmark-done-circle-outline" size={22} color="#777" />
-                <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("my_marks")}</KText>
-              </View>
-            </Touchable>
-            <Touchable
-              style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
-              onPress={() => {
-                setShowDialog(true);
-              }}
-            >
-              <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
-                <Ionicons name="card-outline" size={22} color="#777" />
-                <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("payments")}</KText>
-              </View>
-            </Touchable>
+            {res.data?.me.role === Role.Student ? (
+              <>
+                <Touchable
+                  style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
+                  onPress={() => {
+                    navigation.navigate("CourseGrades");
+                  }}
+                >
+                  <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
+                    <Ionicons name="ios-checkmark-done-circle-outline" size={22} color="#777" />
+                    <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("my_marks")}</KText>
+                  </View>
+                </Touchable>
+                <Touchable
+                  style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}
+                  onPress={() => {
+                    setShowDialog(true);
+                  }}
+                >
+                  <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
+                    <Ionicons name="card-outline" size={22} color="#777" />
+                    <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("payments")}</KText>
+                  </View>
+                </Touchable>
+              </>
+            ) : null}
             <View style={{ borderBottomWidth: 1, borderBottomColor: "#e5e5e5" }}>
               <SelectModal
                 data={[

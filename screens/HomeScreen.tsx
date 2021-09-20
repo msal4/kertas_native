@@ -19,6 +19,7 @@ import dayjs_en from "dayjs/locale/en";
 import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
 import { useNavigation } from "@react-navigation/native";
+import { useMe } from "../hooks/useMe";
 
 const dayjs_locals = {
   en: dayjs_en,
@@ -30,6 +31,7 @@ const windowHeight = Dimensions.get("screen").height;
 export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const { t, locale } = useTrans();
+  const { me } = useMe();
 
   const currDate = dayjs().add(selectedWeekday - dayjs().day(), "day");
 
@@ -165,7 +167,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
                   >
                     <Icon name="ios-checkmark-done-circle-outline" size={28} color="#a18cd1" />
                   </View>
-                  <KText style={{ color: "#393939", fontSize: 18 }}>{t("my_marks")}</KText>
+                  <KText style={{ color: "#393939", fontSize: 18 }}>{t(me?.role === "TEACHER" ? "marks" : "my_marks")}</KText>
                 </View>
               </Touchable>
             </View>
@@ -226,18 +228,7 @@ function Schedule({ weekday }: { weekday: number }) {
   const navigation = useNavigation();
 
   if (res.error) {
-    return (
-      <Error
-        onPress={() => {
-          refetch();
-        }}
-        isError
-        height={500}
-        color={"#fff"}
-        msg={t("حدث خطأ يرجى اعادة المحاولة")}
-        btnKText={t("اعد المحاولة")}
-      />
-    );
+    return <Error onPress={refetch} color={"#fff"} />;
   }
 
   return (

@@ -50,5 +50,6 @@
   "present": "Present",
   "retry": "Retry",
   "delete_file": "Delete File",
-  "delete_file_assertion": "Are you sure you want to delete this file?"
+  "delete_file_assertion": "Are you sure you want to delete this file?",
+  "marks": "Marks"
 }

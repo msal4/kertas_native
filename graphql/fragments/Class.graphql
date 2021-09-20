@@ -1,0 +1,20 @@
+fragment ClassMinimal on Class {
+  id
+  name
+  stage {
+    id
+    name
+  }
+}
+
+fragment Class on Class {
+  id
+  name
+  active
+  createdAt
+  updatedAt
+  teacher {
+    id
+    name
+  }
+}

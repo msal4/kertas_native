@@ -13,14 +13,13 @@ query Classes {
   }
 }
 
-fragment Class on Class {
-  id
-  name
-  active
-  createdAt
-  updatedAt
-  teacher {
-    id
-    name
+query AllClasses {
+  classes(first: 100) {
+    edges {
+      node {
+        ...ClassMinimal
+      }
+    }
+    totalCount
   }
 }

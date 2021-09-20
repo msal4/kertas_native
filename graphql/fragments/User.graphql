@@ -1,3 +1,9 @@
+fragment User on User {
+  id
+  name
+  image
+}
+
 fragment UserDetail on User {
   id
   name
@@ -11,4 +17,3 @@ fragment UserDetail on User {
   }
   role
 }
-

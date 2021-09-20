@@ -3,6 +3,7 @@ query Profile {
     id
     image
     name
+    role
     school {
       id
       name

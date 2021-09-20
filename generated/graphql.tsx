@@ -1649,6 +1649,7 @@ export type QueryUserArgs = {
 
 
 export type QueryUsersArgs = {
+  schoolID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
   first?: Maybe<Scalars['Int']>;
   before?: Maybe<Scalars['Cursor']>;
@@ -2678,6 +2679,10 @@ export type AssignmentSubmissionFragment = { __typename?: 'AssignmentSubmission'
 
 export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string, group: { __typename?: 'Group', id: string } } };
 
+export type ClassMinimalFragment = { __typename?: 'Class', id: string, name: string, stage: { __typename?: 'Stage', id: string, name: string } };
+
+export type ClassFragment = { __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', id: string, name: string } };
+
 export type CourseGradeFragment = { __typename?: 'CourseGrade', id: string, activityFirst?: Maybe<number>, activitySecond?: Maybe<number>, writtenFirst?: Maybe<number>, writtenSecond?: Maybe<number>, courseFinal?: Maybe<number>, course: Course };
 
 export type GroupFragment = { __typename?: 'Group', id: string, name: string, groupType: GroupType, users?: Maybe<Array<{ __typename?: 'User', id: string, name: string, image: string }>> };
@@ -2689,6 +2694,8 @@ export type MessageFragment = { __typename?: 'Message', id: string, content: str
 export type NotificationFragment = { __typename?: 'Notification', id: string, title: string, body: string, route: string, image: string, createdAt: any, updatedAt: any };
 
 export type ScheduleFragment = { __typename?: 'Schedule', id: string, duration: any, weekday: any, startsAt: any, class: { __typename?: 'Class', id: string, name: string, teacher: { __typename?: 'User', id: string, name: string }, group: { __typename?: 'Group', id: string } } };
+
+export type UserFragment = { __typename?: 'User', id: string, name: string, image: string };
 
 export type UserDetailFragment = { __typename?: 'User', id: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string }> };
 
@@ -2767,12 +2774,23 @@ export type AttendancesQueryVariables = Exact<{
 
 export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string, group: { __typename?: 'Group', id: string } } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
+export type ClassStudentsQueryVariables = Exact<{
+  classID: Scalars['ID'];
+  after?: Maybe<Scalars['Cursor']>;
+}>;
+
+
+export type ClassStudentsQuery = { __typename?: 'Query', class: { __typename?: 'Class', id: string, name: string, stage: { __typename?: 'Stage', id: string, name: string, students?: Maybe<{ __typename?: 'UserConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'UserEdge', node?: Maybe<{ __typename?: 'User', id: string, name: string, image: string }> }>>>, pageInfo: { __typename?: 'PageInfo', endCursor?: Maybe<any>, hasNextPage: boolean } }> } } };
+
 export type ClassesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', node?: Maybe<{ __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', id: string, name: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
-export type ClassFragment = { __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', id: string, name: string } };
+export type AllClassesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AllClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', node?: Maybe<{ __typename?: 'Class', id: string, name: string, stage: { __typename?: 'Stage', id: string, name: string } }> }>>> } };
 
 export type CourseGradesQueryVariables = Exact<{
   classID?: Maybe<Scalars['ID']>;
@@ -2819,7 +2837,7 @@ export type NotificationsQuery = { __typename?: 'Query', notifications: { __type
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, image: string, name: string, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string, tuitionAmount: number, classes?: Maybe<{ __typename?: 'ClassConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', node?: Maybe<{ __typename?: 'Class', id: string, name: string, teacher: { __typename?: 'User', id: string, name: string } }> }>>> }>, payments?: Maybe<{ __typename?: 'TuitionPaymentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'TuitionPaymentEdge', node?: Maybe<{ __typename?: 'TuitionPayment', id: string, paidAmount: number, year: string, createdAt: any }> }>>> }> }> } };
+export type ProfileQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, image: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string, tuitionAmount: number, classes?: Maybe<{ __typename?: 'ClassConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', node?: Maybe<{ __typename?: 'Class', id: string, name: string, teacher: { __typename?: 'User', id: string, name: string } }> }>>> }>, payments?: Maybe<{ __typename?: 'TuitionPaymentConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'TuitionPaymentEdge', node?: Maybe<{ __typename?: 'TuitionPayment', id: string, paidAmount: number, year: string, createdAt: any }> }>>> }> }> } };
 
 export type ScheduleQueryVariables = Exact<{
   weekday?: Maybe<Scalars['Weekday']>;
@@ -2877,6 +2895,29 @@ export const AttendanceFragmentDoc = gql`
     group {
       id
     }
+  }
+}
+    `;
+export const ClassMinimalFragmentDoc = gql`
+    fragment ClassMinimal on Class {
+  id
+  name
+  stage {
+    id
+    name
+  }
+}
+    `;
+export const ClassFragmentDoc = gql`
+    fragment Class on Class {
+  id
+  name
+  active
+  createdAt
+  updatedAt
+  teacher {
+    id
+    name
   }
 }
     `;
@@ -2965,6 +3006,13 @@ export const ScheduleFragmentDoc = gql`
   }
 }
     `;
+export const UserFragmentDoc = gql`
+    fragment User on User {
+  id
+  name
+  image
+}
+    `;
 export const UserDetailFragmentDoc = gql`
     fragment UserDetail on User {
   id
@@ -2978,19 +3026,6 @@ export const UserDetailFragmentDoc = gql`
     name
   }
   role
-}
-    `;
-export const ClassFragmentDoc = gql`
-    fragment Class on Class {
-  id
-  name
-  active
-  createdAt
-  updatedAt
-  teacher {
-    id
-    name
-  }
 }
     `;
 export const AddAssignmentSubmissionDocument = gql`
@@ -3135,6 +3170,34 @@ export const AttendancesDocument = gql`
 export function useAttendancesQuery(options: Omit<Urql.UseQueryArgs<AttendancesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AttendancesQuery>({ query: AttendancesDocument, ...options });
 };
+export const ClassStudentsDocument = gql`
+    query ClassStudents($classID: ID!, $after: Cursor) {
+  class(id: $classID) {
+    id
+    name
+    stage {
+      id
+      name
+      students(after: $after) {
+        edges {
+          node {
+            ...User
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+        totalCount
+      }
+    }
+  }
+}
+    ${UserFragmentDoc}`;
+
+export function useClassStudentsQuery(options: Omit<Urql.UseQueryArgs<ClassStudentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<ClassStudentsQuery>({ query: ClassStudentsDocument, ...options });
+};
 export const ClassesDocument = gql`
     query Classes {
   classes {
@@ -3154,6 +3217,22 @@ export const ClassesDocument = gql`
 
 export function useClassesQuery(options: Omit<Urql.UseQueryArgs<ClassesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<ClassesQuery>({ query: ClassesDocument, ...options });
+};
+export const AllClassesDocument = gql`
+    query AllClasses {
+  classes(first: 100) {
+    edges {
+      node {
+        ...ClassMinimal
+      }
+    }
+    totalCount
+  }
+}
+    ${ClassMinimalFragmentDoc}`;
+
+export function useAllClassesQuery(options: Omit<Urql.UseQueryArgs<AllClassesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AllClassesQuery>({ query: AllClassesDocument, ...options });
 };
 export const CourseGradesDocument = gql`
     query CourseGrades($classID: ID) {
@@ -3270,6 +3349,7 @@ export const ProfileDocument = gql`
     id
     image
     name
+    role
     school {
       id
       name

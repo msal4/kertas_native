@@ -50,5 +50,6 @@
   "present": "حاضر",
   "retry": "اعادة المحاولة",
   "delete_file": "مسح الملف",
-  "delete_file_assertion": "هل انت متأكد انك تريد مسح الملف؟"
+  "delete_file_assertion": "هل انت متأكد انك تريد مسح الملف؟",
+  "marks": "الدرجات"
 }

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import { CurrentUserFragment } from "../generated/graphql";
+import { UserDetailFragment } from "../generated/graphql";
 
 let user: CurrentUserFragment | null = null;
 
@@ -28,7 +28,7 @@ async function getCurrentUser() {
 }
 
 export function useMe() {
-  const [me, setMe] = useState<CurrentUserFragment | null>(user);
+  const [me, setMe] = useState<UserDetailFragment | null>(user);
 
   useEffect(() => {
     getCurrentUser().then(setMe);
