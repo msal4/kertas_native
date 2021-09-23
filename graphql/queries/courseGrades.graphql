@@ -1,5 +1,5 @@
-query CourseGrades ($classID: ID) {
-  courseGrades (classID: $classID) {
+query CourseGrades ($studentID: ID, $classID: ID, $where: CourseGradeWhereInput) {
+  courseGrades (studentID: $studentID, classID: $classID, where: $where) {
     edges {
       node {
         ...CourseGrade

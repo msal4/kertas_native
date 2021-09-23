@@ -1,0 +1,5 @@
+mutation UpdateCourseGrade($id: ID!, $input: UpdateCourseGradeInput!) {
+  updateCourseGrade(id: $id, input: $input) {
+    id
+  }
+}

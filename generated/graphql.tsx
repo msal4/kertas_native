@@ -52,7 +52,6 @@ export type AddClassInput = {
 
 export type AddCourseGradeInput = {
   studentID: Scalars['ID'];
-  stageID: Scalars['ID'];
   classID: Scalars['ID'];
   course: Course;
   activityFirst?: Maybe<Scalars['Int']>;
@@ -674,7 +673,6 @@ export type CourseGrade = Node & {
   updatedAt: Scalars['Time'];
   student: User;
   class: Class;
-  stage: Stage;
 };
 
 export type CourseGradeConnection = {
@@ -821,9 +819,6 @@ export type CourseGradeWhereInput = {
   /** class edge predicates */
   hasClass?: Maybe<Scalars['Boolean']>;
   hasClassWith?: Maybe<Array<ClassWhereInput>>;
-  /** stage edge predicates */
-  hasStage?: Maybe<Scalars['Boolean']>;
-  hasStageWith?: Maybe<Array<StageWhereInput>>;
 };
 
 
@@ -1756,7 +1751,6 @@ export type QueryScheduleArgs = {
 
 export type QueryCourseGradesArgs = {
   studentID?: Maybe<Scalars['ID']>;
-  stageID?: Maybe<Scalars['ID']>;
   classID?: Maybe<Scalars['ID']>;
   after?: Maybe<Scalars['Cursor']>;
   first?: Maybe<Scalars['Int']>;
@@ -2214,9 +2208,6 @@ export type StageWhereInput = {
   /** students edge predicates */
   hasStudents?: Maybe<Scalars['Boolean']>;
   hasStudentsWith?: Maybe<Array<UserWhereInput>>;
-  /** course_grades edge predicates */
-  hasCourseGrades?: Maybe<Scalars['Boolean']>;
-  hasCourseGradesWith?: Maybe<Array<CourseGradeWhereInput>>;
   /** notifications edge predicates */
   hasNotifications?: Maybe<Scalars['Boolean']>;
   hasNotificationsWith?: Maybe<Array<NotificationWhereInput>>;
@@ -2706,6 +2697,13 @@ export type AddAssignmentSubmissionMutationVariables = Exact<{
 
 export type AddAssignmentSubmissionMutation = { __typename?: 'Mutation', addAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any } };
 
+export type AddCourseGradeMutationVariables = Exact<{
+  input: AddCourseGradeInput;
+}>;
+
+
+export type AddCourseGradeMutation = { __typename?: 'Mutation', addCourseGrade: { __typename?: 'CourseGrade', id: string } };
+
 export type DeleteAssignmentSubmissionMutationVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -2752,6 +2750,14 @@ export type UpdateAssignmentSubmissionMutationVariables = Exact<{
 
 export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any } };
 
+export type UpdateCourseGradeMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: UpdateCourseGradeInput;
+}>;
+
+
+export type UpdateCourseGradeMutation = { __typename?: 'Mutation', updateCourseGrade: { __typename?: 'CourseGrade', id: string } };
+
 export type AssignmentsSubmissionQueryVariables = Exact<{
   assignmentID?: Maybe<Scalars['ID']>;
 }>;
@@ -2793,7 +2799,9 @@ export type AllClassesQueryVariables = Exact<{ [key: string]: never; }>;
 export type AllClassesQuery = { __typename?: 'Query', classes: { __typename?: 'ClassConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'ClassEdge', node?: Maybe<{ __typename?: 'Class', id: string, name: string, stage: { __typename?: 'Stage', id: string, name: string } }> }>>> } };
 
 export type CourseGradesQueryVariables = Exact<{
+  studentID?: Maybe<Scalars['ID']>;
   classID?: Maybe<Scalars['ID']>;
+  where?: Maybe<CourseGradeWhereInput>;
 }>;
 
 
@@ -3039,6 +3047,17 @@ export const AddAssignmentSubmissionDocument = gql`
 export function useAddAssignmentSubmissionMutation() {
   return Urql.useMutation<AddAssignmentSubmissionMutation, AddAssignmentSubmissionMutationVariables>(AddAssignmentSubmissionDocument);
 };
+export const AddCourseGradeDocument = gql`
+    mutation AddCourseGrade($input: AddCourseGradeInput!) {
+  addCourseGrade(input: $input) {
+    id
+  }
+}
+    `;
+
+export function useAddCourseGradeMutation() {
+  return Urql.useMutation<AddCourseGradeMutation, AddCourseGradeMutationVariables>(AddCourseGradeDocument);
+};
 export const DeleteAssignmentSubmissionDocument = gql`
     mutation DeleteAssignmentSubmission($id: ID!) {
   deleteAssignmentSubmission(id: $id)
@@ -3109,6 +3128,17 @@ export const UpdateAssignmentSubmissionDocument = gql`
 
 export function useUpdateAssignmentSubmissionMutation() {
   return Urql.useMutation<UpdateAssignmentSubmissionMutation, UpdateAssignmentSubmissionMutationVariables>(UpdateAssignmentSubmissionDocument);
+};
+export const UpdateCourseGradeDocument = gql`
+    mutation UpdateCourseGrade($id: ID!, $input: UpdateCourseGradeInput!) {
+  updateCourseGrade(id: $id, input: $input) {
+    id
+  }
+}
+    `;
+
+export function useUpdateCourseGradeMutation() {
+  return Urql.useMutation<UpdateCourseGradeMutation, UpdateCourseGradeMutationVariables>(UpdateCourseGradeDocument);
 };
 export const AssignmentsSubmissionDocument = gql`
     query AssignmentsSubmission($assignmentID: ID) {
@@ -3235,8 +3265,8 @@ export function useAllClassesQuery(options: Omit<Urql.UseQueryArgs<AllClassesQue
   return Urql.useQuery<AllClassesQuery>({ query: AllClassesDocument, ...options });
 };
 export const CourseGradesDocument = gql`
-    query CourseGrades($classID: ID) {
-  courseGrades(classID: $classID) {
+    query CourseGrades($studentID: ID, $classID: ID, $where: CourseGradeWhereInput) {
+  courseGrades(studentID: $studentID, classID: $classID, where: $where) {
     edges {
       node {
         ...CourseGrade

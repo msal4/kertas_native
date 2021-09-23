@@ -29,14 +29,10 @@ export interface ItemSelector {
   open: () => void;
 }
 
-const _ItemSelector = function <T extends string | number | symbol = string | number>(
-  { data, currentValue, onChange, maxHeight }: ItemSelectorProps<T>,
-  ref: any
-) {
+const _ItemSelector = function <T = string | number>({ data, currentValue, onChange, maxHeight }: ItemSelectorProps<T>, ref: any) {
   const { bottom } = useSafeAreaInsets();
   const bottomSheet = useRef<ScrollBottomSheet<Item<T>>>();
   const flatList = useRef<FlatList<Item<T>>>();
-  const itemPositions = useRef<Record<T, number>>({} as any);
 
   const close = () => bottomSheet.current?.snapTo(1);
   const open = () => {
@@ -94,10 +90,6 @@ const _ItemSelector = function <T extends string | number | symbol = string | nu
                 backgroundColor: isSelected ? "#a18cd1" : "white",
                 alignItems: "center",
                 borderRadius: 20,
-              }}
-              onLayout={(e) => {
-                const { layout } = e.nativeEvent;
-                itemPositions.current![item.value] = layout.y;
               }}
               onPress={() => {
                 onChange && onChange(item);

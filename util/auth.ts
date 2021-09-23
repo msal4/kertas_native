@@ -78,6 +78,7 @@ export const createAuthClient = () => {
           Query: {
             messages: relayPagination(),
             groups: relayPagination(),
+            courseGrades: relayPagination(),
           },
         },
       }),

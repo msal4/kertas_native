@@ -52,5 +52,9 @@
   "delete_file": "Delete File",
   "delete_file_assertion": "Are you sure you want to delete this file?",
   "marks": "Marks",
-  "current_year": "Current Year"
+  "current_year": "current year",
+  "first_month": "First Month",
+  "second_month": "Second Month",
+  "update": "Update",
+  "updated_successfully": "Successfully updated"
 }

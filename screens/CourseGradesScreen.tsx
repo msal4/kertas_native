@@ -1,6 +1,16 @@
 import * as React from "react";
 import { useState } from "react";
-import { StyleSheet, View, StatusBar, TouchableOpacity, Dimensions, TouchableWithoutFeedback } from "react-native";
+import {
+  StyleSheet,
+  Image,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  Dimensions,
+  TouchableWithoutFeedback,
+  TextInput,
+  KeyboardAvoidingView,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons as Icon, Ionicons } from "@expo/vector-icons";
 import { Touchable } from "../components/Touchable";
@@ -17,6 +27,9 @@ import {
   useAllClassesQuery,
   useClassStudentsQuery,
   UserFragment,
+  Course,
+  useAddCourseGradeMutation,
+  useUpdateCourseGradeMutation,
 } from "../generated/graphql";
 import { useMe } from "../hooks/useMe";
 import { useNavigation } from "@react-navigation/native";
@@ -26,6 +39,8 @@ import Years from "../constants/Years";
 import { ItemSelector } from "../components/ItemSelector";
 import { ValueOf } from "react-native-gesture-handler/lib/typescript/typeUtils";
 import getCurrentYear from "../util/getCurrentYear";
+import { showErrToast, showSuccessToast } from "../util/toast";
+import { cdnURL } from "../constants/Config";
 
 export default function CourseGradesScreen() {
   const { me } = useMe();
@@ -49,12 +64,14 @@ function _TeacherCourseGradesScreen() {
   const [currentClass, setCurrentClass] = useState<ClassMinimalFragment>();
   const [currentStudent, setCurrentStudent] = useState<UserFragment>();
   const [currentYear, setCurrentYear] = useState<Year>(thisYear);
+  const [currentCourse, setCurrentCourse] = useState(Course.First);
 
   const classes = classesRes.data?.classes.edges?.map((c) => c!.node!);
 
   const classSelector = React.useRef<ScrollBottomSheet<ClassMinimalFragment>>();
   const marksForm = React.useRef<ScrollBottomSheet<any>>();
   const yearSelector = React.useRef<ItemSelector>();
+  const courseSelector = React.useRef<ItemSelector>();
 
   React.useEffect(() => {
     if (!currentClass && classes && classes?.length) {
@@ -64,12 +81,16 @@ function _TeacherCourseGradesScreen() {
 
   const closeClassSelector = () => classSelector.current?.snapTo(2);
   const openClassSelector = () => {
+    courseSelector.current?.close();
+    yearSelector.current?.close();
     closeMarksForm();
     classSelector.current?.snapTo(1);
   };
 
   const closeMarksForm = () => marksForm.current?.snapTo(2);
   const openMarksForm = () => {
+    courseSelector.current?.close();
+    yearSelector.current?.close();
     closeClassSelector();
     marksForm.current?.snapTo(1);
   };
@@ -82,7 +103,7 @@ function _TeacherCourseGradesScreen() {
         yearSelector.current?.close();
       }}
     >
-      <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
+      <View behavior="padding" style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
         <StatusBar barStyle="dark-content" />
         <View
           style={{
@@ -140,6 +161,8 @@ function _TeacherCourseGradesScreen() {
             currentStudent={currentStudent}
             currentClass={currentClass}
             currentYear={currentYear}
+            currentCourse={currentCourse}
+            onCoursePress={() => courseSelector.current?.open()}
           />
         ) : null}
 
@@ -163,6 +186,18 @@ function _TeacherCourseGradesScreen() {
             setCurrentYear(item.value);
           }}
         />
+
+        <ItemSelector
+          ref={courseSelector}
+          data={[
+            { value: Course.First, title: t("first_course") },
+            { value: Course.Second, title: t("second_course") },
+          ]}
+          currentValue={currentCourse}
+          onChange={(item) => {
+            setCurrentCourse(item.value);
+          }}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -171,69 +206,252 @@ function _TeacherCourseGradesScreen() {
 interface MarksFormProps {
   currentClass: ClassMinimalFragment;
   currentStudent?: UserFragment;
-  currentYear?: ValueOf<typeof Years>;
+  currentYear: ValueOf<typeof Years>;
   onYearPress: () => void;
+  currentCourse: Course;
+  onCoursePress: () => void;
 }
 
-const MarksForm = React.forwardRef(({ currentClass, currentYear, onYearPress, currentStudent }: MarksFormProps, ref) => {
-  const { top, bottom } = useSafeAreaInsets();
-  const { t } = useTrans();
+const middlePoint = windowHeight >= 300 ? 300 : "40%";
 
-  return (
-    <ScrollBottomSheet<ClassMinimalFragment>
-      ref={ref as any}
-      componentType="ScrollView"
-      snapPoints={[top, "50%", windowHeight]}
-      initialSnapIndex={2}
-      renderHandle={() => (
-        <View
-          style={{
-            alignItems: "center",
-            backgroundColor: "#f4f4f4",
-            paddingVertical: 20,
-          }}
-        >
+const MarksForm = React.forwardRef(
+  ({ currentClass, currentStudent, currentYear, onYearPress, currentCourse, onCoursePress }: MarksFormProps, ref) => {
+    const { top, bottom } = useSafeAreaInsets();
+    const { t, isRTL } = useTrans();
+
+    const [res, refetch] = useCourseGradesQuery({
+      variables: {
+        classID: currentClass.id,
+        studentID: currentStudent?.id,
+        where: { year: currentYear?.toString(), course: currentCourse },
+      },
+    });
+
+    const [, addGrade] = useAddCourseGradeMutation();
+    const [, updateGrade] = useUpdateCourseGradeMutation();
+
+    const hasGrade = !!res.data?.courseGrades.totalCount;
+    const grade = res.data?.courseGrades?.edges![0];
+
+    const [writtenFirst, setWrittenFirst] = useState<string | null | undefined>();
+    const [writtenSecond, setWrittenSecond] = useState<string | null | undefined>();
+    const [activityFirst, setActivityFirst] = useState<string | null | undefined>();
+    const [activitySecond, setActivitySecond] = useState<string | null | undefined>();
+    const [final, setFinal] = useState<string | null | undefined>();
+
+    React.useEffect(() => {
+      const n = grade?.node!;
+      setWrittenFirst(n?.writtenFirst?.toString());
+      setActivityFirst(n?.activityFirst?.toString());
+      setWrittenSecond(n?.writtenSecond?.toString());
+      setActivitySecond(n?.activitySecond?.toString());
+      setFinal(n?.courseFinal?.toString());
+    }, [grade?.node?.id]);
+
+    const open = () => (ref as any).current?.snapTo(0);
+
+    return (
+      <ScrollBottomSheet<ClassMinimalFragment>
+        ref={ref as any}
+        componentType="ScrollView"
+        snapPoints={[top, middlePoint, windowHeight]}
+        initialSnapIndex={2}
+        renderHandle={() => (
           <View
             style={{
-              width: 40,
-              height: 4,
-              backgroundColor: "rgba(0,0,0,0.2)",
-              borderRadius: 4,
-            }}
-          />
-        </View>
-      )}
-      containerStyle={{
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        paddingBottom: bottom,
-        backgroundColor: "#f4f4f4",
-        overflow: "hidden",
-      }}
-    >
-      {currentStudent && (
-        <View style={{ paddingHorizontal: 20 }}>
-          <KText style={{ textAlign: "center", marginBottom: 15, fontSize: 18, color: "#393939" }}>{currentStudent.name}</KText>
-
-          <Touchable
-            style={{
-              flexDirection: "row",
               alignItems: "center",
-              justifyContent: "space-between",
-              backgroundColor: "#fff",
-              padding: 20,
-              borderRadius: 15,
+              backgroundColor: "#f4f4f4",
+              paddingVertical: 20,
             }}
-            onPress={onYearPress}
           >
-            <KText>{currentYear ?? t("current_year")}</KText>
-            <Ionicons name="chevron-down" size={15} />
-          </Touchable>
-        </View>
-      )}
-    </ScrollBottomSheet>
-  );
-});
+            <View
+              style={{
+                width: 40,
+                height: 4,
+                backgroundColor: "rgba(0,0,0,0.2)",
+                borderRadius: 4,
+              }}
+            />
+          </View>
+        )}
+        containerStyle={{
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+          paddingBottom: bottom,
+          backgroundColor: "#f4f4f4",
+          overflow: "hidden",
+        }}
+      >
+        {currentStudent && (
+          <View style={{ paddingHorizontal: 20 }}>
+            <KText style={{ textAlign: "center", marginBottom: 15, fontSize: 18, color: "#393939" }}>{currentStudent.name}</KText>
+
+            <Touchable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                backgroundColor: "#fff",
+                padding: 20,
+                marginBottom: 20,
+                borderRadius: 15,
+              }}
+              onPress={onYearPress}
+            >
+              <KText>
+                {currentYear} {currentYear === thisYear ? "(" + t("current_year") + ")" : ""}
+              </KText>
+              <Ionicons name="chevron-down" size={15} />
+            </Touchable>
+
+            <Touchable
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                backgroundColor: "#fff",
+                padding: 20,
+                borderRadius: 15,
+              }}
+              onPress={onCoursePress}
+            >
+              <KText>{t(currentCourse === Course.First ? "first_course" : "second_course")}</KText>
+              <Ionicons name="chevron-down" size={15} />
+            </Touchable>
+
+            <View style={{ marginTop: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
+              <KText>{t("first_month")}</KText>
+              <KText>{t("second_month")}</KText>
+            </View>
+
+            <View style={{ marginTop: 5, flexDirection: "row", alignItems: "center" }}>
+              <View style={{ alignItems: "center", marginRight: 10, flex: 1 }}>
+                <KText style={{ marginBottom: 5 }}>{t("a")}</KText>
+                <TextInput
+                  value={activityFirst?.toString()}
+                  onChangeText={(v) => setActivityFirst(v)}
+                  onFocus={open}
+                  keyboardType="numeric"
+                  style={{
+                    textAlign: "center",
+                    padding: 20,
+                    borderRadius: 15,
+                    backgroundColor: "white",
+                    width: "100%",
+                  }}
+                />
+              </View>
+              <View style={{ alignItems: "center", marginRight: 10, flex: 1 }}>
+                <KText style={{ marginBottom: 5 }}>{t("w")}</KText>
+                <TextInput
+                  value={writtenFirst?.toString()}
+                  onChangeText={(v) => setWrittenFirst(v)}
+                  keyboardType="numeric"
+                  onFocus={open}
+                  style={{
+                    textAlign: "center",
+                    padding: 20,
+                    borderRadius: 15,
+                    backgroundColor: "white",
+                    width: "100%",
+                  }}
+                />
+              </View>
+              <View style={{ alignItems: "center", marginRight: 10, flex: 1 }}>
+                <KText style={{ marginBottom: 5 }}>{t("a")}</KText>
+                <TextInput
+                  value={activitySecond?.toString()}
+                  onChangeText={(v) => setActivitySecond(v)}
+                  keyboardType="numeric"
+                  onFocus={open}
+                  style={{
+                    textAlign: "center",
+                    width: "100%",
+                    padding: 20,
+                    borderRadius: 15,
+                    backgroundColor: "white",
+                  }}
+                />
+              </View>
+              <View style={{ alignItems: "center", flex: 1 }}>
+                <KText style={{ marginBottom: 5 }}>{t("w")}</KText>
+                <TextInput
+                  value={writtenSecond?.toString()}
+                  onChangeText={(v) => setWrittenSecond(v)}
+                  keyboardType="numeric"
+                  onFocus={open}
+                  style={{
+                    textAlign: "center",
+                    width: "100%",
+                    padding: 20,
+                    borderRadius: 15,
+                    backgroundColor: "white",
+                  }}
+                />
+              </View>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+              <KText style={{ marginRight: 10 }}>{t("course_final")[0].toUpperCase() + t("course_final").substr(1)}</KText>
+              <TextInput
+                value={final?.toString()}
+                onChangeText={(v) => setFinal(v)}
+                keyboardType="numeric"
+                onFocus={open}
+                style={{
+                  textAlign: "center",
+                  flex: 1,
+                  padding: 20,
+                  borderRadius: 15,
+                  backgroundColor: "white",
+                }}
+              />
+            </View>
+            <Touchable
+              style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#a18cd1" }}
+              onPress={async () => {
+                const input = {
+                  activitySecond: !Number.isNaN(parseInt(activitySecond ?? "")) ? parseInt(activitySecond!) : null,
+                  activityFirst: !Number.isNaN(parseInt(activityFirst ?? "")) ? parseInt(activityFirst!) : null,
+                  writtenSecond: !Number.isNaN(parseInt(writtenSecond ?? "")) ? parseInt(writtenSecond!) : null,
+                  writtenFirst: !Number.isNaN(parseInt(writtenFirst ?? "")) ? parseInt(writtenFirst!) : null,
+                  courseFinal: !Number.isNaN(parseInt(final ?? "")) ? parseInt(final!) : null,
+                };
+
+                if (hasGrade) {
+                  const resp = await updateGrade({ id: grade?.node?.id!, input });
+
+                  if (resp.error) {
+                    showErrToast(t("something_went_wrong"));
+                    return;
+                  }
+                } else {
+                  const resp = await addGrade({
+                    input: {
+                      ...input,
+                      classID: currentClass.id,
+                      studentID: currentStudent.id,
+                      course: currentCourse,
+                      year: currentYear.toString(),
+                    },
+                  });
+
+                  if (resp.error) {
+                    showErrToast(t("something_went_wrong"));
+                    return;
+                  }
+                }
+
+                showSuccessToast(t("updated_successfully"));
+              }}
+            >
+              <KText style={{ color: "#fff", textAlign: "center" }}>{t("update")}</KText>
+            </Touchable>
+          </View>
+        )}
+      </ScrollBottomSheet>
+    );
+  }
+);
 
 interface ClassSelectorProps {
   classes: ClassMinimalFragment[];
@@ -333,7 +551,11 @@ function StudentList({ classID, onSelect }: { classID: string; onSelect: (studen
         <View style={{ margin: 5, marginHorizontal: 20, borderBottomColor: "#9a9a9a44", borderBottomWidth: 1 }} />
       )}
       renderItem={({ item }) => (
-        <Touchable onPress={() => onSelect(item)} style={{ padding: 20 }}>
+        <Touchable onPress={() => onSelect(item)} style={{ flexDirection: "row", alignItems: "center", padding: 20 }}>
+          <Image
+            source={{ uri: `${cdnURL}/${item.image}` }}
+            style={{ overflow: "hidden", borderRadius: 100, height: 40, width: 40, marginRight: 10 }}
+          />
           <KText>{item.name}</KText>
         </Touchable>
       )}

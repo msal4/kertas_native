@@ -1,0 +1,5 @@
+mutation AddCourseGrade($input: AddCourseGradeInput!) {
+  addCourseGrade(input: $input) {
+    id
+  }
+}

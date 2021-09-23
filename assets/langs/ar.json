@@ -52,5 +52,9 @@
   "delete_file": "مسح الملف",
   "delete_file_assertion": "هل انت متأكد انك تريد مسح الملف؟",
   "marks": "الدرجات",
-  "current_year": "السنة الدراسية الحالية"
+  "current_year": "السنة الدراسية الحالية",
+  "first_month": "الشهر الاول",
+  "second_month": "الشهر الثاني",
+  "update": "تحديث",
+  "updated_successfully": "تم التحديث بنجاح"
 }
