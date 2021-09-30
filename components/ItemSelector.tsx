@@ -34,14 +34,17 @@ const _ItemSelector = function <T = string | number>({ data, currentValue, onCha
   const bottomSheet = useRef<ScrollBottomSheet<Item<T>>>();
   const flatList = useRef<FlatList<Item<T>>>();
 
-  const close = () => bottomSheet.current?.snapTo(1);
+  useImperativeHandle(ref, () => ({ close, open }));
+
+  const close = () => {
+    bottomSheet.current?.snapTo(1);
+  };
+
   const open = () => {
     bottomSheet.current?.snapTo(0);
     const currentItem = data.find((i) => i.value === currentValue);
     if (currentItem) flatList.current?.scrollToItem({ item: currentItem, animated: true });
   };
-
-  useImperativeHandle(ref, () => ({ close, open }));
 
   return (
     <>

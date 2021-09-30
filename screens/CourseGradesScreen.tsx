@@ -68,7 +68,7 @@ function _TeacherCourseGradesScreen() {
 
   const classes = classesRes.data?.classes.edges?.map((c) => c!.node!);
 
-  const classSelector = React.useRef<ScrollBottomSheet<ClassMinimalFragment>>();
+  const classSelector = React.useRef<ItemSelector>();
   const marksForm = React.useRef<ScrollBottomSheet<any>>();
   const yearSelector = React.useRef<ItemSelector>();
   const courseSelector = React.useRef<ItemSelector>();
@@ -79,31 +79,30 @@ function _TeacherCourseGradesScreen() {
     }
   }, [classes]);
 
-  const closeClassSelector = () => classSelector.current?.snapTo(2);
   const openClassSelector = () => {
     courseSelector.current?.close();
     yearSelector.current?.close();
     closeMarksForm();
-    classSelector.current?.snapTo(1);
+    classSelector.current?.open();
   };
 
   const closeMarksForm = () => marksForm.current?.snapTo(2);
   const openMarksForm = () => {
     courseSelector.current?.close();
     yearSelector.current?.close();
-    closeClassSelector();
+    classSelector.current?.close();
     marksForm.current?.snapTo(1);
   };
 
   return (
     <TouchableWithoutFeedback
       onPress={() => {
-        closeClassSelector();
+        classSelector.current?.close();
         closeMarksForm();
         yearSelector.current?.close();
       }}
     >
-      <View behavior="padding" style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
+      <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
         <StatusBar barStyle="dark-content" />
         <View
           style={{
@@ -167,13 +166,13 @@ function _TeacherCourseGradesScreen() {
         ) : null}
 
         {classes ? (
-          <ClassSelector
+          <ItemSelector
             ref={classSelector}
-            classes={classes}
-            currentClass={currentClass}
+            data={classes.map((c) => ({ title: c.name, value: c.id, subtitle: c.stage.name }))}
+            currentValue={currentClass?.id}
             onChange={(item) => {
-              setCurrentClass(item);
-              closeClassSelector();
+              setCurrentClass(classes.find((c) => c.id === item.value));
+              classSelector.current?.close();
             }}
           />
         ) : null}
@@ -212,12 +211,12 @@ interface MarksFormProps {
   onCoursePress: () => void;
 }
 
-const middlePoint = windowHeight >= 300 ? 300 : "40%";
+const middlePoint = windowHeight >= 800 ? 250 : "20%";
 
 const MarksForm = React.forwardRef(
   ({ currentClass, currentStudent, currentYear, onYearPress, currentCourse, onCoursePress }: MarksFormProps, ref) => {
     const { top, bottom } = useSafeAreaInsets();
-    const { t, isRTL } = useTrans();
+    const { t } = useTrans();
 
     const [res, refetch] = useCourseGradesQuery({
       variables: {
@@ -452,76 +451,6 @@ const MarksForm = React.forwardRef(
     );
   }
 );
-
-interface ClassSelectorProps {
-  classes: ClassMinimalFragment[];
-  currentClass?: ClassMinimalFragment;
-  onChange?: (cls: ClassMinimalFragment) => void;
-}
-
-const ClassSelector = React.forwardRef(({ classes, currentClass, onChange }: ClassSelectorProps, ref) => {
-  const { top, bottom } = useSafeAreaInsets();
-
-  return (
-    <ScrollBottomSheet<ClassMinimalFragment>
-      ref={ref as any}
-      componentType="FlatList"
-      snapPoints={[top, "50%", windowHeight]}
-      initialSnapIndex={2}
-      renderHandle={() => (
-        <View
-          style={{
-            alignItems: "center",
-            backgroundColor: "#f4f4f4",
-            paddingVertical: 20,
-          }}
-        >
-          <View
-            style={{
-              width: 40,
-              height: 4,
-              backgroundColor: "rgba(0,0,0,0.2)",
-              borderRadius: 4,
-            }}
-          />
-        </View>
-      )}
-      containerStyle={{
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        paddingBottom: bottom,
-        backgroundColor: "#f4f4f4",
-        overflow: "hidden",
-      }}
-      data={classes}
-      keyExtractor={(c) => c?.id || ""}
-      ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-      renderItem={({ item }: any) => {
-        const isSelected = currentClass?.id === item.id;
-        return (
-          <Touchable
-            style={{
-              flexDirection: "row",
-              padding: 20,
-              backgroundColor: isSelected ? "#a18cd1" : "white",
-              alignItems: "center",
-              borderRadius: 20,
-            }}
-            onPress={() => {
-              onChange && onChange(item);
-            }}
-          >
-            <KText numberOfLines={1} style={{ color: isSelected ? "#fff" : undefined, flex: 1, marginRight: 5 }}>
-              {item.name}
-            </KText>
-            <KText style={{ color: isSelected ? "#f4f4f4" : "#9a9a9a" }}>{item.stage.name}</KText>
-          </Touchable>
-        );
-      }}
-      contentContainerStyle={{ backgroundColor: "#f4f4f4", padding: 16 }}
-    />
-  );
-});
 
 function StudentList({ classID, onSelect }: { classID: string; onSelect: (student: UserFragment) => void }) {
   const after = React.useRef<string>();
