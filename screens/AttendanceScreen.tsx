@@ -123,8 +123,12 @@ export function AttendanceScreen({ navigation }: RootStackScreenProps<"Attendanc
 }
 
 function AttendanceList({ date }: { date: Date }) {
+  const d = dayjs(dayjs(date).format("YYYY-MM-DD"));
+
   const after = useRef<any>();
-  const [res, refetch] = useAttendancesQuery({ variables: { after: after.current, where: { date } } });
+  const [res, refetch] = useAttendancesQuery({
+    variables: { after: after.current, where: { dateGT: dayjs(d).toDate(), dateLT: dayjs(date).add(1, "day").toDate() } },
+  });
   const { bottom, right, left } = useSafeAreaInsets();
 
   return (
