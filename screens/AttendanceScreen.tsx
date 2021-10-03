@@ -8,9 +8,10 @@ import { KText } from "../components/KText";
 import { RootStackScreenProps } from "../types";
 import { Touchable } from "../components/Touchable";
 import { useTrans } from "../context/trans";
-import { AttendanceFragment, AttendanceState, useAttendancesQuery } from "../generated/graphql";
+import { AttendanceFragment, AttendanceState, ClassMinimalFragment, useAllClassesQuery, useAttendancesQuery } from "../generated/graphql";
 import { Error } from "../components/Error";
 import { useNavigation } from "@react-navigation/native";
+import { ItemSelector } from "../components/ItemSelector";
 
 export function AttendanceScreen({ navigation }: RootStackScreenProps<"Attendance">) {
   const { t, locale, isRTL } = useTrans();
@@ -125,6 +126,17 @@ export function AttendanceScreen({ navigation }: RootStackScreenProps<"Attendanc
 function AttendanceList({ date }: { date: Date }) {
   const d = dayjs(dayjs(date).format("YYYY-MM-DD"));
 
+  const [classesRes] = useAllClassesQuery();
+  const [currentClass, setCurrentClass] = useState<ClassMinimalFragment>();
+  const classes = classesRes.data?.classes.edges?.map((c) => c!.node!);
+  const classSelector = React.useRef<ItemSelector>();
+
+  React.useEffect(() => {
+    if (!currentClass && classes && classes?.length) {
+      setCurrentClass(classes![0]);
+    }
+  }, [classes]);
+
   const after = useRef<any>();
   const [res, refetch] = useAttendancesQuery({
     variables: { after: after.current, where: { dateGT: dayjs(d).toDate(), dateLT: dayjs(date).add(1, "day").toDate() } },
@@ -158,6 +170,17 @@ function AttendanceList({ date }: { date: Date }) {
       ) : (
         <View style={{ flex: 1 }} />
       )}
+      {classes ? (
+        <ItemSelector
+          ref={classSelector}
+          data={classes.map((c) => ({ title: c.name, value: c.id, subtitle: c.stage.name }))}
+          currentValue={currentClass?.id}
+          onChange={(item) => {
+            setCurrentClass(classes.find((c) => c.id === item.value));
+            classSelector.current?.close();
+          }}
+        />
+      ) : null}
     </>
   );
 }

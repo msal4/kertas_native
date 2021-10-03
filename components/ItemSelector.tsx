@@ -1,5 +1,5 @@
-import React, { forwardRef, useImperativeHandle, useRef } from "react";
-import { View, Dimensions } from "react-native";
+import React, { forwardRef, useImperativeHandle, useRef, useState } from "react";
+import { View, Dimensions, TouchableWithoutFeedback } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
@@ -33,14 +33,17 @@ const _ItemSelector = function <T = string | number>({ data, currentValue, onCha
   const { bottom } = useSafeAreaInsets();
   const bottomSheet = useRef<ScrollBottomSheet<Item<T>>>();
   const flatList = useRef<FlatList<Item<T>>>();
+  const [isBGShown, setIsBGShown] = useState(false);
 
   useImperativeHandle(ref, () => ({ close, open }));
 
   const close = () => {
+    setIsBGShown(false);
     bottomSheet.current?.snapTo(1);
   };
 
   const open = () => {
+    setIsBGShown(true);
     bottomSheet.current?.snapTo(0);
     const currentItem = data.find((i) => i.value === currentValue);
     if (currentItem) flatList.current?.scrollToItem({ item: currentItem, animated: true });
@@ -48,6 +51,11 @@ const _ItemSelector = function <T = string | number>({ data, currentValue, onCha
 
   return (
     <>
+      {isBGShown ? (
+        <TouchableWithoutFeedback onPress={close}>
+          <View style={{ backgroundColor: "black", position: "absolute", top: 0, bottom: 0, left: 0, right: 0, opacity: 0.3 }} />
+        </TouchableWithoutFeedback>
+      ) : null}
       <ScrollBottomSheet
         ref={bottomSheet as any}
         componentType="FlatList"
@@ -71,6 +79,9 @@ const _ItemSelector = function <T = string | number>({ data, currentValue, onCha
             />
           </View>
         )}
+        onSettle={(snap) => {
+          setIsBGShown(snap === 0);
+        }}
         containerStyle={{
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
