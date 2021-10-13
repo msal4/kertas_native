@@ -10,3 +10,14 @@ fragment Attendance on Attendance {
     }
   }
 }
+
+fragment AttendanceWithStudent on Attendance {
+  id
+  date
+  state
+  student {
+    id
+    name
+    image
+  }
+}

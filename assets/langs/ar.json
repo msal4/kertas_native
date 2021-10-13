@@ -46,7 +46,7 @@
   "confirm": "تأكيد",
   "absent": "غائب",
   "sick": "اجازة مرضية",
-  "excused_absent": "غياب مرخص",
+  "excused_absence": "غياب مرخص",
   "present": "حاضر",
   "retry": "اعادة المحاولة",
   "delete_file": "مسح الملف",
@@ -56,5 +56,7 @@
   "first_month": "الشهر الاول",
   "second_month": "الشهر الثاني",
   "update": "تحديث",
-  "updated_successfully": "تم التحديث بنجاح"
+  "updated_successfully": "تم التحديث بنجاح",
+  "add": "اضافة",
+  "student": "الطالب"
 }

@@ -421,7 +421,7 @@ export enum AttendanceOrderField {
 export enum AttendanceState {
   Present = 'PRESENT',
   Absent = 'ABSENT',
-  ExcusedAbsent = 'EXCUSED_ABSENT',
+  ExcusedAbsence = 'EXCUSED_ABSENCE',
   Sick = 'SICK'
 }
 
@@ -2670,6 +2670,8 @@ export type AssignmentSubmissionFragment = { __typename?: 'AssignmentSubmission'
 
 export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string, group: { __typename?: 'Group', id: string } } };
 
+export type AttendanceWithStudentFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, student: { __typename?: 'User', id: string, name: string, image: string } };
+
 export type ClassMinimalFragment = { __typename?: 'Class', id: string, name: string, stage: { __typename?: 'Stage', id: string, name: string } };
 
 export type ClassFragment = { __typename?: 'Class', id: string, name: string, active: boolean, createdAt: any, updatedAt: any, teacher: { __typename?: 'User', id: string, name: string } };
@@ -2696,6 +2698,13 @@ export type AddAssignmentSubmissionMutationVariables = Exact<{
 
 
 export type AddAssignmentSubmissionMutation = { __typename?: 'Mutation', addAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any } };
+
+export type AddAttendanceMutationVariables = Exact<{
+  input: AddAttendanceInput;
+}>;
+
+
+export type AddAttendanceMutation = { __typename?: 'Mutation', addAttendance: { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, student: { __typename?: 'User', id: string, name: string, image: string } } };
 
 export type AddCourseGradeMutationVariables = Exact<{
   input: AddCourseGradeInput;
@@ -2750,6 +2759,14 @@ export type UpdateAssignmentSubmissionMutationVariables = Exact<{
 
 export type UpdateAssignmentSubmissionMutation = { __typename?: 'Mutation', updateAssignmentSubmission: { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any } };
 
+export type UpdateAttendanceMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: UpdateAttendanceInput;
+}>;
+
+
+export type UpdateAttendanceMutation = { __typename?: 'Mutation', updateAttendance: { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, student: { __typename?: 'User', id: string, name: string, image: string } } };
+
 export type UpdateCourseGradeMutationVariables = Exact<{
   id: Scalars['ID'];
   input: UpdateCourseGradeInput;
@@ -2779,6 +2796,15 @@ export type AttendancesQueryVariables = Exact<{
 
 
 export type AttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string, group: { __typename?: 'Group', id: string } } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
+
+export type StudentsAttendancesQueryVariables = Exact<{
+  classID: Scalars['ID'];
+  after?: Maybe<Scalars['Cursor']>;
+  where?: Maybe<AttendanceWhereInput>;
+}>;
+
+
+export type StudentsAttendancesQuery = { __typename?: 'Query', attendances: { __typename?: 'AttendanceConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'AttendanceEdge', node?: Maybe<{ __typename?: 'Attendance', id: string, date: any, state: AttendanceState, student: { __typename?: 'User', id: string, name: string, image: string } }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
 
 export type ClassStudentsQueryVariables = Exact<{
   classID: Scalars['ID'];
@@ -2860,6 +2886,11 @@ export type StagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type StagesQuery = { __typename?: 'Query', stages: { __typename?: 'StageConnection', totalCount: number, edges?: Maybe<Array<Maybe<{ __typename?: 'StageEdge', node?: Maybe<{ __typename?: 'Stage', id: string }> }>>> } };
 
+export type StudentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StudentsQuery = { __typename?: 'Query', users: { __typename?: 'UserConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'UserEdge', node?: Maybe<{ __typename?: 'User', id: string, name: string, image: string }> }>>>, pageInfo: { __typename?: 'PageInfo', hasNextPage: boolean, endCursor?: Maybe<any> } } };
+
 export type MessagePostedSubscriptionVariables = Exact<{
   groupID: Scalars['ID'];
 }>;
@@ -2903,6 +2934,18 @@ export const AttendanceFragmentDoc = gql`
     group {
       id
     }
+  }
+}
+    `;
+export const AttendanceWithStudentFragmentDoc = gql`
+    fragment AttendanceWithStudent on Attendance {
+  id
+  date
+  state
+  student {
+    id
+    name
+    image
   }
 }
     `;
@@ -3047,6 +3090,17 @@ export const AddAssignmentSubmissionDocument = gql`
 export function useAddAssignmentSubmissionMutation() {
   return Urql.useMutation<AddAssignmentSubmissionMutation, AddAssignmentSubmissionMutationVariables>(AddAssignmentSubmissionDocument);
 };
+export const AddAttendanceDocument = gql`
+    mutation AddAttendance($input: AddAttendanceInput!) {
+  addAttendance(input: $input) {
+    ...AttendanceWithStudent
+  }
+}
+    ${AttendanceWithStudentFragmentDoc}`;
+
+export function useAddAttendanceMutation() {
+  return Urql.useMutation<AddAttendanceMutation, AddAttendanceMutationVariables>(AddAttendanceDocument);
+};
 export const AddCourseGradeDocument = gql`
     mutation AddCourseGrade($input: AddCourseGradeInput!) {
   addCourseGrade(input: $input) {
@@ -3129,6 +3183,17 @@ export const UpdateAssignmentSubmissionDocument = gql`
 export function useUpdateAssignmentSubmissionMutation() {
   return Urql.useMutation<UpdateAssignmentSubmissionMutation, UpdateAssignmentSubmissionMutationVariables>(UpdateAssignmentSubmissionDocument);
 };
+export const UpdateAttendanceDocument = gql`
+    mutation UpdateAttendance($id: ID!, $input: UpdateAttendanceInput!) {
+  updateAttendance(id: $id, input: $input) {
+    ...AttendanceWithStudent
+  }
+}
+    ${AttendanceWithStudentFragmentDoc}`;
+
+export function useUpdateAttendanceMutation() {
+  return Urql.useMutation<UpdateAttendanceMutation, UpdateAttendanceMutationVariables>(UpdateAttendanceDocument);
+};
 export const UpdateCourseGradeDocument = gql`
     mutation UpdateCourseGrade($id: ID!, $input: UpdateCourseGradeInput!) {
   updateCourseGrade(id: $id, input: $input) {
@@ -3182,7 +3247,7 @@ export function useAssignmentsQuery(options: Omit<Urql.UseQueryArgs<AssignmentsQ
 };
 export const AttendancesDocument = gql`
     query Attendances($after: Cursor, $where: AttendanceWhereInput) {
-  attendances(after: $after, where: $where) {
+  attendances(first: 300, after: $after, where: $where) {
     edges {
       node {
         ...Attendance
@@ -3199,6 +3264,26 @@ export const AttendancesDocument = gql`
 
 export function useAttendancesQuery(options: Omit<Urql.UseQueryArgs<AttendancesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<AttendancesQuery>({ query: AttendancesDocument, ...options });
+};
+export const StudentsAttendancesDocument = gql`
+    query StudentsAttendances($classID: ID!, $after: Cursor, $where: AttendanceWhereInput) {
+  attendances(first: 300, classID: $classID, after: $after, where: $where) {
+    edges {
+      node {
+        ...AttendanceWithStudent
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+    ${AttendanceWithStudentFragmentDoc}`;
+
+export function useStudentsAttendancesQuery(options: Omit<Urql.UseQueryArgs<StudentsAttendancesQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<StudentsAttendancesQuery>({ query: StudentsAttendancesDocument, ...options });
 };
 export const ClassStudentsDocument = gql`
     query ClassStudents($classID: ID!, $after: Cursor) {
@@ -3444,6 +3529,25 @@ export const StagesDocument = gql`
 
 export function useStagesQuery(options: Omit<Urql.UseQueryArgs<StagesQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<StagesQuery>({ query: StagesDocument, ...options });
+};
+export const StudentsDocument = gql`
+    query Students {
+  users(first: 400, where: {role: STUDENT}) {
+    edges {
+      node {
+        ...User
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+    ${UserFragmentDoc}`;
+
+export function useStudentsQuery(options: Omit<Urql.UseQueryArgs<StudentsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<StudentsQuery>({ query: StudentsDocument, ...options });
 };
 export const MessagePostedDocument = gql`
     subscription MessagePosted($groupID: ID!) {

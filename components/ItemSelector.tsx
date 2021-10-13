@@ -18,6 +18,8 @@ interface ItemSelectorProps<T> {
   currentValue?: T;
   onChange?: (item: Item<T>) => void;
   maxHeight?: string | number;
+  itemBackground?: (value: T) => string;
+  titleColor?: (value: T) => string;
 }
 
 const windowHeight = Dimensions.get("window").height;
@@ -29,7 +31,10 @@ export interface ItemSelector {
   open: () => void;
 }
 
-const _ItemSelector = function <T = string | number>({ data, currentValue, onChange, maxHeight }: ItemSelectorProps<T>, ref: any) {
+const _ItemSelector = function <T = string | number>(
+  { data, currentValue, onChange, maxHeight, titleColor, itemBackground }: ItemSelectorProps<T>,
+  ref: any
+) {
   const { bottom } = useSafeAreaInsets();
   const bottomSheet = useRef<ScrollBottomSheet<Item<T>>>();
   const flatList = useRef<FlatList<Item<T>>>();
@@ -53,7 +58,17 @@ const _ItemSelector = function <T = string | number>({ data, currentValue, onCha
     <>
       {isBGShown ? (
         <TouchableWithoutFeedback onPress={close}>
-          <View style={{ backgroundColor: "black", position: "absolute", top: 0, bottom: 0, left: 0, right: 0, opacity: 0.3 }} />
+          <View
+            style={{
+              backgroundColor: "black",
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              opacity: 0.3,
+            }}
+          />
         </TouchableWithoutFeedback>
       ) : null}
       <ScrollBottomSheet
@@ -101,7 +116,11 @@ const _ItemSelector = function <T = string | number>({ data, currentValue, onCha
               style={{
                 flexDirection: "row",
                 padding: 20,
-                backgroundColor: isSelected ? "#a18cd1" : "white",
+                backgroundColor: isSelected
+                  ? itemBackground
+                    ? itemBackground(item.value)
+                    : "#a18cd1"
+                  : "white",
                 alignItems: "center",
                 borderRadius: 20,
               }}
@@ -110,10 +129,19 @@ const _ItemSelector = function <T = string | number>({ data, currentValue, onCha
                 close();
               }}
             >
-              <KText numberOfLines={1} style={{ color: isSelected ? "#fff" : undefined, flex: 1, marginRight: 5 }}>
+              <KText
+                numberOfLines={1}
+                style={{
+                  color: !isSelected ? (titleColor ? titleColor(item.value) : undefined) : "#fff",
+                  flex: 1,
+                  marginRight: 5,
+                }}
+              >
                 {item.title}
               </KText>
-              {item.subtitle ? <KText style={{ color: isSelected ? "#f4f4f4" : "#9a9a9a" }}>{item.subtitle}</KText> : null}
+              {item.subtitle ? (
+                <KText style={{ color: isSelected ? "#f4f4f4" : "#9a9a9a" }}>{item.subtitle}</KText>
+              ) : null}
             </Touchable>
           );
         }}

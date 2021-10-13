@@ -1,0 +1,13 @@
+query Students {
+  users(first: 400, where: { role: STUDENT }) {
+    edges {
+      node {
+        ...User
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

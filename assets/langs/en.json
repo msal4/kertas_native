@@ -46,7 +46,7 @@
   "confirm": "Confirm",
   "absent": "Absent",
   "sick": "Sick",
-  "excused_absent": "Excused Absent",
+  "excused_absence": "Excused Absence",
   "present": "Present",
   "retry": "Retry",
   "delete_file": "Delete File",
@@ -56,5 +56,7 @@
   "first_month": "First Month",
   "second_month": "Second Month",
   "update": "Update",
-  "updated_successfully": "Successfully updated"
+  "updated_successfully": "Successfully updated",
+  "add": "Add",
+  "student": "Student"
 }

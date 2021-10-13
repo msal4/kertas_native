@@ -1,8 +1,23 @@
 query Attendances ($after: Cursor, $where: AttendanceWhereInput) {
-  attendances (after: $after, where: $where) {
+  attendances (first: 300, after: $after, where: $where) {
     edges {
       node {
       	...Attendance
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    totalCount
+  }
+}
+
+query StudentsAttendances ($classID: ID!, $after: Cursor, $where: AttendanceWhereInput) {
+  attendances (first: 300, classID: $classID, after: $after, where: $where) {
+    edges {
+      node {
+      	...AttendanceWithStudent
       }
     }
     pageInfo {

@@ -1,0 +1,5 @@
+mutation AddAttendance($input: AddAttendanceInput!) {
+  addAttendance(input: $input) {
+    ...AttendanceWithStudent
+  }
+}

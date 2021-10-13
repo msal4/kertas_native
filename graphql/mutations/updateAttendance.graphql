@@ -1,0 +1,5 @@
+mutation UpdateAttendance($id: ID!, $input: UpdateAttendanceInput!) {
+  updateAttendance(id: $id, input: $input) {
+    ...AttendanceWithStudent
+  }
+}
