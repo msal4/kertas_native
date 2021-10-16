@@ -10,7 +10,7 @@ function _DatePicker(props) {
     <DateTimePicker
       testID="dateTimePicker"
       value={props.selectedDate ?? new Date()}
-      mode={"date"}
+      mode={props.mode ?? "date"}
       display={Platform.OS === "ios" ? "spinner" : "calendar"}
       onChange={(e, date) => {
         if (Platform.OS === "android") {
@@ -30,7 +30,14 @@ export default function DatePicker(props: any) {
   const color = useColorScheme();
 
   if (Platform.OS === "android" && props.showed) {
-    return <_DatePicker onChange={props.onChange} onDismiss={props.onDismiss} selectedDate={selectedDate} />;
+    return (
+      <_DatePicker
+        mode={props.mode}
+        onChange={props.onChange}
+        onDismiss={props.onDismiss}
+        selectedDate={selectedDate}
+      />
+    );
   }
 
   return (
@@ -43,11 +50,21 @@ export default function DatePicker(props: any) {
       visible={props.showed}
       onDismiss={props.onDismiss}
     >
-      <_DatePicker setSelectedDate={setSelectedDate} selectedDate={selectedDate} />
+      <_DatePicker
+        mode={props.mode}
+        setSelectedDate={setSelectedDate}
+        selectedDate={selectedDate}
+      />
       <View style={{ flexDirection: "row", paddingHorizontal: 20, paddingBottom: 18 }}>
         <View style={{ flex: 1 }} />
         <Touchable
-          style={{ backgroundColor: "#f4f4f4", borderRadius: 5, marginRight: 10, paddingVertical: 10, paddingHorizontal: 20 }}
+          style={{
+            backgroundColor: "#f4f4f4",
+            borderRadius: 5,
+            marginRight: 10,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+          }}
           onPress={() => {
             props.onDismiss();
           }}
@@ -55,7 +72,12 @@ export default function DatePicker(props: any) {
           <Text>{t("cancel")}</Text>
         </Touchable>
         <Touchable
-          style={{ backgroundColor: "#a18cd1", paddingVertical: 10, paddingHorizontal: 35, borderRadius: 5 }}
+          style={{
+            backgroundColor: "#a18cd1",
+            paddingVertical: 10,
+            paddingHorizontal: 35,
+            borderRadius: 5,
+          }}
           onPress={() => {
             props.onChange(selectedDate);
             props.onDismiss();

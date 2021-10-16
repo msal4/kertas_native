@@ -2692,6 +2692,13 @@ export type UserFragment = { __typename?: 'User', id: string, name: string, imag
 
 export type UserDetailFragment = { __typename?: 'User', id: string, name: string, role: Role, school?: Maybe<{ __typename?: 'School', id: string, name: string }>, stage?: Maybe<{ __typename?: 'Stage', id: string, name: string }> };
 
+export type AddAssignmentMutationVariables = Exact<{
+  input: AddAssignmentInput;
+}>;
+
+
+export type AddAssignmentMutation = { __typename?: 'Mutation', addAssignment: { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, file?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } } };
+
 export type AddAssignmentSubmissionMutationVariables = Exact<{
   input: AddAssignmentSubmissionInput;
 }>;
@@ -2750,6 +2757,14 @@ export type RefreshTokensMutationVariables = Exact<{
 
 
 export type RefreshTokensMutation = { __typename?: 'Mutation', refreshTokens: { __typename?: 'AuthData', accessToken: string, refreshToken: string } };
+
+export type UpdateAssignmentMutationVariables = Exact<{
+  id: Scalars['ID'];
+  input: UpdateAssignmentInput;
+}>;
+
+
+export type UpdateAssignmentMutation = { __typename?: 'Mutation', updateAssignment: { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, file?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, class: { __typename?: 'Class', id: string, name: string } } };
 
 export type UpdateAssignmentSubmissionMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -3079,6 +3094,17 @@ export const UserDetailFragmentDoc = gql`
   role
 }
     `;
+export const AddAssignmentDocument = gql`
+    mutation AddAssignment($input: AddAssignmentInput!) {
+  addAssignment(input: $input) {
+    ...Assignment
+  }
+}
+    ${AssignmentFragmentDoc}`;
+
+export function useAddAssignmentMutation() {
+  return Urql.useMutation<AddAssignmentMutation, AddAssignmentMutationVariables>(AddAssignmentDocument);
+};
 export const AddAssignmentSubmissionDocument = gql`
     mutation AddAssignmentSubmission($input: AddAssignmentSubmissionInput!) {
   addAssignmentSubmission(input: $input) {
@@ -3171,6 +3197,17 @@ export const RefreshTokensDocument = gql`
 
 export function useRefreshTokensMutation() {
   return Urql.useMutation<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument);
+};
+export const UpdateAssignmentDocument = gql`
+    mutation UpdateAssignment($id: ID!, $input: UpdateAssignmentInput!) {
+  updateAssignment(id: $id, input: $input) {
+    ...Assignment
+  }
+}
+    ${AssignmentFragmentDoc}`;
+
+export function useUpdateAssignmentMutation() {
+  return Urql.useMutation<UpdateAssignmentMutation, UpdateAssignmentMutationVariables>(UpdateAssignmentDocument);
 };
 export const UpdateAssignmentSubmissionDocument = gql`
     mutation UpdateAssignmentSubmission($id: ID!, $input: UpdateAssignmentSubmissionInput!) {

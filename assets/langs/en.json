@@ -58,5 +58,11 @@
   "update": "Update",
   "updated_successfully": "Successfully updated",
   "add": "Add",
-  "student": "Student"
+  "student": "Student",
+  "name": "Name",
+  "description": "Description",
+  "dueDate": "Due Date",
+  "duration": "Duration",
+  "minutes": "Minutes",
+  "added_successfully": "Added Successfully"
 }

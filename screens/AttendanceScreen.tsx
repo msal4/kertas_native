@@ -1,15 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import dayjs from "dayjs";
 import React, { memo, useRef, useState } from "react";
-import {
-  FlatList,
-  StatusBar,
-  TouchableOpacity,
-  View,
-  Image,
-  Dimensions,
-  TextInput,
-} from "react-native";
+import { FlatList, StatusBar, TouchableOpacity, View, Image, Dimensions } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DatePicker from "../components/DatePicker";
 import { KText } from "../components/KText";
@@ -27,7 +19,6 @@ import {
   useStudentsAttendancesQuery,
   useUpdateAttendanceMutation,
   useStudentsQuery,
-  UserFragment,
   useAddAttendanceMutation,
 } from "../generated/graphql";
 import { Error } from "../components/Error";

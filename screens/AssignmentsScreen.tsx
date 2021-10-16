@@ -1,6 +1,16 @@
 import * as React from "react";
-import { useState } from "react";
-import { View, FlatList, StatusBar, TouchableOpacity, Linking, TextProps, Alert } from "react-native";
+import { useRef, useState } from "react";
+import {
+  View,
+  FlatList,
+  StatusBar,
+  TouchableOpacity,
+  Linking,
+  TextProps,
+  Alert,
+  Dimensions,
+  TextInput,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons as Icon } from "@expo/vector-icons";
 import Moment from "moment";
@@ -24,13 +34,23 @@ import {
   useAddAssignmentSubmissionMutation,
   AssignmentFragment,
   useDeleteSubmissionFileMutation,
+  Role,
+  ClassMinimalFragment,
+  useAllClassesQuery,
+  useStudentsQuery,
+  useAddAttendanceMutation,
+  AttendanceState,
+  useAddAssignmentMutation,
 } from "../generated/graphql";
 import { useTrans } from "../context/trans";
 import { KText } from "../components/KText";
 import { dateOnlyFormat } from "../constants/time";
 import { ReactNativeFile } from "extract-files";
-import { showErrToast } from "../util/toast";
+import { showErrToast, showSuccessToast } from "../util/toast";
 import { cdnURL } from "../constants/Config";
+import { useMe } from "../hooks/useMe";
+import { ItemSelector } from "../components/ItemSelector";
+import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
 
 export default function AssignmentsScreen({ navigation, route }: any) {
   const [showDate, setShowDate] = useState(false);
@@ -38,12 +58,24 @@ export default function AssignmentsScreen({ navigation, route }: any) {
   const { top, bottom, right, left } = useSafeAreaInsets();
   const [selectedDate, setSelectedDate] = useState(null);
   const { t, locale, isRTL } = useTrans();
+  const { me } = useMe();
+  const classSelectorRef = React.useRef<ItemSelector>();
+  const [currentClass, setCurrentClass] = useState<ClassMinimalFragment>();
+  const assignmentFormRef = React.useRef<ScrollBottomSheet<any>>();
+
+  const openClassSelector = () => {
+    classSelectorRef.current?.open();
+  };
+
+  const isTeacher = me?.role === Role.Teacher;
 
   return (
-    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
+    <>
       <StatusBar barStyle="dark-content" />
       <View
         style={{
+          paddingLeft: left,
+          paddingRight: right,
           backgroundColor: "#f4f4f4",
           paddingTop: 10 + top,
         }}
@@ -66,7 +98,11 @@ export default function AssignmentsScreen({ navigation, route }: any) {
                     alignItems: "center",
                   }}
                 >
-                  <Ionicons name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#393939" />
+                  <Ionicons
+                    name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"}
+                    size={24}
+                    color="#393939"
+                  />
                 </View>
               </Touchable>
               <KText
@@ -94,7 +130,9 @@ export default function AssignmentsScreen({ navigation, route }: any) {
                   }}
                 >
                   <KText style={{ fontSize: 10, color: "#fff", textAlign: "left" }}>
-                    {selectedDate ? dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY") : ""}
+                    {selectedDate
+                      ? dayjs(selectedDate).locale(locale).format("D - MMMM - YYYY")
+                      : ""}
                   </KText>
                   <Icon style={{ paddingLeft: 10 }} name="close" size={12} color="#fff" />
                 </Touchable>
@@ -122,9 +160,54 @@ export default function AssignmentsScreen({ navigation, route }: any) {
             </View>
           </Touchable>
         </View>
+        {isTeacher ? (
+          <View
+            style={{
+              marginVertical: 10,
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 15,
+              justifyContent: "space-between",
+            }}
+          >
+            <TouchableOpacity
+              style={{ flexDirection: "row", alignItems: "center" }}
+              onPress={() => {
+                assignmentFormRef.current?.snapTo(1);
+              }}
+            >
+              <View
+                style={{
+                  width: 35,
+                  height: 35,
+                  borderRadius: 999,
+                  backgroundColor: "white",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Ionicons name="add" size={24} color="#a18cd1" />
+              </View>
+              <KText style={{ marginLeft: 10, color: "#393939" }}>{t("add")}</KText>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={{ flexDirection: "row", alignItems: "center" }}
+              onPress={openClassSelector}
+            >
+              <KText style={{ marginRight: 5, color: "#393939" }}>{currentClass?.name}</KText>
+              <Ionicons name="chevron-down" />
+            </TouchableOpacity>
+          </View>
+        ) : null}
         <View style={{ paddingTop: 10, flexDirection: "row" }}>
           <Touchable
-            style={{ paddingHorizontal: 20, borderBottomColor: "#a18cd1", borderBottomWidth: !isExam ? 3 : 0, minWidth: 80 }}
+            style={{
+              paddingHorizontal: 20,
+              borderBottomColor: "#a18cd1",
+              borderBottomWidth: !isExam ? 3 : 0,
+              minWidth: 80,
+            }}
             onPress={() => {
               setIsExam(false);
             }}
@@ -158,12 +241,420 @@ export default function AssignmentsScreen({ navigation, route }: any) {
         }}
       />
 
-      <View style={{ backgroundColor: "#fff", flex: 1 }}>
+      {isTeacher ? (
+        <TeacherAssignments
+          date={selectedDate ?? new Date()}
+          isExam={isExam}
+          currentClass={currentClass}
+          onClassSelected={setCurrentClass}
+          classSelectorRef={classSelectorRef}
+          assignmentFormRef={assignmentFormRef}
+        />
+      ) : (
         <Assignments date={selectedDate ?? new Date()} isExam={isExam} />
-      </View>
-    </View>
+      )}
+    </>
   );
 }
+
+function TeacherAssignments({
+  date,
+  isExam,
+  classSelectorRef,
+  onClassSelected,
+  currentClass,
+  assignmentFormRef,
+}: {
+  date: Date;
+  isExam: boolean;
+  classSelectorRef: any;
+  assignmentFormRef: any;
+  onClassSelected: any;
+  currentClass?: ClassMinimalFragment;
+}) {
+  const [res, refetch] = useAssignmentsQuery({
+    variables: {
+      where: {
+        dueDateGTE: dayjs(date).format(dateOnlyFormat),
+        dueDateLT: dayjs(date).add(1, "day").format(dateOnlyFormat),
+        isExam: isExam,
+      },
+    },
+  });
+
+  const [classesRes] = useAllClassesQuery();
+  const classes = classesRes.data?.classes.edges?.map((c) => c!.node!);
+
+  React.useEffect(() => {
+    if (!currentClass && classes && classes?.length) {
+      onClassSelected(classes![0]);
+    }
+  }, [classes]);
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<AssignmentFragment | null>();
+
+  return (
+    <>
+      {selectedAssignment ? (
+        <AssignmentSubmission
+          showDialog={showDialog}
+          assignment={selectedAssignment}
+          setShowDialog={setShowDialog}
+        />
+      ) : null}
+
+      {res.data?.assignments.edges ? (
+        <FlatList
+          data={res.data?.assignments.edges}
+          keyExtractor={(item) => item?.node?.id ?? ""}
+          style={{ backgroundColor: "white" }}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          renderItem={({ item }) => (
+            <Touchable
+              onPress={() => {
+                setShowDialog(true);
+                setSelectedAssignment(item?.node);
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  padding: 20,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#ddd",
+                }}
+              >
+                <View style={{ flex: 1 }}>
+                  <KText
+                    style={{ fontFamily: "Dubai-Medium", color: "#393939", textAlign: "left" }}
+                  >
+                    {item?.node?.class.name} - {item?.node?.name}
+                  </KText>
+                  <KText
+                    style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}
+                    numberOfLines={1}
+                  >
+                    {item?.node?.description}
+                  </KText>
+                </View>
+                <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>
+                  {Moment(item?.node?.dueDate).format("Y-MM-DD")}
+                </KText>
+              </View>
+            </Touchable>
+          )}
+        />
+      ) : null}
+      <Loading isLoading={res.fetching} height={500} color={"#919191"} />
+      {classes ? (
+        <ItemSelector
+          ref={classSelectorRef}
+          data={classes.map((c) => ({ title: c.name, value: c.id, subtitle: c.stage.name }))}
+          currentValue={currentClass?.id}
+          onChange={(item) => {
+            onClassSelected(classes.find((c) => c.id === item.value));
+            classSelectorRef.current?.close();
+          }}
+        />
+      ) : null}
+      {currentClass && (
+        <AddAssignmentForm
+          isExam={isExam}
+          ref={assignmentFormRef}
+          currentClass={currentClass}
+          currentDate={date}
+          onUpdate={() => refetch()}
+        />
+      )}
+    </>
+  );
+}
+
+const chooseFile = async (type: "file" | "image") => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== "granted") {
+    alert("Sorry, we need camera roll permissions to make this work!");
+    return;
+  }
+
+  if (type === "file") {
+    const doc = await DocumentPicker.getDocumentAsync({ multiple: true });
+
+    if (doc.type === "cancel") return;
+
+    return new ReactNativeFile({
+      uri: doc.uri,
+      name: doc.name,
+      type: mime.lookup(doc.type) ?? "application/octet-stream",
+    });
+  }
+
+  const doc = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  });
+
+  if (doc.cancelled) return;
+
+  return new ReactNativeFile({
+    uri: doc.uri,
+    name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1),
+    type: mime.lookup(doc.type) ?? "image",
+  });
+};
+
+const windowHeight = Dimensions.get("window").height;
+
+const middlePoint = windowHeight >= 800 ? 250 : "20%";
+
+const AddAssignmentForm = React.forwardRef(
+  (
+    {
+      isExam,
+      currentClass,
+      currentDate,
+      onUpdate,
+    }: {
+      currentClass: ClassMinimalFragment;
+      currentDate: Date;
+      onUpdate: () => void;
+      isExam: boolean;
+    },
+    ref
+  ) => {
+    const { top, bottom } = useSafeAreaInsets();
+    const { t } = useTrans();
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [file, setFile] = useState<ReactNativeFile>();
+    const [dueDate, setDueDate] = useState(new Date());
+    const [showDate, setShowDate] = useState(false);
+    const [duration, setDuration] = useState<number>();
+    const [fileTypeDialog, setFileTypeDialog] = useState();
+
+    const [, addAssignment] = useAddAssignmentMutation();
+
+    const { isRTL } = useTrans();
+
+    return (
+      <>
+        <ScrollBottomSheet
+          ref={ref as any}
+          componentType="ScrollView"
+          snapPoints={[top, middlePoint, windowHeight]}
+          initialSnapIndex={2}
+          renderHandle={() => (
+            <View
+              style={{
+                alignItems: "center",
+                backgroundColor: "#f4f4f4",
+                paddingVertical: 20,
+              }}
+            >
+              <View
+                style={{
+                  width: 40,
+                  height: 4,
+                  backgroundColor: "rgba(0,0,0,0.2)",
+                  borderRadius: 4,
+                }}
+              />
+            </View>
+          )}
+          containerStyle={{
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            paddingBottom: bottom,
+            backgroundColor: "#f4f4f4",
+            overflow: "hidden",
+            paddingHorizontal: 20,
+          }}
+        >
+          <View style={{ marginBottom: 10, flex: 1 }}>
+            <KText style={{ marginBottom: 5 }}>{t("name")}</KText>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder={t("name")}
+              style={{
+                textAlign: isRTL ? "right" : undefined,
+                padding: 20,
+                borderRadius: 15,
+                backgroundColor: "white",
+                width: "100%",
+              }}
+            />
+          </View>
+          <View style={{ marginBottom: 10, flex: 1 }}>
+            <KText style={{ marginBottom: 5 }}>{t("description")}</KText>
+            <TextInput
+              value={description}
+              onChangeText={setDescription}
+              placeholder={t("description")}
+              style={{
+                textAlign: isRTL ? "right" : undefined,
+                padding: 20,
+                borderRadius: 15,
+                backgroundColor: "white",
+                width: "100%",
+              }}
+            />
+          </View>
+          {isExam ? (
+            <View style={{ marginBottom: 10, flex: 1 }}>
+              <KText style={{ marginBottom: 5 }}>
+                {t("duration")} ({t("minutes").toLowerCase()})
+              </KText>
+              <TextInput
+                value={duration?.toString()}
+                onChangeText={(v) => setDuration(parseInt(v))}
+                placeholder={t("duration")}
+                keyboardType="number-pad"
+                style={{
+                  textAlign: isRTL ? "right" : undefined,
+                  padding: 20,
+                  borderRadius: 15,
+                  backgroundColor: "white",
+                  width: "100%",
+                }}
+              />
+            </View>
+          ) : null}
+
+          <View style={{ marginBottom: 10, flex: 1 }}>
+            <KText style={{ marginBottom: 5 }}>{t("dueDate")}</KText>
+            <Touchable
+              style={{ padding: 20, borderRadius: 20, backgroundColor: "#fff" }}
+              onPress={() => {
+                setShowDate(true);
+              }}
+            >
+              <KText style={{ textAlign: "center" }}>
+                {dayjs(dueDate).format("hh:mm a YYYY-MM-DD")}
+              </KText>
+            </Touchable>
+          </View>
+
+          <View style={{ marginBottom: 10, flex: 1 }}>
+            <KText style={{ marginBottom: 5 }}>{t("file")}</KText>
+            <Touchable
+              style={{ padding: 20, borderRadius: 20, backgroundColor: "#fff" }}
+              onPress={() => {}}
+            >
+              <KText style={{ textAlign: "center" }}>{file?.name ?? t("file")}</KText>
+            </Touchable>
+          </View>
+
+          <Touchable
+            style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#a18cd1" }}
+            onPress={async () => {
+              if (!currentClass) return;
+              const res = await addAssignment({
+                input: {
+                  name,
+                  dueDate,
+                  classID: currentClass.id,
+                  file,
+                  isExam,
+                  duration,
+                  description,
+                },
+              });
+
+              if (res.error) {
+                showErrToast(t("something_went_wrong"));
+                return;
+              }
+
+              showSuccessToast(t("added_successfully"));
+
+              onUpdate();
+            }}
+          >
+            <KText style={{ color: "#fff", textAlign: "center" }}>{t("add")}</KText>
+          </Touchable>
+        </ScrollBottomSheet>
+        <DatePicker
+          showed={showDate}
+          value={dueDate}
+          mode={"datetime"}
+          onDismiss={() => {
+            setShowDate(false);
+          }}
+          onChange={(date: any) => {
+            setDueDate(date);
+          }}
+        />
+        <Dialog
+          useSafeArea
+          bottom={true}
+          height={100}
+          panDirection={PanningProvider.Directions.DOWN}
+          visible={fileTypeDialog}
+          onDismiss={() => {
+            setFileTypeDialog(false);
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              flex: 1,
+              borderRadius: 20,
+              overflow: "hidden",
+              padding: 10,
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ borderRadius: 20, overflow: "hidden" }}>
+                <Touchable
+                  onPress={async () => {
+                    await uploadFile("file");
+                    setFileTypeDialog(false);
+                  }}
+                >
+                  <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
+                    <Ionicons name="document-outline" size={28} color="#777" />
+                    <KText style={{ color: "#393939" }}>{t("file")}</KText>
+                  </View>
+                </Touchable>
+              </View>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <View style={{ borderRadius: 20, overflow: "hidden" }}>
+                <Touchable
+                  onPress={async () => {
+                    await uploadFile("image");
+                    setFileTypeDialog(false);
+                  }}
+                >
+                  <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
+                    <Ionicons name="image-outline" size={28} color="#777" />
+                    <KText style={{ color: "#393939" }}>{t("image")}</KText>
+                  </View>
+                </Touchable>
+              </View>
+            </View>
+          </View>
+        </Dialog>
+      </>
+    );
+  }
+);
 
 function Assignments({ date, isExam }: { date: Date; isExam: boolean }) {
   const [res, refetch] = useAssignmentsQuery({
@@ -187,7 +678,6 @@ function Assignments({ date, isExam }: { date: Date; isExam: boolean }) {
           refetch();
         }}
         isError
-        height={500}
         color={"#fff"}
         msg={t("something_went_wrong")}
         btnText={t("retry")}
@@ -198,7 +688,11 @@ function Assignments({ date, isExam }: { date: Date; isExam: boolean }) {
   return (
     <>
       {selectedAssignment ? (
-        <AssignmentSubmission showDialog={showDialog} assignment={selectedAssignment} setShowDialog={setShowDialog} />
+        <AssignmentSubmission
+          showDialog={showDialog}
+          assignment={selectedAssignment}
+          setShowDialog={setShowDialog}
+        />
       ) : null}
       {res.data?.assignments.edges ? (
         <FlatList
@@ -213,16 +707,30 @@ function Assignments({ date, isExam }: { date: Date; isExam: boolean }) {
                 setSelectedAssignment(item?.node);
               }}
             >
-              <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  padding: 20,
+                  borderBottomWidth: 1,
+                  borderBottomColor: "#ddd",
+                }}
+              >
                 <View style={{ flex: 1 }}>
-                  <KText style={{ fontFamily: "Dubai-Medium", color: "#393939", textAlign: "left" }}>
+                  <KText
+                    style={{ fontFamily: "Dubai-Medium", color: "#393939", textAlign: "left" }}
+                  >
                     {item?.node?.class.name} - {item?.node?.name}
                   </KText>
-                  <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+                  <KText
+                    style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}
+                    numberOfLines={1}
+                  >
                     {item?.node?.description}
                   </KText>
                 </View>
-                <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(item?.node?.dueDate).format("Y-MM-DD")}</KText>
+                <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>
+                  {Moment(item?.node?.dueDate).format("Y-MM-DD")}
+                </KText>
               </View>
             </Touchable>
           )}
@@ -239,9 +747,15 @@ interface AssignmentSubmissionProps {
   setShowDialog: Function;
 }
 
-function AssignmentSubmission({ assignment, showDialog, setShowDialog }: AssignmentSubmissionProps) {
+function AssignmentSubmission({
+  assignment,
+  showDialog,
+  setShowDialog,
+}: AssignmentSubmissionProps) {
   const { t } = useTrans();
-  const [res, refetch] = useAssignmentsSubmissionQuery({ variables: { assignmentID: assignment?.id } });
+  const [res, refetch] = useAssignmentsSubmissionQuery({
+    variables: { assignmentID: assignment?.id },
+  });
   const [, updateSubmission] = useUpdateAssignmentSubmissionMutation();
   const [, addSubmission] = useAddAssignmentSubmissionMutation();
   const [, deleteSubmissionFile] = useDeleteSubmissionFileMutation();
@@ -255,7 +769,6 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
           refetch();
         }}
         isError
-        height={500}
         color={"#fff"}
         msg={t("something_went_wrong")}
         btnText={t("retry")}
@@ -277,7 +790,13 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
 
       if (doc.type === "cancel") return;
 
-      files = [new ReactNativeFile({ uri: doc.uri, name: doc.name, type: mime.lookup(doc.type) ?? "application/octet-stream" })];
+      files = [
+        new ReactNativeFile({
+          uri: doc.uri,
+          name: doc.name,
+          type: mime.lookup(doc.type) ?? "application/octet-stream",
+        }),
+      ];
     } else {
       const doc = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -286,7 +805,11 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
       if (doc.cancelled) return;
 
       files = [
-        new ReactNativeFile({ uri: doc.uri, name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1), type: mime.lookup(doc.type) ?? "image" }),
+        new ReactNativeFile({
+          uri: doc.uri,
+          name: doc.uri.substr(doc.uri.lastIndexOf("/") + 1),
+          type: mime.lookup(doc.type) ?? "image",
+        }),
       ];
     }
 
@@ -314,7 +837,9 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
 
   const submission = res.data?.assignmentSubmissions.edges![0]?.node;
 
-  const examIsOverdue = assignment.isExam && dayjs(assignment.dueDate).add(assignment.duration, "minutes").isBefore(dayjs());
+  const examIsOverdue =
+    assignment.isExam &&
+    dayjs(assignment.dueDate).add(assignment.duration, "minutes").isBefore(dayjs());
 
   return (
     <Dialog
@@ -327,18 +852,40 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
         setShowDialog(false);
       }}
     >
-      <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10 }}>
-        <View style={{ flexDirection: "row", padding: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}>
+      <View
+        style={{
+          backgroundColor: "#fff",
+          flex: 1,
+          borderRadius: 20,
+          overflow: "hidden",
+          padding: 10,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            padding: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: "#ddd",
+          }}
+        >
           <View style={{ flex: 1 }}>
             <KText style={{ fontFamily: "Dubai-Medium", color: "#393939", textAlign: "left" }}>
               {assignment.class.name} - {assignment.name}
             </KText>
-            <CollapsableText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}>
+            <CollapsableText
+              style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}
+            >
               {assignment.description}
             </CollapsableText>
             {assignment.file ? (
               <TouchableOpacity
-                style={{ flexDirection: "row", alignItems: "center", marginTop: 5, marginBottom: 10 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 5,
+                  marginBottom: 10,
+                }}
                 onPress={() => {
                   const url = `${cdnURL}/${assignment.file}`;
                   if (Linking.canOpenURL(url)) {
@@ -347,14 +894,25 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                 }}
               >
                 <FilesIcon fill="#a18cd1" width={15} height={15} />
-                <KText style={{ fontFamily: "Dubai-Regular", color: "#a18cd1", marginLeft: 10 }}>{t("assignment_attachment")}</KText>
+                <KText style={{ fontFamily: "Dubai-Regular", color: "#a18cd1", marginLeft: 10 }}>
+                  {t("assignment_attachment")}
+                </KText>
               </TouchableOpacity>
             ) : null}
-            <KText style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left", fontSize: 12 }}>
+            <KText
+              style={{
+                fontFamily: "Dubai-Regular",
+                color: "#919191",
+                textAlign: "left",
+                fontSize: 12,
+              }}
+            >
               {t("updated")} {dayjs(assignment.updatedAt).fromNow()}
             </KText>
           </View>
-          <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>{Moment(assignment?.dueDate).format("Y-MM-DD")}</KText>
+          <KText style={{ fontFamily: "Dubai-Regular", color: "#919191" }}>
+            {Moment(assignment?.dueDate).format("Y-MM-DD")}
+          </KText>
         </View>
 
         {submission?.files ? (
@@ -363,7 +921,11 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
             keyExtractor={(file) => file}
             contentContainerStyle={{ padding: 20 }}
             showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{ marginVertical: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }} />}
+            ItemSeparatorComponent={() => (
+              <View
+                style={{ marginVertical: 20, borderBottomWidth: 1, borderBottomColor: "#ddd" }}
+              />
+            )}
             renderItem={({ item, index }) => (
               <Touchable
                 onPress={() => {
@@ -388,7 +950,11 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                   >
                     <FilesIcon fill="#a18cd1" width={28} height={28} />
                   </View>
-                  <KText style={{ flex: 1, color: "#393939aa", textAlign: "left" }} ellipsizeMode="head" numberOfLines={1}>
+                  <KText
+                    style={{ flex: 1, color: "#393939aa", textAlign: "left" }}
+                    ellipsizeMode="head"
+                    numberOfLines={1}
+                  >
                     {item}
                   </KText>
                   <TouchableOpacity
@@ -409,7 +975,12 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                       ]);
                     }}
                   >
-                    <Ionicons style={{ marginLeft: 10 }} name="trash-outline" color={examIsOverdue ? "#919191" : "#E05D5D"} size={20} />
+                    <Ionicons
+                      style={{ marginLeft: 10 }}
+                      name="trash-outline"
+                      color={examIsOverdue ? "#919191" : "#E05D5D"}
+                      size={20}
+                    />
                   </TouchableOpacity>
                 </View>
               </Touchable>
@@ -429,8 +1000,24 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
             setFileTypeDialog(false);
           }}
         >
-          <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden", padding: 10, flexDirection: "row" }}>
-            <View style={{ flexDirection: "row", flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <View
+            style={{
+              backgroundColor: "#fff",
+              flex: 1,
+              borderRadius: 20,
+              overflow: "hidden",
+              padding: 10,
+              flexDirection: "row",
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
                 <Touchable
                   onPress={async () => {
@@ -445,7 +1032,14 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
                 </Touchable>
               </View>
             </View>
-            <View style={{ flexDirection: "row", flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <View
+              style={{
+                flexDirection: "row",
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
                 <Touchable
                   onPress={async () => {
@@ -465,12 +1059,19 @@ function AssignmentSubmission({ assignment, showDialog, setShowDialog }: Assignm
 
         <TouchableOpacity
           disabled={examIsOverdue}
-          style={{ borderRadius: 5, overflow: "hidden", backgroundColor: examIsOverdue ? "#919191" : "#a18cd1", padding: 10 }}
+          style={{
+            borderRadius: 5,
+            overflow: "hidden",
+            backgroundColor: examIsOverdue ? "#919191" : "#a18cd1",
+            padding: 10,
+          }}
           onPress={() => {
             setFileTypeDialog(true);
           }}
         >
-          <KText style={{ fontFamily: "Dubai-Regular", textAlign: "center", color: "#fff" }}>{t("upload_assignment_file")}</KText>
+          <KText style={{ fontFamily: "Dubai-Regular", textAlign: "center", color: "#fff" }}>
+            {t("upload_assignment_file")}
+          </KText>
         </TouchableOpacity>
       </View>
     </Dialog>

@@ -58,5 +58,11 @@
   "update": "تحديث",
   "updated_successfully": "تم التحديث بنجاح",
   "add": "اضافة",
-  "student": "الطالب"
+  "student": "الطالب",
+  "name": "الاسم",
+  "description": "الوصف",
+  "dueDate": "التاريخ",
+  "duration": "المدة",
+  "minutes": "دقائق",
+  "added_successfully": "تم الاضافة بنجاح"
 }
