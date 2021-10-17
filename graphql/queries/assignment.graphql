@@ -1,0 +1,12 @@
+query Assignment($id: ID!) {
+  assignment(id: $id) {
+    ...Assignment,
+    submissions(first: 300) {
+      edges {
+        node {
+          ...AssignmentSubmissionWithStudent
+        }
+      }
+    }
+  }
+}

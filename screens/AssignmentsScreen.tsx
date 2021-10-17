@@ -37,9 +37,6 @@ import {
   Role,
   ClassMinimalFragment,
   useAllClassesQuery,
-  useStudentsQuery,
-  useAddAttendanceMutation,
-  AttendanceState,
   useAddAssignmentMutation,
 } from "../generated/graphql";
 import { useTrans } from "../context/trans";
@@ -51,11 +48,13 @@ import { cdnURL } from "../constants/Config";
 import { useMe } from "../hooks/useMe";
 import { ItemSelector } from "../components/ItemSelector";
 import ScrollBottomSheet from "react-native-scroll-bottom-sheet";
+import { useNavigation } from "@react-navigation/native";
+import { CollapsableText } from "../components/CollapsableText";
 
 export default function AssignmentsScreen({ navigation, route }: any) {
   const [showDate, setShowDate] = useState(false);
   const [isExam, setIsExam] = useState(route.params.isExam);
-  const { top, bottom, right, left } = useSafeAreaInsets();
+  const { top, right, left } = useSafeAreaInsets();
   const [selectedDate, setSelectedDate] = useState(null);
   const { t, locale, isRTL } = useTrans();
   const { me } = useMe();
@@ -245,7 +244,7 @@ export default function AssignmentsScreen({ navigation, route }: any) {
         <TeacherAssignments
           date={selectedDate ?? new Date()}
           isExam={isExam}
-          currentClass={currentClass}
+          currentClassID={currentClass?.id}
           onClassSelected={setCurrentClass}
           classSelectorRef={classSelectorRef}
           assignmentFormRef={assignmentFormRef}
@@ -262,7 +261,7 @@ function TeacherAssignments({
   isExam,
   classSelectorRef,
   onClassSelected,
-  currentClass,
+  currentClassID,
   assignmentFormRef,
 }: {
   date: Date;
@@ -270,7 +269,7 @@ function TeacherAssignments({
   classSelectorRef: any;
   assignmentFormRef: any;
   onClassSelected: any;
-  currentClass?: ClassMinimalFragment;
+  currentClassID?: string;
 }) {
   const [res, refetch] = useAssignmentsQuery({
     variables: {
@@ -281,29 +280,19 @@ function TeacherAssignments({
       },
     },
   });
+  const navigation = useNavigation();
 
   const [classesRes] = useAllClassesQuery();
   const classes = classesRes.data?.classes.edges?.map((c) => c!.node!);
 
   React.useEffect(() => {
-    if (!currentClass && classes && classes?.length) {
+    if (!currentClassID && classes && classes?.length) {
       onClassSelected(classes![0]);
     }
   }, [classes]);
 
-  const [showDialog, setShowDialog] = useState(false);
-  const [selectedAssignment, setSelectedAssignment] = useState<AssignmentFragment | null>();
-
   return (
     <>
-      {selectedAssignment ? (
-        <AssignmentSubmission
-          showDialog={showDialog}
-          assignment={selectedAssignment}
-          setShowDialog={setShowDialog}
-        />
-      ) : null}
-
       {res.data?.assignments.edges ? (
         <FlatList
           data={res.data?.assignments.edges}
@@ -313,8 +302,7 @@ function TeacherAssignments({
           renderItem={({ item }) => (
             <Touchable
               onPress={() => {
-                setShowDialog(true);
-                setSelectedAssignment(item?.node);
+                navigation.navigate("AssignmentSubmissions", { assignmentID: item!.node!.id });
               }}
             >
               <View
@@ -346,25 +334,25 @@ function TeacherAssignments({
           )}
         />
       ) : null}
-      <Loading isLoading={res.fetching} height={500} color={"#919191"} />
       {classes ? (
         <ItemSelector
           ref={classSelectorRef}
           data={classes.map((c) => ({ title: c.name, value: c.id, subtitle: c.stage.name }))}
-          currentValue={currentClass?.id}
+          currentValue={currentClassID}
           onChange={(item) => {
             onClassSelected(classes.find((c) => c.id === item.value));
             classSelectorRef.current?.close();
           }}
         />
       ) : null}
-      {currentClass && (
+      {currentClassID && (
         <AddAssignmentForm
           isExam={isExam}
           ref={assignmentFormRef}
-          currentClass={currentClass}
-          currentDate={date}
-          onUpdate={() => refetch()}
+          currentClassID={currentClassID}
+          onUpdate={() => {
+            refetch();
+          }}
         />
       )}
     </>
@@ -411,12 +399,10 @@ const AddAssignmentForm = React.forwardRef(
   (
     {
       isExam,
-      currentClass,
-      currentDate,
+      currentClassID,
       onUpdate,
     }: {
-      currentClass: ClassMinimalFragment;
-      currentDate: Date;
+      currentClassID: string;
       onUpdate: () => void;
       isExam: boolean;
     },
@@ -430,7 +416,7 @@ const AddAssignmentForm = React.forwardRef(
     const [dueDate, setDueDate] = useState(new Date());
     const [showDate, setShowDate] = useState(false);
     const [duration, setDuration] = useState<number>();
-    const [fileTypeDialog, setFileTypeDialog] = useState();
+    const [fileTypeDialogShown, setFileTypeDialogShown] = useState(false);
 
     const [, addAssignment] = useAddAssignmentMutation();
 
@@ -539,21 +525,25 @@ const AddAssignmentForm = React.forwardRef(
             <KText style={{ marginBottom: 5 }}>{t("file")}</KText>
             <Touchable
               style={{ padding: 20, borderRadius: 20, backgroundColor: "#fff" }}
-              onPress={() => {}}
+              onPress={() => {
+                setFileTypeDialogShown(true);
+              }}
             >
-              <KText style={{ textAlign: "center" }}>{file?.name ?? t("file")}</KText>
+              <KText style={{ textAlign: "center" }} numberOfLines={1}>
+                {file?.name ?? t("file")}
+              </KText>
             </Touchable>
           </View>
 
           <Touchable
             style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#a18cd1" }}
             onPress={async () => {
-              if (!currentClass) return;
+              if (!currentClassID) return;
               const res = await addAssignment({
                 input: {
                   name,
                   dueDate,
-                  classID: currentClass.id,
+                  classID: currentClassID,
                   file,
                   isExam,
                   duration,
@@ -590,9 +580,9 @@ const AddAssignmentForm = React.forwardRef(
           bottom={true}
           height={100}
           panDirection={PanningProvider.Directions.DOWN}
-          visible={fileTypeDialog}
+          visible={fileTypeDialogShown}
           onDismiss={() => {
-            setFileTypeDialog(false);
+            setFileTypeDialogShown(false);
           }}
         >
           <View
@@ -616,8 +606,8 @@ const AddAssignmentForm = React.forwardRef(
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
                 <Touchable
                   onPress={async () => {
-                    await uploadFile("file");
-                    setFileTypeDialog(false);
+                    setFile(await chooseFile("file"));
+                    setFileTypeDialogShown(false);
                   }}
                 >
                   <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
@@ -638,8 +628,8 @@ const AddAssignmentForm = React.forwardRef(
               <View style={{ borderRadius: 20, overflow: "hidden" }}>
                 <Touchable
                   onPress={async () => {
-                    await uploadFile("image");
-                    setFileTypeDialog(false);
+                    setFile(await chooseFile("image"));
+                    setFileTypeDialogShown(false);
                   }}
                 >
                   <View style={{ padding: 20, justifyContent: "center", alignItems: "center" }}>
@@ -826,13 +816,16 @@ function AssignmentSubmission({
       });
       if (res.error) {
         showErrToast(t("something_went_wrong"));
+        return;
       }
     } else {
       const res = await addSubmission({ input: { assignmentID: assignment.id, files } });
       if (res.error) {
         showErrToast(t("something_went_wrong"));
+        return;
       }
     }
+    refetch();
   };
 
   const submission = res.data?.assignmentSubmissions.edges![0]?.node;
@@ -1077,12 +1070,3 @@ function AssignmentSubmission({
     </Dialog>
   );
 }
-
-const CollapsableText: React.FC<TextProps> = (props) => {
-  const [collapsed, setCollapsed] = useState(true);
-  return (
-    <TouchableOpacity onPress={() => setCollapsed(!collapsed)}>
-      <KText style={{ textAlign: "left" }} numberOfLines={collapsed ? 1 : undefined} {...props} />
-    </TouchableOpacity>
-  );
-};

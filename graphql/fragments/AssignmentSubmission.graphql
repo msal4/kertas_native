@@ -5,3 +5,16 @@ fragment AssignmentSubmission on AssignmentSubmission {
   updatedAt
   createdAt
 }
+
+fragment AssignmentSubmissionWithStudent on AssignmentSubmission {
+  id
+  files
+  submittedAt
+  updatedAt
+  createdAt
+  student {
+    id
+    name
+    image
+  }
+}

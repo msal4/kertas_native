@@ -64,5 +64,7 @@
   "dueDate": "التاريخ",
   "duration": "المدة",
   "minutes": "دقائق",
-  "added_successfully": "تم الاضافة بنجاح"
+  "added_successfully": "تم الاضافة بنجاح",
+  "submissions": "التقديمات",
+  "edit": "تعديل"
 }

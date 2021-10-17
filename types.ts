@@ -18,6 +18,7 @@ export type RootStackParamList = {
   Home: undefined;
   Conversation: ConversationParams;
   Assignments: { isExam: boolean };
+  AssignmentSubmissions: { assignmentID: string };
   CourseGrades: undefined;
   Attendance: undefined;
   Start: undefined;
@@ -28,7 +29,10 @@ export interface ConversationParams {
   groupID: string;
 }
 
-export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<RootStackParamList, Screen>;
+export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
+  RootStackParamList,
+  Screen
+>;
 
 export type RootTabParamList = {
   Home: undefined;

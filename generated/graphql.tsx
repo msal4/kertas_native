@@ -2668,6 +2668,8 @@ export type AssignmentFragment = { __typename?: 'Assignment', id: string, name: 
 
 export type AssignmentSubmissionFragment = { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any };
 
+export type AssignmentSubmissionWithStudentFragment = { __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any, student: { __typename?: 'User', id: string, name: string, image: string } };
+
 export type AttendanceFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, class: { __typename?: 'Class', id: string, name: string, group: { __typename?: 'Group', id: string } } };
 
 export type AttendanceWithStudentFragment = { __typename?: 'Attendance', id: string, date: any, state: AttendanceState, student: { __typename?: 'User', id: string, name: string, image: string } };
@@ -2789,6 +2791,13 @@ export type UpdateCourseGradeMutationVariables = Exact<{
 
 
 export type UpdateCourseGradeMutation = { __typename?: 'Mutation', updateCourseGrade: { __typename?: 'CourseGrade', id: string } };
+
+export type AssignmentQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type AssignmentQuery = { __typename?: 'Query', assignment: { __typename?: 'Assignment', id: string, name: string, description?: Maybe<string>, file?: Maybe<string>, dueDate: any, isExam: boolean, duration?: Maybe<any>, updatedAt: any, submissions?: Maybe<{ __typename?: 'AssignmentSubmissionConnection', edges?: Maybe<Array<Maybe<{ __typename?: 'AssignmentSubmissionEdge', node?: Maybe<{ __typename?: 'AssignmentSubmission', id: string, files: Array<string>, submittedAt?: Maybe<any>, updatedAt: any, createdAt: any, student: { __typename?: 'User', id: string, name: string, image: string } }> }>>> }>, class: { __typename?: 'Class', id: string, name: string } } };
 
 export type AssignmentsSubmissionQueryVariables = Exact<{
   assignmentID?: Maybe<Scalars['ID']>;
@@ -2936,6 +2945,20 @@ export const AssignmentSubmissionFragmentDoc = gql`
   submittedAt
   updatedAt
   createdAt
+}
+    `;
+export const AssignmentSubmissionWithStudentFragmentDoc = gql`
+    fragment AssignmentSubmissionWithStudent on AssignmentSubmission {
+  id
+  files
+  submittedAt
+  updatedAt
+  createdAt
+  student {
+    id
+    name
+    image
+  }
 }
     `;
 export const AttendanceFragmentDoc = gql`
@@ -3241,6 +3264,25 @@ export const UpdateCourseGradeDocument = gql`
 
 export function useUpdateCourseGradeMutation() {
   return Urql.useMutation<UpdateCourseGradeMutation, UpdateCourseGradeMutationVariables>(UpdateCourseGradeDocument);
+};
+export const AssignmentDocument = gql`
+    query Assignment($id: ID!) {
+  assignment(id: $id) {
+    ...Assignment
+    submissions(first: 300) {
+      edges {
+        node {
+          ...AssignmentSubmissionWithStudent
+        }
+      }
+    }
+  }
+}
+    ${AssignmentFragmentDoc}
+${AssignmentSubmissionWithStudentFragmentDoc}`;
+
+export function useAssignmentQuery(options: Omit<Urql.UseQueryArgs<AssignmentQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<AssignmentQuery>({ query: AssignmentDocument, ...options });
 };
 export const AssignmentsSubmissionDocument = gql`
     query AssignmentsSubmission($assignmentID: ID) {

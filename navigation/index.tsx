@@ -40,10 +40,15 @@ import ProfileActiveIcon from "../assets/icons/Profile-Active.svg";
 import { NotificationsScreen } from "../screens/NotificationsScreen";
 import { isIOS } from "../constants/platform";
 import { AttendanceScreen } from "../screens/AttendanceScreen";
+import { AssignmentSubmissionsScreen } from "../screens/AssignmentSubmissionsScreen";
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
-    <NavigationContainer ref={navigationRef} linking={LinkingConfiguration} theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <NavigationContainer
+      ref={navigationRef}
+      linking={LinkingConfiguration}
+      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+    >
       <RootNavigator />
     </NavigationContainer>
   );
@@ -54,7 +59,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 function RootNavigator() {
   return (
     <Stack.Navigator initialRouteName="Start">
-      <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false, animation: "fade" }} />
+      <Stack.Screen
+        name="Start"
+        component={StartScreen}
+        options={{ headerShown: false, animation: "fade" }}
+      />
       <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Root" component={RootScreen} options={{ headerShown: false }} />
       <Stack.Screen
@@ -62,9 +71,26 @@ function RootNavigator() {
         component={ConversationScreen}
         options={{ headerShown: false, contentStyle: { backgroundColor: "white" } }}
       />
-      <Stack.Screen name="Assignments" options={{ headerShown: false }} component={AssignmentsScreen} />
-      <Stack.Screen name="CourseGrades" options={{ headerShown: false }} component={CourseGradesScreen} />
-      <Stack.Screen name="Attendance" options={{ headerShown: false }} component={AttendanceScreen} />
+      <Stack.Screen
+        name="Assignments"
+        options={{ headerShown: false }}
+        component={AssignmentsScreen}
+      />
+      <Stack.Screen
+        name="AssignmentSubmissions"
+        options={{ headerShown: false }}
+        component={AssignmentSubmissionsScreen}
+      />
+      <Stack.Screen
+        name="CourseGrades"
+        options={{ headerShown: false }}
+        component={CourseGradesScreen}
+      />
+      <Stack.Screen
+        name="Attendance"
+        options={{ headerShown: false }}
+        component={AttendanceScreen}
+      />
     </Stack.Navigator>
   );
 }
@@ -99,7 +125,15 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <HomeIcon width={28} height={28} stroke="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Regular", color: state.index === 0 ? "#a18cd1" : "#9a9a9a", fontSize: 13 }}>{t("home")}</Text>
+            <Text
+              style={{
+                fontFamily: "Dubai-Regular",
+                color: state.index === 0 ? "#a18cd1" : "#9a9a9a",
+                fontSize: 13,
+              }}
+            >
+              {t("home")}
+            </Text>
           </View>
         </Touchable>
       </View>
@@ -115,7 +149,15 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <ChatIcon width={28} height={28} fill="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Regular", color: state.index === 1 ? "#a18cd1" : "#9a9a9a", fontSize: 13 }}>{t("chat")}</Text>
+            <Text
+              style={{
+                fontFamily: "Dubai-Regular",
+                color: state.index === 1 ? "#a18cd1" : "#9a9a9a",
+                fontSize: 13,
+              }}
+            >
+              {t("chat")}
+            </Text>
           </View>
         </Touchable>
       </View>
@@ -131,7 +173,13 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <NotificationIcon width={28} height={28} fill="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Regular", color: state.index === 2 ? "#a18cd1" : "#9a9a9a", fontSize: 13 }}>
+            <Text
+              style={{
+                fontFamily: "Dubai-Regular",
+                color: state.index === 2 ? "#a18cd1" : "#9a9a9a",
+                fontSize: 13,
+              }}
+            >
               {t("notifications")}
             </Text>
           </View>
@@ -149,7 +197,13 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
             ) : (
               <ProfileIcon width={28} height={28} fill="#8e8e8e" />
             )}
-            <Text style={{ fontFamily: "Dubai-Regular", color: state.index === 3 ? "#a18cd1" : "#9a9a9a", fontSize: 13 }}>
+            <Text
+              style={{
+                fontFamily: "Dubai-Regular",
+                color: state.index === 3 ? "#a18cd1" : "#9a9a9a",
+                fontSize: 13,
+              }}
+            >
               {t("my_profile")}
             </Text>
           </View>
@@ -218,7 +272,15 @@ function RootScreen({}: RootStackScreenProps<"Root">) {
           title: t("my_profile"),
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           header: () => (
-            <View row style={{ backgroundColor: "#f4f4f4", paddingTop: top, paddingRight: right + 20, paddingLeft: left + 20 }}>
+            <View
+              row
+              style={{
+                backgroundColor: "#f4f4f4",
+                paddingTop: top,
+                paddingRight: right + 20,
+                paddingLeft: left + 20,
+              }}
+            >
               <KText style={{ fontSize: 23, color: "#393939" }}>{t("my_profile")}</KText>
             </View>
           ),
@@ -231,6 +293,9 @@ function RootScreen({}: RootStackScreenProps<"Root">) {
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
-function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: string }) {
+function TabBarIcon(props: {
+  name: React.ComponentProps<typeof FontAwesome>["name"];
+  color: string;
+}) {
   return <FontAwesome size={30} style={{ marginBottom: -3 }} {...props} />;
 }

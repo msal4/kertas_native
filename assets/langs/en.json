@@ -64,5 +64,7 @@
   "dueDate": "Due Date",
   "duration": "Duration",
   "minutes": "Minutes",
-  "added_successfully": "Added Successfully"
+  "added_successfully": "Added Successfully",
+  "submissions": "Submissions",
+  "edit": "Edit"
 }
