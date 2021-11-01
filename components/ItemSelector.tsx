@@ -119,7 +119,7 @@ const _ItemSelector = function <T = string | number>(
                 backgroundColor: isSelected
                   ? itemBackground
                     ? itemBackground(item.value)
-                    : "#a18cd1"
+                    : "#6862a9"
                   : "white",
                 alignItems: "center",
                 borderRadius: 20,

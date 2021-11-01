@@ -121,14 +121,14 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
             {state.index === 0 ? (
-              <HomeActiveIcon width={28} height={28} fill="#a18cd1" />
+              <HomeActiveIcon width={28} height={28} fill="#6862a9" />
             ) : (
               <HomeIcon width={28} height={28} stroke="#8e8e8e" />
             )}
             <Text
               style={{
                 fontFamily: "Dubai-Regular",
-                color: state.index === 0 ? "#a18cd1" : "#9a9a9a",
+                color: state.index === 0 ? "#6862a9" : "#9a9a9a",
                 fontSize: 13,
               }}
             >
@@ -145,14 +145,14 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
             {state.index === 1 ? (
-              <ChatActiveIcon width={28} height={28} fill="#a18cd1" />
+              <ChatActiveIcon width={28} height={28} fill="#6862a9" />
             ) : (
               <ChatIcon width={28} height={28} fill="#8e8e8e" />
             )}
             <Text
               style={{
                 fontFamily: "Dubai-Regular",
-                color: state.index === 1 ? "#a18cd1" : "#9a9a9a",
+                color: state.index === 1 ? "#6862a9" : "#9a9a9a",
                 fontSize: 13,
               }}
             >
@@ -169,14 +169,14 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
             {state.index === 2 ? (
-              <NotificationActiveIcon width={28} height={28} fill="#a18cd1" />
+              <NotificationActiveIcon width={28} height={28} fill="#6862a9" />
             ) : (
               <NotificationIcon width={28} height={28} fill="#8e8e8e" />
             )}
             <Text
               style={{
                 fontFamily: "Dubai-Regular",
-                color: state.index === 2 ? "#a18cd1" : "#9a9a9a",
+                color: state.index === 2 ? "#6862a9" : "#9a9a9a",
                 fontSize: 13,
               }}
             >
@@ -193,14 +193,14 @@ function TabBar({ state, navigation }: BottomTabBarProps) {
         >
           <View style={{ justifyContent: "center", alignItems: "center", padding: 10 }}>
             {state.index === 3 ? (
-              <ProfileActiveIcon width={28} height={28} fill="#a18cd1" />
+              <ProfileActiveIcon width={28} height={28} fill="#6862a9" />
             ) : (
               <ProfileIcon width={28} height={28} fill="#8e8e8e" />
             )}
             <Text
               style={{
                 fontFamily: "Dubai-Regular",
-                color: state.index === 3 ? "#a18cd1" : "#9a9a9a",
+                color: state.index === 3 ? "#6862a9" : "#9a9a9a",
                 fontSize: 13,
               }}
             >

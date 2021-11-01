@@ -59,21 +59,38 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
         }}
       >
         <View style={{ backgroundColor: "#fff", flex: 1, borderRadius: 20, overflow: "hidden" }}>
-          <View style={{ backgroundColor: "#f4f4f4", flexDirection: "row", paddingHorizontal: 20, paddingVertical: 10 }}>
+          <View
+            style={{
+              backgroundColor: "#f4f4f4",
+              flexDirection: "row",
+              paddingHorizontal: 20,
+              paddingVertical: 10,
+            }}
+          >
             <KText style={{ fontSize: 23, color: "#393939" }}>{t("payments")}</KText>
           </View>
-          {res.data?.me.stage?.payments?.edges && res.data?.me.stage?.payments?.edges?.length > 0 ? (
+          {res.data?.me.stage?.payments?.edges &&
+          res.data?.me.stage?.payments?.edges?.length > 0 ? (
             <FlatList
               data={res.data?.me.stage?.payments?.edges}
               keyExtractor={(item) => item?.node?.id ?? ""}
               contentContainerStyle={{ paddingBottom: 20 }}
               showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={() => <View style={{ borderBottomWidth: 1, borderBottomColor: "#ddd" }} />}
+              ItemSeparatorComponent={() => (
+                <View style={{ borderBottomWidth: 1, borderBottomColor: "#ddd" }} />
+              )}
               renderItem={({ item }) => (
                 <View style={{ flexDirection: "row", padding: 20 }}>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontFamily: "Dubai-Medium", color: "#383838", textAlign: "left" }}>{item?.node?.year}</Text>
-                    <Text style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }} numberOfLines={1}>
+                    <Text
+                      style={{ fontFamily: "Dubai-Medium", color: "#383838", textAlign: "left" }}
+                    >
+                      {item?.node?.year}
+                    </Text>
+                    <Text
+                      style={{ fontFamily: "Dubai-Regular", color: "#919191", textAlign: "left" }}
+                      numberOfLines={1}
+                    >
                       {numberWithCommas(item?.node?.paidAmount ?? 0)} {t("iqd")} -{" "}
                       {dayjs(item?.node?.createdAt).locale(locale).format("D - MMMM - YYYY")}
                     </Text>
@@ -99,7 +116,7 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
               source={{ uri: `${cdnURL}/${res.data?.me.image}` }}
               width={60}
               height={60}
-              style={{ backgroundColor: "#a18cd1", marginRight: 10, width: 60, height: 60 }}
+              style={{ backgroundColor: "#6862a9", marginRight: 10, width: 60, height: 60 }}
               borderRadius={100}
             />
             <View>
@@ -120,7 +137,9 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
                 >
                   <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
                     <Ionicons name="ios-checkmark-done-circle-outline" size={22} color="#777" />
-                    <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("my_marks")}</KText>
+                    <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>
+                      {t("my_marks")}
+                    </KText>
                   </View>
                 </Touchable>
                 <Touchable
@@ -131,7 +150,9 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
                 >
                   <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
                     <Ionicons name="card-outline" size={22} color="#777" />
-                    <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("payments")}</KText>
+                    <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>
+                      {t("payments")}
+                    </KText>
                   </View>
                 </Touchable>
               </>
@@ -149,8 +170,12 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
                 renderBtn={() => (
                   <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
                     <Ionicons name="ios-globe-outline" size={22} color="#777" />
-                    <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
-                      <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("language")}</KText>
+                    <View
+                      style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}
+                    >
+                      <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>
+                        {t("language")}
+                      </KText>
                       <KText style={{ textAlign: "left", color: "#aaa", paddingHorizontal: 20 }}>
                         {locale === "ar" ? "العربية" : "English"}
                       </KText>
@@ -179,7 +204,9 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
             >
               <View style={{ padding: 20, flexDirection: "row", alignItems: "center" }}>
                 <Ionicons name="log-out-outline" size={22} color="#777" />
-                <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>{t("logout")}</KText>
+                <KText style={{ textAlign: "left", color: "#383838", paddingHorizontal: 20 }}>
+                  {t("logout")}
+                </KText>
               </View>
             </Touchable>
           </ScrollView>

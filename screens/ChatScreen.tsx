@@ -17,7 +17,9 @@ import { cdnURL } from "../constants/Config";
 export function ChatScreen() {
   const [groupType, setGroupType] = useState<GroupType>();
   const [after, setAfter] = useState<string>();
-  const [res, refetch] = useGroupsQuery({ variables: { after, where: groupType && { groupType } } });
+  const [res, refetch] = useGroupsQuery({
+    variables: { after, where: groupType && { groupType } },
+  });
 
   const { t } = useTrans();
 
@@ -31,7 +33,12 @@ export function ChatScreen() {
       <SafeAreaView style={{ flex: 1 }}>
         <View row style={{ paddingTop: 10, backgroundColor: "#f4f4f4" }}>
           <TouchableOpacity
-            style={{ marginRight: 15, borderBottomColor: "#a18cd1", borderBottomWidth: !groupType ? 3 : 0, minWidth: 80 }}
+            style={{
+              marginRight: 15,
+              borderBottomColor: "#6862a9",
+              borderBottomWidth: !groupType ? 3 : 0,
+              minWidth: 80,
+            }}
             onPress={() => {
               setGroupType(undefined);
             }}
@@ -41,7 +48,7 @@ export function ChatScreen() {
           <TouchableOpacity
             style={{
               marginRight: 15,
-              borderBottomColor: "#a18cd1",
+              borderBottomColor: "#6862a9",
               borderBottomWidth: groupType === GroupType.Shared ? 3 : 0,
               minWidth: 80,
             }}
@@ -53,7 +60,7 @@ export function ChatScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             style={{
-              borderBottomColor: "#a18cd1",
+              borderBottomColor: "#6862a9",
               borderBottomWidth: groupType === GroupType.Private ? 3 : 0,
               minWidth: 80,
             }}
@@ -118,7 +125,9 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
         <View style={{ flex: 1 }}>
           <View row spread centerV style={{ paddingBottom: 5 }}>
             <KText style={{ color: "#393939" }}>{info?.name}</KText>
-            <KText style={{ fontSize: 12, fontFamily: "Dubai-Light" }}>{dayjs(msg?.createdAt).fromNow()}</KText>
+            <KText style={{ fontSize: 12, fontFamily: "Dubai-Light" }}>
+              {dayjs(msg?.createdAt).fromNow()}
+            </KText>
           </View>
           {msg ? (
             <KText key={msg?.id} style={{ fontSize: 12 }} numberOfLines={1}>

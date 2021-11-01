@@ -103,7 +103,7 @@ export function AttendanceScreen({ navigation }: RootStackScreenProps<"Attendanc
                       flexDirection: "row",
                       borderRadius: 100,
                       overflow: "hidden",
-                      backgroundColor: "#a18cd1",
+                      backgroundColor: "#6862a9",
                       alignItems: "center",
                       paddingHorizontal: 5,
                       marginLeft: 5,
@@ -140,7 +140,7 @@ export function AttendanceScreen({ navigation }: RootStackScreenProps<"Attendanc
                 marginRight: 10,
               }}
             >
-              <Ionicons name="calendar-outline" size={28} color="#a18cd1" />
+              <Ionicons name="calendar-outline" size={28} color="#6862a9" />
             </View>
           </Touchable>
         </View>
@@ -170,7 +170,7 @@ export function AttendanceScreen({ navigation }: RootStackScreenProps<"Attendanc
                   justifyContent: "center",
                 }}
               >
-                <Ionicons name="add" size={24} color="#a18cd1" />
+                <Ionicons name="add" size={24} color="#6862a9" />
               </View>
               <KText style={{ marginLeft: 10, color: "#393939" }}>{t("add")}</KText>
             </TouchableOpacity>
@@ -422,7 +422,7 @@ const AddAttendanceForm = React.forwardRef(
           </Touchable>
 
           <Touchable
-            style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#a18cd1" }}
+            style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#6862a9" }}
             onPress={async () => {
               if (!currentStudent || !currentClass) return;
               const res = await addAttendance({

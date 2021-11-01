@@ -119,7 +119,7 @@ export default function AssignmentsScreen({ navigation, route }: any) {
                     flexDirection: "row",
                     borderRadius: 100,
                     overflow: "hidden",
-                    backgroundColor: "#a18cd1",
+                    backgroundColor: "#6862a9",
                     alignItems: "center",
                     paddingHorizontal: 5,
                     marginLeft: 5,
@@ -155,7 +155,7 @@ export default function AssignmentsScreen({ navigation, route }: any) {
                 marginRight: 20,
               }}
             >
-              <Ionicons name="calendar-outline" size={28} color="#a18cd1" />
+              <Ionicons name="calendar-outline" size={28} color="#6862a9" />
             </View>
           </Touchable>
         </View>
@@ -185,7 +185,7 @@ export default function AssignmentsScreen({ navigation, route }: any) {
                   justifyContent: "center",
                 }}
               >
-                <Ionicons name="add" size={24} color="#a18cd1" />
+                <Ionicons name="add" size={24} color="#6862a9" />
               </View>
               <KText style={{ marginLeft: 10, color: "#393939" }}>{t("add")}</KText>
             </TouchableOpacity>
@@ -203,7 +203,7 @@ export default function AssignmentsScreen({ navigation, route }: any) {
           <Touchable
             style={{
               paddingHorizontal: 20,
-              borderBottomColor: "#a18cd1",
+              borderBottomColor: "#6862a9",
               borderBottomWidth: !isExam ? 3 : 0,
               minWidth: 80,
             }}
@@ -216,7 +216,7 @@ export default function AssignmentsScreen({ navigation, route }: any) {
           <Touchable
             style={{
               paddingHorizontal: 20,
-              borderBottomColor: "#a18cd1",
+              borderBottomColor: "#6862a9",
               borderBottomWidth: isExam ? 3 : 0,
               minWidth: 80,
             }}
@@ -536,7 +536,7 @@ const AddAssignmentForm = React.forwardRef(
           </View>
 
           <Touchable
-            style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#a18cd1" }}
+            style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#6862a9" }}
             onPress={async () => {
               if (!currentClassID) return;
               const res = await addAssignment({
@@ -886,8 +886,8 @@ function AssignmentSubmission({
                   }
                 }}
               >
-                <FilesIcon fill="#a18cd1" width={15} height={15} />
-                <KText style={{ fontFamily: "Dubai-Regular", color: "#a18cd1", marginLeft: 10 }}>
+                <FilesIcon fill="#6862a9" width={15} height={15} />
+                <KText style={{ fontFamily: "Dubai-Regular", color: "#6862a9", marginLeft: 10 }}>
                   {t("assignment_attachment")}
                 </KText>
               </TouchableOpacity>
@@ -941,7 +941,7 @@ function AssignmentSubmission({
                       marginRight: 10,
                     }}
                   >
-                    <FilesIcon fill="#a18cd1" width={28} height={28} />
+                    <FilesIcon fill="#6862a9" width={28} height={28} />
                   </View>
                   <KText
                     style={{ flex: 1, color: "#393939aa", textAlign: "left" }}
@@ -1055,7 +1055,7 @@ function AssignmentSubmission({
           style={{
             borderRadius: 5,
             overflow: "hidden",
-            backgroundColor: examIsOverdue ? "#919191" : "#a18cd1",
+            backgroundColor: examIsOverdue ? "#919191" : "#6862a9",
             padding: 10,
           }}
           onPress={() => {

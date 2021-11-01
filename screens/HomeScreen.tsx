@@ -97,7 +97,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
                   alignItems: "center",
                 }}
               >
-                <Icon name="calendar-outline" size={28} color="#a18cd1" />
+                <Icon name="calendar-outline" size={28} color="#6862a9" />
               </View>
             )}
             initialNumToRender={7}
@@ -158,7 +158,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
                         alignItems: "center",
                       }}
                     >
-                      <Icon name="reader-outline" size={28} color="#a18cd1" />
+                      <Icon name="reader-outline" size={28} color="#6862a9" />
                     </View>
                     <KText style={{ color: "#393939", fontSize: 18 }}>{t("assignments")}</KText>
                   </View>
@@ -189,7 +189,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
                         alignItems: "center",
                       }}
                     >
-                      <Icon name="create-outline" size={28} color="#a18cd1" />
+                      <Icon name="create-outline" size={28} color="#6862a9" />
                     </View>
                     <KText style={{ color: "#393939", fontSize: 18 }}>{t("exams")}</KText>
                   </View>
@@ -222,7 +222,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
                         alignItems: "center",
                       }}
                     >
-                      <Icon name="ios-checkmark-done-circle-outline" size={28} color="#a18cd1" />
+                      <Icon name="ios-checkmark-done-circle-outline" size={28} color="#6862a9" />
                     </View>
                     <KText style={{ color: "#393939", fontSize: 18 }}>
                       {t(me?.role === "TEACHER" ? "marks" : "my_marks")}
@@ -255,7 +255,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
                         alignItems: "center",
                       }}
                     >
-                      <Icon name="people-outline" size={28} color="#a18cd1" />
+                      <Icon name="people-outline" size={28} color="#6862a9" />
                     </View>
                     <KText style={{ color: "#393939", fontSize: 18 }}>{t("attendance")}</KText>
                   </View>

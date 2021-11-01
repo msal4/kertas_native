@@ -46,7 +46,11 @@ export default function CourseGradesScreen() {
   const { me } = useMe();
   if (!me) return null;
 
-  return me?.role === Role.Teacher ? <_TeacherCourseGradesScreen /> : <_StudentCourseGradesScreen />;
+  return me?.role === Role.Teacher ? (
+    <_TeacherCourseGradesScreen />
+  ) : (
+    <_StudentCourseGradesScreen />
+  );
 }
 
 const windowHeight = Dimensions.get("window").height;
@@ -102,7 +106,15 @@ function _TeacherCourseGradesScreen() {
         yearSelector.current?.close();
       }}
     >
-      <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
+      <View
+        style={{
+          paddingLeft: left,
+          paddingRight: right,
+          paddingBottom: bottom,
+          flex: 1,
+          backgroundColor: "#fff",
+        }}
+      >
         <StatusBar barStyle="dark-content" />
         <View
           style={{
@@ -128,12 +140,29 @@ function _TeacherCourseGradesScreen() {
                       alignItems: "center",
                     }}
                   >
-                    <Icon name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#383838" />
+                    <Icon
+                      name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"}
+                      size={24}
+                      color="#383838"
+                    />
                   </View>
                 </Touchable>
-                <View style={{ paddingRight: 15, flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                  <KText style={{ color: "#393939", textAlign: "left", fontSize: 23 }}>{t("marks")}</KText>
-                  <TouchableOpacity style={{ flexDirection: "row", alignItems: "center" }} onPress={openClassSelector}>
+                <View
+                  style={{
+                    paddingRight: 15,
+                    flex: 1,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <KText style={{ color: "#393939", textAlign: "left", fontSize: 23 }}>
+                    {t("marks")}
+                  </KText>
+                  <TouchableOpacity
+                    style={{ flexDirection: "row", alignItems: "center" }}
+                    onPress={openClassSelector}
+                  >
                     <KText style={{ marginRight: 5, color: "#393939" }}>{currentClass?.name}</KText>
                     <Ionicons name="chevron-down" />
                   </TouchableOpacity>
@@ -214,7 +243,17 @@ interface MarksFormProps {
 const middlePoint = windowHeight >= 800 ? 250 : "20%";
 
 const MarksForm = React.forwardRef(
-  ({ currentClass, currentStudent, currentYear, onYearPress, currentCourse, onCoursePress }: MarksFormProps, ref) => {
+  (
+    {
+      currentClass,
+      currentStudent,
+      currentYear,
+      onYearPress,
+      currentCourse,
+      onCoursePress,
+    }: MarksFormProps,
+    ref
+  ) => {
     const { top, bottom } = useSafeAreaInsets();
     const { t } = useTrans();
 
@@ -283,7 +322,11 @@ const MarksForm = React.forwardRef(
       >
         {currentStudent && (
           <View style={{ paddingHorizontal: 20 }}>
-            <KText style={{ textAlign: "center", marginBottom: 15, fontSize: 18, color: "#393939" }}>{currentStudent.name}</KText>
+            <KText
+              style={{ textAlign: "center", marginBottom: 15, fontSize: 18, color: "#393939" }}
+            >
+              {currentStudent.name}
+            </KText>
 
             <Touchable
               style={{
@@ -318,7 +361,14 @@ const MarksForm = React.forwardRef(
               <Ionicons name="chevron-down" size={15} />
             </Touchable>
 
-            <View style={{ marginTop: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-around" }}>
+            <View
+              style={{
+                marginTop: 20,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
               <KText>{t("first_month")}</KText>
               <KText>{t("second_month")}</KText>
             </View>
@@ -390,7 +440,9 @@ const MarksForm = React.forwardRef(
               </View>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
-              <KText style={{ marginRight: 10 }}>{t("course_final")[0].toUpperCase() + t("course_final").substr(1)}</KText>
+              <KText style={{ marginRight: 10 }}>
+                {t("course_final")[0].toUpperCase() + t("course_final").substr(1)}
+              </KText>
               <TextInput
                 value={final?.toString()}
                 onChangeText={(v) => setFinal(v)}
@@ -406,13 +458,21 @@ const MarksForm = React.forwardRef(
               />
             </View>
             <Touchable
-              style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#a18cd1" }}
+              style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#6862a9" }}
               onPress={async () => {
                 const input = {
-                  activitySecond: !Number.isNaN(parseInt(activitySecond ?? "")) ? parseInt(activitySecond!) : null,
-                  activityFirst: !Number.isNaN(parseInt(activityFirst ?? "")) ? parseInt(activityFirst!) : null,
-                  writtenSecond: !Number.isNaN(parseInt(writtenSecond ?? "")) ? parseInt(writtenSecond!) : null,
-                  writtenFirst: !Number.isNaN(parseInt(writtenFirst ?? "")) ? parseInt(writtenFirst!) : null,
+                  activitySecond: !Number.isNaN(parseInt(activitySecond ?? ""))
+                    ? parseInt(activitySecond!)
+                    : null,
+                  activityFirst: !Number.isNaN(parseInt(activityFirst ?? ""))
+                    ? parseInt(activityFirst!)
+                    : null,
+                  writtenSecond: !Number.isNaN(parseInt(writtenSecond ?? ""))
+                    ? parseInt(writtenSecond!)
+                    : null,
+                  writtenFirst: !Number.isNaN(parseInt(writtenFirst ?? ""))
+                    ? parseInt(writtenFirst!)
+                    : null,
                   courseFinal: !Number.isNaN(parseInt(final ?? "")) ? parseInt(final!) : null,
                 };
 
@@ -452,7 +512,13 @@ const MarksForm = React.forwardRef(
   }
 );
 
-function StudentList({ classID, onSelect }: { classID: string; onSelect: (student: UserFragment) => void }) {
+function StudentList({
+  classID,
+  onSelect,
+}: {
+  classID: string;
+  onSelect: (student: UserFragment) => void;
+}) {
   const after = React.useRef<string>();
   const [res, refetch] = useClassStudentsQuery({ variables: { classID, after: after.current } });
   const { t } = useTrans();
@@ -477,13 +543,29 @@ function StudentList({ classID, onSelect }: { classID: string; onSelect: (studen
       }}
       keyExtractor={(s) => s.id}
       ItemSeparatorComponent={() => (
-        <View style={{ margin: 5, marginHorizontal: 20, borderBottomColor: "#9a9a9a44", borderBottomWidth: 1 }} />
+        <View
+          style={{
+            margin: 5,
+            marginHorizontal: 20,
+            borderBottomColor: "#9a9a9a44",
+            borderBottomWidth: 1,
+          }}
+        />
       )}
       renderItem={({ item }) => (
-        <Touchable onPress={() => onSelect(item)} style={{ flexDirection: "row", alignItems: "center", padding: 20 }}>
+        <Touchable
+          onPress={() => onSelect(item)}
+          style={{ flexDirection: "row", alignItems: "center", padding: 20 }}
+        >
           <Image
             source={{ uri: `${cdnURL}/${item.image}` }}
-            style={{ overflow: "hidden", borderRadius: 100, height: 40, width: 40, marginRight: 10 }}
+            style={{
+              overflow: "hidden",
+              borderRadius: 100,
+              height: 40,
+              width: 40,
+              marginRight: 10,
+            }}
           />
           <KText>{item.name}</KText>
         </Touchable>
@@ -500,7 +582,15 @@ function _StudentCourseGradesScreen() {
   const [res, refetch] = useClassesQuery();
 
   return (
-    <View style={{ paddingLeft: left, paddingRight: right, paddingBottom: bottom, flex: 1, backgroundColor: "#fff" }}>
+    <View
+      style={{
+        paddingLeft: left,
+        paddingRight: right,
+        paddingBottom: bottom,
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+    >
       <StatusBar barStyle="dark-content" />
       <View
         style={{
@@ -526,11 +616,17 @@ function _StudentCourseGradesScreen() {
                     alignItems: "center",
                   }}
                 >
-                  <Icon name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} size={24} color="#383838" />
+                  <Icon
+                    name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"}
+                    size={24}
+                    color="#383838"
+                  />
                 </View>
               </Touchable>
               <View style={{ flex: 1 }}>
-                <KText style={{ color: "#393939", textAlign: "left", fontSize: 23 }}>{t("my_marks")}</KText>
+                <KText style={{ color: "#393939", textAlign: "left", fontSize: 23 }}>
+                  {t("my_marks")}
+                </KText>
               </View>
             </View>
           </View>
@@ -556,7 +652,9 @@ function _StudentCourseGradesScreen() {
             keyExtractor={(item) => item?.node?.id ?? ""}
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{ borderBottomWidth: 1, borderBottomColor: "#ddd" }} />}
+            ItemSeparatorComponent={() => (
+              <View style={{ borderBottomWidth: 1, borderBottomColor: "#ddd" }} />
+            )}
             renderItem={({ item }) => <ClassItem item={item} />}
           />
         ) : null}
@@ -577,7 +675,9 @@ function ClassItem({ item }: any) {
     >
       <View style={{ padding: 20 }}>
         <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-          <KText style={{ color: "#000", textAlign: "left", marginRight: 10 }}>{item?.node?.name}</KText>
+          <KText style={{ color: "#000", textAlign: "left", marginRight: 10 }}>
+            {item?.node?.name}
+          </KText>
           <KText style={{ color: "#919191", textAlign: "left", fontSize: 13 }} numberOfLines={1}>
             {item?.node?.teacher.name}
           </KText>
@@ -707,11 +807,16 @@ function Grades(props: { classID: any }) {
                       overflow: "hidden",
                     }}
                   >
-                    {item?.node?.activityFirst + item?.node?.writtenFirst + item?.node?.activitySecond + item?.node?.writtenSecond}
+                    {item?.node?.activityFirst +
+                      item?.node?.writtenFirst +
+                      item?.node?.activitySecond +
+                      item?.node?.writtenSecond}
                   </KText>
                 </View>
                 <View>
-                  <KText style={{ color: "#393939", textAlign: "center" }}>{t("course_final")}</KText>
+                  <KText style={{ color: "#393939", textAlign: "center" }}>
+                    {t("course_final")}
+                  </KText>
                   <KText
                     style={{
                       color: "#000",

@@ -103,8 +103,8 @@ export function AssignmentSubmissionsScreen({
                   assignmentFormRef.current?.snapTo(0);
                 }}
               >
-                <Ionicons name="pencil-outline" style={{ marginHorizontal: 10 }} color="#a18cd1" />
-                <KText style={{ color: "#a18cd1" }}>{t("edit")}</KText>
+                <Ionicons name="pencil-outline" style={{ marginHorizontal: 10 }} color="#6862a9" />
+                <KText style={{ color: "#6862a9" }}>{t("edit")}</KText>
               </Touchable>
             </View>
 
@@ -140,9 +140,9 @@ export function AssignmentSubmissionsScreen({
                       }
                     }}
                   >
-                    <FilesIcon fill="#a18cd1" width={15} height={15} />
+                    <FilesIcon fill="#6862a9" width={15} height={15} />
                     <KText
-                      style={{ fontFamily: "Dubai-Regular", color: "#a18cd1", marginLeft: 10 }}
+                      style={{ fontFamily: "Dubai-Regular", color: "#6862a9", marginLeft: 10 }}
                     >
                       {t("assignment_attachment")}
                     </KText>
@@ -410,7 +410,7 @@ const EditAssignmentForm = React.forwardRef(
           </View>
 
           <Touchable
-            style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#a18cd1" }}
+            style={{ marginTop: 20, padding: 20, borderRadius: 20, backgroundColor: "#6862a9" }}
             onPress={async () => {
               const res = await updateAssignment({
                 id: assignment.id,
@@ -607,7 +607,7 @@ function AssignmentSubmission({
                       marginRight: 10,
                     }}
                   >
-                    <FilesIcon fill="#a18cd1" width={28} height={28} />
+                    <FilesIcon fill="#6862a9" width={28} height={28} />
                   </View>
                   <KText
                     style={{ flex: 1, color: "#393939aa", textAlign: "left" }}

@@ -1,5 +1,13 @@
 import React, { forwardRef, memo, useRef, useState } from "react";
-import { FlatList, ImageBackground, KeyboardAvoidingView, Platform, TextInput, TouchableHighlight, TouchableOpacity } from "react-native";
+import {
+  FlatList,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+  TouchableHighlight,
+  TouchableOpacity,
+} from "react-native";
 
 import {
   GroupType,
@@ -82,7 +90,13 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
 
     const filetype = mime.lookup(res.uri) || "image";
 
-    setAttachment(new ReactNativeFile({ uri: res.uri, name: res.uri.substr(res.uri.lastIndexOf("/") + 1), type: filetype }));
+    setAttachment(
+      new ReactNativeFile({
+        uri: res.uri,
+        name: res.uri.substr(res.uri.lastIndexOf("/") + 1),
+        type: filetype,
+      })
+    );
   };
 
   const info = getGroupInfo(group, me);
@@ -105,7 +119,12 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             navigation.pop();
           }}
         >
-          <Ionicons color="#9a9a9a" name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"} style={{ padding: 5 }} size={30} />
+          <Ionicons
+            color="#9a9a9a"
+            name={isRTL ? "ios-chevron-forward" : "ios-chevron-back"}
+            style={{ padding: 5 }}
+            size={30}
+          />
         </TouchableOpacity>
         <Image
           source={{ uri: `${cdnURL}/${info?.image}` }}
@@ -114,12 +133,16 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
           style={{ marginLeft: 10, backgroundColor: "#f2f2f2", marginRight: 15 }}
           borderRadius={8}
         />
-        <KText style={{ fontSize: 17, color: "#9a9a9a", fontFamily: "Dubai-Medium" }}>{info?.name}</KText>
+        <KText style={{ fontSize: 17, color: "#9a9a9a", fontFamily: "Dubai-Medium" }}>
+          {info?.name}
+        </KText>
       </View>
       <LinearGradient
         start={{ x: 0, y: 0 }}
         style={{ height: 4 }}
-        colors={group?.groupType === GroupType.Private ? ["#fecfef", "#ff9a9e"] : ["#fbc2eb", "#a18cd1"]}
+        colors={
+          group?.groupType === GroupType.Private ? ["#fecfef", "#ff9a9e"] : ["#fbc2eb", "#6862a9"]
+        }
       />
 
       <KeyboardAvoidingView
@@ -132,7 +155,11 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
 
         <View>
           {attachment && (
-            <View row centerV style={{ paddingHorizontal: 15, borderTopColor: "#9a9a9a11", borderTopWidth: 2 }}>
+            <View
+              row
+              centerV
+              style={{ paddingHorizontal: 15, borderTopColor: "#9a9a9a11", borderTopWidth: 2 }}
+            >
               <TouchableOpacity
                 style={{ paddingRight: 10 }}
                 onPress={() => {
@@ -160,7 +187,7 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
               <Ionicons
                 style={{
                   paddingHorizontal: 15,
-                  color: attachment ? "#a18cd1" : "#9a9a9a",
+                  color: attachment ? "#6862a9" : "#9a9a9a",
                   transform: isRTL ? [{ rotate: "180deg" }] : undefined,
                 }}
                 name="attach"
@@ -175,9 +202,16 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
               placeholder={t("say_something") + "..."}
               textAlign={isRTL ? "right" : undefined}
             />
-            <TouchableOpacity style={{ paddingHorizontal: 15 }} disabled={disabled} onPress={submit}>
+            <TouchableOpacity
+              style={{ paddingHorizontal: 15 }}
+              disabled={disabled}
+              onPress={submit}
+            >
               <Ionicons
-                style={{ color: disabled ? "#9a9a9a" : "#a18cd1", transform: isRTL ? [{ rotate: "180deg" }] : undefined }}
+                style={{
+                  color: disabled ? "#9a9a9a" : "#6862a9",
+                  transform: isRTL ? [{ rotate: "180deg" }] : undefined,
+                }}
                 name={`send${disabled ? "-outline" : ""}` as any}
                 size={22}
               />
@@ -198,7 +232,10 @@ const MessageList = memo(
   forwardRef(function ({ groupID }: MessageListProps, ref) {
     const [after, setAfter] = useState();
     const [queryResponse, refetch] = useMessagesQuery({ variables: { groupID, after } });
-    const [subscriptionResponse, resubscribe] = useMessagePostedSubscription({ variables: { groupID } }, handleSubscription);
+    const [subscriptionResponse, resubscribe] = useMessagePostedSubscription(
+      { variables: { groupID } },
+      handleSubscription
+    );
 
     if (subscriptionResponse.error) {
       console.log(subscriptionResponse.error);
@@ -217,7 +254,10 @@ const MessageList = memo(
             ItemSeparatorComponent={() => <View height={15} />}
             style={{ scaleY: isAndroid ? -1 : undefined }}
             contentContainerStyle={{ padding: 10 }}
-            data={[...(subscriptionResponse.data ?? []), ...(queryResponse.data.messages?.edges?.map((e) => e?.node) ?? [])]}
+            data={[
+              ...(subscriptionResponse.data ?? []),
+              ...(queryResponse.data.messages?.edges?.map((e) => e?.node) ?? []),
+            ]}
             renderItem={({ item }) => <MessageItem msg={item} />}
             keyExtractor={(item) => item.id}
             onEndReached={() => {
@@ -234,7 +274,10 @@ const MessageList = memo(
   })
 );
 
-function showToast(msg: string, { duration = Toast.durations.SHORT, position = Toast.positions.BOTTOM } = {}) {
+function showToast(
+  msg: string,
+  { duration = Toast.durations.SHORT, position = Toast.positions.BOTTOM } = {}
+) {
   Toast.show(msg, {
     duration: duration,
     position: position,
@@ -251,7 +294,10 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
   const { t } = useTrans();
   const isMe = msg.owner.id === me?.id;
 
-  const hasImage = msg.attachment && mime.lookup(msg.attachment) && mime.lookup(msg.attachment).startsWith("image");
+  const hasImage =
+    msg.attachment &&
+    mime.lookup(msg.attachment) &&
+    mime.lookup(msg.attachment).startsWith("image");
   const [visible, setVisible] = useState(false);
 
   return (
@@ -266,7 +312,13 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
         />
       ) : null}
       <TouchableHighlight
-        style={{ borderRadius: 16, overflow: "hidden", marginLeft: isMe ? "auto" : undefined, flexGrow: 0, flexShrink: 1 }}
+        style={{
+          borderRadius: 16,
+          overflow: "hidden",
+          marginLeft: isMe ? "auto" : undefined,
+          flexGrow: 0,
+          flexShrink: 1,
+        }}
         onLongPress={() => {
           if (msg.content) {
             Clipboard.setString(msg.content);
@@ -286,11 +338,19 @@ const MessageItem = memo(({ msg }: { msg: MessageFragment }) => {
         >
           <View row spread style={{ paddingBottom: 5 }}>
             {
-              <KText style={{ marginRight: 20, fontFamily: "Dubai-Medium", color: isMe ? "#fff" : "#383838" }}>
+              <KText
+                style={{
+                  marginRight: 20,
+                  fontFamily: "Dubai-Medium",
+                  color: isMe ? "#fff" : "#383838",
+                }}
+              >
                 {isMe ? t("you") : msg.owner.name}
               </KText>
             }
-            <KText style={{ color: isMe ? "#f3f3f3" : "#5f5f5f", fontSize: 13 }}>{dayjs(msg.createdAt as any).fromNow()}</KText>
+            <KText style={{ color: isMe ? "#f3f3f3" : "#5f5f5f", fontSize: 13 }}>
+              {dayjs(msg.createdAt as any).fromNow()}
+            </KText>
           </View>
 
           {hasImage ? (

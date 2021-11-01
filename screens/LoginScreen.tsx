@@ -1,6 +1,13 @@
 import * as React from "react";
 import { useState } from "react";
-import { Image, Keyboard, KeyboardAvoidingView, SafeAreaView, TextInput, TouchableWithoutFeedback } from "react-native";
+import {
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native";
 
 import { RootStackScreenProps } from "../types";
 import { View } from "react-native-ui-lib";
@@ -17,6 +24,7 @@ import { KText } from "../components/KText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-root-toast";
 import { showErrToast } from "../util/toast";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function LoginScreen({ navigation }: RootStackScreenProps<"Login">) {
   const [, login] = useLoginMutation();
@@ -78,11 +86,19 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
           }}
         >
           <Image
-            style={{ width: 200, height: 200, backgroundColor: "#f4f4f4", borderRadius: 100, alignSelf: "center", marginBottom: 30 }}
-            source={{}}
+            resizeMode="contain"
+            style={{
+              width: "100%",
+              height: 200,
+              alignSelf: "center",
+              marginBottom: 30,
+            }}
+            source={require("../assets/images/Kertas-01.png")}
           />
           <View>
-            <KText style={{ paddingHorizontal: 20, marginBottom: 5, textAlign: "left" }}>{t("username")}</KText>
+            <KText style={{ paddingHorizontal: 20, marginBottom: 5, textAlign: "left" }}>
+              {t("username")}
+            </KText>
             <TextInput
               value={username}
               onChangeText={setUsername}
@@ -95,7 +111,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
                 paddingVertical: 20,
                 paddingHorizontal: 25,
                 borderWidth: 2,
-                borderColor: userFocus ? "#a18cd1" : "#f4f4f4",
+                borderColor: userFocus ? "#6862a9" : "#f4f4f4",
                 fontSize: 16,
                 borderRadius: 100,
                 textAlign: isRTL ? "right" : "left",
@@ -113,7 +129,11 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
           </View>
 
           <View>
-            <KText style={{ paddingHorizontal: 20, marginBottom: 5, marginTop: 30, textAlign: "left" }}>{t("password")}</KText>
+            <KText
+              style={{ paddingHorizontal: 20, marginBottom: 5, marginTop: 30, textAlign: "left" }}
+            >
+              {t("password")}
+            </KText>
             <TextInput
               ref={passwordInput as any}
               value={password}
@@ -130,7 +150,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
                 paddingVertical: 20,
                 paddingHorizontal: 25,
                 borderWidth: 2,
-                borderColor: passFocus ? "#a18cd1" : "#f4f4f4",
+                borderColor: passFocus ? "#6862a9" : "#f4f4f4",
                 fontSize: 16,
                 borderRadius: 100,
                 textAlign: isRTL ? "right" : "left",
@@ -148,23 +168,29 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
               borderRadius: 100,
               overflow: "hidden",
               marginTop: 60,
-              padding: 10,
-              backgroundColor: fetching ? "#39393944" : "#a18cd1",
             }}
             disabled={fetching}
             onPress={loginUser}
           >
-            <KText style={{ textAlign: "center", color: "#fff", fontSize: 18 }}>{t("login")}</KText>
+            <LinearGradient
+              style={{
+                overflow: "hidden",
+                padding: 10,
+              }}
+              colors={fetching ? ["#39393944"] : ["#5bb0d6", "#6862a9"]}
+              start={{ x: 0, y: 0 }}
+            >
+              <KText
+                style={{
+                  textAlign: "center",
+                  color: "#fff",
+                  fontSize: 18,
+                }}
+              >
+                {t("login")}
+              </KText>
+            </LinearGradient>
           </Touchable>
-
-          {/*<Toast
-            visible={errToastVisible}
-            position={"top"}
-            backgroundColor={"red"}
-            message={errToastMsg}
-            onDismiss={() => setErrToastVisible(false)}
-            autoDismiss={3000}
-          /> */}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </SafeAreaView>

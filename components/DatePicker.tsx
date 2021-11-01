@@ -73,7 +73,7 @@ export default function DatePicker(props: any) {
         </Touchable>
         <Touchable
           style={{
-            backgroundColor: "#a18cd1",
+            backgroundColor: "#6862a9",
             paddingVertical: 10,
             paddingHorizontal: 35,
             borderRadius: 5,
