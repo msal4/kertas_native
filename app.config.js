@@ -16,13 +16,13 @@ export default {
   },
   assetBundlePatterns: ["**/*"],
   ios: {
-    bundleIdentifier: "me.kertas.school",
+    bundleIdentifier: "iq.kertas.school",
     buildNumber: "1.0.0",
     supportsTablet: true,
     usesIcloudStorage: true,
   },
   android: {
-    package: "me.kertas.school",
+    package: "iq.kertas.school",
     versionCode: 1,
     adaptiveIcon: {
       foregroundImage: "./assets/images/adaptive-icon.png",

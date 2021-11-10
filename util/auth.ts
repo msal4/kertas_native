@@ -5,8 +5,19 @@ import { relayPagination } from "@urql/exchange-graphcache/extras";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import jwtDecode, { JwtPayload } from "jwt-decode";
 import { SubscriptionClient } from "subscriptions-transport-ws";
-import { Operation, createClient, dedupExchange, errorExchange, makeOperation, subscriptionExchange } from "urql";
-import { RefreshTokensMutation, RefreshTokensMutationVariables, RefreshTokensDocument } from "../generated/graphql";
+import {
+  Operation,
+  createClient,
+  dedupExchange,
+  errorExchange,
+  makeOperation,
+  subscriptionExchange,
+} from "urql";
+import {
+  RefreshTokensMutation,
+  RefreshTokensMutationVariables,
+  RefreshTokensDocument,
+} from "../generated/graphql";
 import { replace } from "../navigation/navigationRef";
 import { devtoolsExchange } from "@urql/devtools";
 import { graphqlURL } from "../constants/Config";
@@ -39,7 +50,8 @@ export const getTokenExp = (token: string) => jwtDecode<JwtPayload>(token).exp?.
 
 export const isTokenExpired = (exp: string) => Number.parseInt(exp) <= Date.now() / 1000;
 
-export const clearTokens = () => AsyncStorage.multiRemove([refreshTokenKey, accessTokenKey, accessTokenExpKey, meKey]);
+export const clearTokens = () =>
+  AsyncStorage.multiRemove([refreshTokenKey, accessTokenKey, accessTokenExpKey, meKey]);
 
 const isOperationLoginOrRefresh = (operation: Operation) => {
   return (
@@ -50,7 +62,9 @@ const isOperationLoginOrRefresh = (operation: Operation) => {
         definition.selectionSet.selections.some((node) => {
           return (
             node.kind === "Field" &&
-            (node.name.value === "loginUser" || node.name.value == "loginAdmin" || node.name.value == "refreshTokens")
+            (node.name.value === "loginUser" ||
+              node.name.value == "loginAdmin" ||
+              node.name.value == "refreshTokens")
           );
         })
       );
@@ -98,7 +112,9 @@ export const createAuthClient = () => {
           }
 
           const fetchOptions =
-            typeof operation.context.fetchOptions === "function" ? operation.context.fetchOptions() : operation.context.fetchOptions ?? {};
+            typeof operation.context.fetchOptions === "function"
+              ? operation.context.fetchOptions()
+              : operation.context.fetchOptions ?? {};
 
           return makeOperation(operation.kind, operation, {
             ...operation.context,
@@ -141,7 +157,10 @@ export const createAuthClient = () => {
             return null;
           }
 
-          const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(RefreshTokensDocument, data);
+          const res = await mutate<RefreshTokensMutation, RefreshTokensMutationVariables>(
+            RefreshTokensDocument,
+            data
+          );
           if (res.error) {
             if (res.error.graphQLErrors.some((e) => e.extensions?.code === "INVALID_TOKEN")) {
               await clearTokens();
@@ -160,7 +179,10 @@ export const createAuthClient = () => {
           }
           await setTokens(res.data.refreshTokens);
 
-          return { ...res.data.refreshTokens, accessTokenExp: getTokenExp(res.data.refreshTokens.accessToken) };
+          return {
+            ...res.data.refreshTokens,
+            accessTokenExp: getTokenExp(res.data.refreshTokens.accessToken),
+          };
         },
       }),
       multipartFetchExchange,

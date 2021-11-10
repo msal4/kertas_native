@@ -1,6 +1,7 @@
 import React from "react";
 import { View } from "react-native";
-import { PacmanIndicator } from "react-native-indicators";
+import { WaveIndicator as LoadingIndicator } from "react-native-indicators";
+import { primaryColor } from "../util/const";
 
 // contract
 interface LoadingProps {
@@ -10,7 +11,11 @@ interface LoadingProps {
 }
 
 // <Loading />
-export default function Loading({ color = "#9b9b9b", isLoading = true, height = "auto" }: LoadingProps) {
+export default function Loading({
+  color = primaryColor,
+  isLoading = true,
+  height = "auto",
+}: LoadingProps) {
   if (!isLoading) {
     return null;
   }
@@ -25,7 +30,7 @@ export default function Loading({ color = "#9b9b9b", isLoading = true, height = 
         flex: height === "100%" ? 1 : undefined,
       }}
     >
-      <PacmanIndicator color={color} /*count={3} */ />
+      <LoadingIndicator color={primaryColor} /*count={3} */ />
     </View>
   );
 }
