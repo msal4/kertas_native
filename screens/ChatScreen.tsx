@@ -116,7 +116,9 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
     >
       <View row style={{ padding: 10 }}>
         <Image
-          source={{ uri: `${cdnURL}/${info?.image ?? ""}` }}
+          source={{
+            uri: info?.image ? `${cdnURL}/${info.image}` : "https://picsum.photos/100/100?blur=10",
+          }}
           width={60}
           height={60}
           style={{ backgroundColor: "#f2f2f2", marginRight: 10 }}

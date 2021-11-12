@@ -20,6 +20,9 @@ export default {
     buildNumber: "1.0.1",
     supportsTablet: true,
     usesIcloudStorage: true,
+    infoPlist: {
+      NSPhotoLibraryUsageDescription: "Access photos to upload assignments and share them in chat.",
+    },
   },
   android: {
     package: "iq.kertas.school",
@@ -36,11 +39,4 @@ export default {
     graphqlURL: process.env.GRAPHQL_URL,
     cdnURL: process.env.CDN_URL,
   },
-  plugins: [
-    "expo-image-picker",
-    {
-      photosPermission: "Access user photos for uploading assignments and sharing them in chat.",
-      cameraPermision: "Take photos for uploading assignments and sharing them in chat.",
-    },
-  ],
 };
