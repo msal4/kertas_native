@@ -28,33 +28,32 @@ export default function SelectModal(props: SelectModalProps) {
 
   const renderItem = ({ item }: ListRenderItemInfo<Item>) => {
     return (
-      <View style={{ borderRadius: 20, overflow: "hidden", marginBottom: 15 }}>
-        <Touchable
-          onPress={() => {
-            setSelectedTitle(item.name);
-            setShowed(false);
-            props.onSelect(item);
+      <Touchable
+        style={{ borderRadius: 20, overflow: "hidden", marginBottom: 15 }}
+        onPress={() => {
+          setSelectedTitle(item.name);
+          setShowed(false);
+          props.onSelect(item);
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 25,
+            paddingVertical: 15,
+            backgroundColor: props.selected === item.value ? "#6862a9" : "#fff",
           }}
         >
-          <View
+          <Text
             style={{
-              flexDirection: "row",
-              paddingHorizontal: 25,
-              paddingVertical: 15,
-              backgroundColor: props.selected === item.value ? "#6862a9" : "#fff",
+              fontFamily: "Dubai-Regular",
+              color: props.selected === item.value ? "#fff" : "#919191",
             }}
           >
-            <Text
-              style={{
-                fontFamily: "Dubai-Regular",
-                color: props.selected === item.value ? "#fff" : "#919191",
-              }}
-            >
-              {item.name}
-            </Text>
-          </View>
-        </Touchable>
-      </View>
+            {item.name}
+          </Text>
+        </View>
+      </Touchable>
     );
   };
 
