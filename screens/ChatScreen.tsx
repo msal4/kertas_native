@@ -115,7 +115,7 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
       }}
     >
       <View row style={{ padding: 10 }}>
-        {info?.image ? (
+        {info?.image || group.groupType === GroupType.Private ? (
           <Image
             source={{
               uri: `${cdnURL}/${info?.image}`,
