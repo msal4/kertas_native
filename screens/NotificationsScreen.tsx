@@ -39,7 +39,9 @@ export function NotificationsScreen() {
                 }}
               />
             )}
-            renderItem={({ item }) => <NotificationItem key={item?.node?.id} notification={item?.node!} />}
+            renderItem={({ item }) => (
+              <NotificationItem key={item?.node?.id} notification={item?.node!} />
+            )}
           />
         )}
         <Error isError={!!res.error} onPress={refetch} />
@@ -59,10 +61,13 @@ function NotificationItem({ notification }: { notification: NotificationFragment
       <View row style={{ padding: 10 }}>
         <Image
           source={{ uri: `${cdnURL}/${notification.image}` }}
-          width={100}
-          height={100}
-          style={{ backgroundColor: "#f2f2f2", marginRight: 10 }}
-          borderRadius={16}
+          style={{
+            backgroundColor: "#f2f2f2",
+            marginRight: 10,
+            width: 100,
+            height: 100,
+            borderRadius: 16,
+          }}
         />
         <View style={{ flex: 1 }}>
           <KText style={{ color: "#393939" }}>{notification?.title}</KText>
@@ -70,7 +75,9 @@ function NotificationItem({ notification }: { notification: NotificationFragment
             {notification.body}
           </KText>
           <View style={{ flex: 1 }} />
-          <KText style={{ fontSize: 12, fontFamily: "Dubai-Light" }}>{dayjs(notification?.createdAt).fromNow()}</KText>
+          <KText style={{ fontSize: 12, fontFamily: "Dubai-Light" }}>
+            {dayjs(notification?.createdAt).fromNow()}
+          </KText>
         </View>
       </View>
     </Touchable>
