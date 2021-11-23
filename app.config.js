@@ -33,6 +33,9 @@ export default {
     },
     googleServicesFile: "./google-services.json",
   },
+  androidNavigationBar: {
+    backgroundColor: "#f4f4f4",
+  },
   web: {
     favicon: "./assets/images/favicon.png",
   },
