@@ -115,15 +115,20 @@ function ChatGroup({ group }: { group: GroupDetailFragment }) {
       }}
     >
       <View row style={{ padding: 10 }}>
-        <Image
-          source={{
-            uri: info?.image ? `${cdnURL}/${info.image}` : "https://picsum.photos/100/100?blur=10",
-          }}
-          width={60}
-          height={60}
-          style={{ backgroundColor: "#f2f2f2", marginRight: 10 }}
-          borderRadius={16}
-        />
+        {info?.image ? (
+          <Image
+            source={{
+              uri: `${cdnURL}/${info?.image}`,
+            }}
+            style={{
+              backgroundColor: "#f2f2f2",
+              marginRight: 10,
+              width: 60,
+              height: 60,
+              borderRadius: 16,
+            }}
+          />
+        ) : null}
         <View style={{ flex: 1 }}>
           <View row spread centerV style={{ paddingBottom: 5 }}>
             <KText style={{ color: "#393939" }}>{info?.name}</KText>
