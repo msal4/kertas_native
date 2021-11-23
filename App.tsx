@@ -17,6 +17,7 @@ import { AuthProvider, useAuth } from "./context/auth";
 import { StatusBar } from "react-native";
 import { DEFAULT_ACTION_IDENTIFIER, useLastNotificationResponse } from "expo-notifications";
 import { navigate } from "./navigation/navigationRef";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 dayjs.extend(relativeTime);
 
@@ -80,13 +81,15 @@ function _App() {
   return (
     <>
       <StatusBar barStyle="dark-content" translucent animated backgroundColor="transparent" />
-      <TransProvider locale={locale}>
-        <GraphQLProvider value={client}>
-          <SafeAreaProvider>
-            <Navigation colorScheme={colorScheme} />
-          </SafeAreaProvider>
-        </GraphQLProvider>
-      </TransProvider>
+      <RootSiblingParent>
+        <TransProvider locale={locale}>
+          <GraphQLProvider value={client}>
+            <SafeAreaProvider>
+              <Navigation colorScheme={colorScheme} />
+            </SafeAreaProvider>
+          </GraphQLProvider>
+        </TransProvider>
+      </RootSiblingParent>
     </>
   );
 }
