@@ -4,6 +4,7 @@ import {
   Image,
   Keyboard,
   KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   TextInput,
   TouchableWithoutFeedback,
@@ -174,18 +175,32 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
               borderRadius: 100,
               overflow: "hidden",
               marginTop: 60,
+              backgroundColor: fetching ? "#39393944" : "#6862a9",
+              padding: fetching || Platform.OS === "android" ? 10 : 0,
             }}
             disabled={fetching}
             onPress={loginUser}
           >
-            <LinearGradient
-              style={{
-                overflow: "hidden",
-                padding: 10,
-              }}
-              colors={fetching ? ["#39393944"] : ["#5bb0d6", "#6862a9"]}
-              start={{ x: 0, y: 0 }}
-            >
+            {!fetching && Platform.OS === "ios" ? (
+              <LinearGradient
+                style={{
+                  overflow: "hidden",
+                  padding: 10,
+                }}
+                colors={["#5bb0d6", "#6862a9"]}
+                start={{ x: 0, y: 0 }}
+              >
+                <KText
+                  style={{
+                    textAlign: "center",
+                    color: "#fff",
+                    fontSize: 18,
+                  }}
+                >
+                  {t("login")}
+                </KText>
+              </LinearGradient>
+            ) : (
               <KText
                 style={{
                   textAlign: "center",
@@ -195,7 +210,7 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
               >
                 {t("login")}
               </KText>
-            </LinearGradient>
+            )}
           </Touchable>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
