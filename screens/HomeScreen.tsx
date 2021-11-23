@@ -27,6 +27,7 @@ import dayjs from "dayjs";
 import { useTrans } from "../context/trans";
 import { useNavigation } from "@react-navigation/native";
 import { useMe } from "../hooks/useMe";
+import { getTabBarHeight } from "@react-navigation/bottom-tabs/lib/typescript/src/views/BottomTabBar";
 
 const dayjs_locals = {
   en: dayjs_en,
@@ -39,7 +40,7 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
   const [selectedWeekday, setWeekDay] = useState(dayjs().day());
   const { t, locale } = useTrans();
   const { me } = useMe();
-  const { top, right, left } = useSafeAreaInsets();
+  const { top, right, left, bottom } = useSafeAreaInsets();
 
   const currDate = dayjs().add(selectedWeekday - dayjs().day(), "day");
 
@@ -113,11 +114,11 @@ export default function Home({ navigation }: RootStackScreenProps<"Home">) {
           componentType="ScrollView"
           snapPoints={[
             windowHeight -
-              427 +
-              (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
+              (Platform.OS === "android" ? 362 : 380) -
+              (Platform.OS === "android" ? top + bottom : 0),
             windowHeight -
-              270 +
-              (Platform.OS == "ios" ? getStatusBarHeight() : -getStatusBarHeight()),
+              (Platform.OS === "android" ? 210 : 230) -
+              (Platform.OS === "android" ? top + bottom : 0),
           ]}
           initialSnapIndex={0}
           renderHandle={() => null}
