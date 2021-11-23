@@ -4,7 +4,7 @@ import { useTrans } from "../context/trans";
 import { clearTokens } from "../util/auth";
 import { RootTabScreenProps } from "../types";
 import { saveCurrentUser } from "../hooks/useMe";
-import { useAuth } from "../context/auth";
+import { AuthProvider, useAuth } from "../context/auth";
 import { replace } from "../navigation/navigationRef";
 import { Role, useProfileQuery } from "../generated/graphql";
 import Loading from "../components/Loading";
@@ -49,10 +49,23 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
     <>
       <Dialog
         useSafeArea
-        bottom={true}
         height={300}
+        center
         panDirection={PanningProvider.Directions.DOWN}
         visible={showDialog}
+        renderPannableHeader={() => (
+          <View style={{ padding: 10, paddingTop: 40 }}>
+            <View
+              style={{
+                height: 5,
+                width: 40,
+                backgroundColor: "#f4f4f4",
+                borderRadius: 999,
+                alignSelf: "center",
+              }}
+            />
+          </View>
+        )}
         onDismiss={() => {
           setShowDialog(false);
         }}
