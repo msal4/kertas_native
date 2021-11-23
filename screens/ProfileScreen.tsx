@@ -36,7 +36,6 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
           refetch();
         }}
         isError
-        height={500}
         color={"#393939"}
         msg={t("something_went_wrong")}
         btnText={t("retry")}
@@ -114,10 +113,13 @@ export const ProfileScreen = ({ navigation }: RootTabScreenProps<"Profile">) => 
           >
             <Image
               source={{ uri: `${cdnURL}/${res.data?.me.image}` }}
-              width={60}
-              height={60}
-              style={{ backgroundColor: "#6862a9", marginRight: 10, width: 60, height: 60 }}
-              borderRadius={100}
+              style={{
+                backgroundColor: "#6862a9",
+                marginRight: 10,
+                width: 60,
+                height: 60,
+                borderRadius: 100,
+              }}
             />
             <View>
               <KText style={{ color: "#383838", textAlign: "left" }}>{res.data?.me.name}</KText>
