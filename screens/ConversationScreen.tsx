@@ -126,13 +126,19 @@ export function ConversationScreen({ route, navigation }: RootStackScreenProps<"
             size={30}
           />
         </TouchableOpacity>
-        <Image
-          source={{ uri: `${cdnURL}/${info?.image}` }}
-          width={40}
-          height={40}
-          style={{ marginLeft: 10, backgroundColor: "#f2f2f2", marginRight: 15 }}
-          borderRadius={8}
-        />
+        {info?.image || group?.groupType === GroupType.Private ? (
+          <Image
+            source={{ uri: `${cdnURL}/${info?.image}` }}
+            style={{
+              marginLeft: 10,
+              backgroundColor: "#f2f2f2",
+              marginRight: 15,
+              width: 40,
+              height: 40,
+              borderRadius: 8,
+            }}
+          />
+        ) : null}
         <KText style={{ fontSize: 17, color: "#9a9a9a", fontFamily: "Dubai-Medium" }}>
           {info?.name}
         </KText>
