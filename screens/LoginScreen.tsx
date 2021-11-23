@@ -40,7 +40,13 @@ export default function LoginScreen({ navigation }: RootStackScreenProps<"Login"
 
   const loginUser = async () => {
     setFetching(true);
-    const pushToken = await registerForPushNotificationsAsync();
+    let pushToken: string | undefined;
+    try {
+      pushToken = await registerForPushNotificationsAsync();
+    } catch (e) {
+      showErrToast(t("something_went_wrong"));
+    }
+
     const res = await login({ username, password, pushToken });
 
     if (res.error) {

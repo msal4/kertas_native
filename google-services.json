@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "620240976551",
+    "project_id": "kertas-8e7c2",
+    "storage_bucket": "kertas-8e7c2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620240976551:android:062d2f6b7a527c5a7a7982",
+        "android_client_info": {
+          "package_name": "iq.kertas.school"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "620240976551-n0lp7mhba6vufk67ge1kcj5uqi4vsf1u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfuSSz4tb4PaBeKwSeHg5J9bHeTk2HG48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620240976551-n0lp7mhba6vufk67ge1kcj5uqi4vsf1u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
